@@ -4,6 +4,7 @@ import Workout from './pages/Workout'
 import Exercises from './pages/Exercises'
 import History from './pages/History'
 import BottomNav from './components/BottomNav'
+import ExerciseDetail from './pages/ExerciseDetail'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/workout" element={<Workout />} />
           <Route path="/exercises" element={<Exercises />} />
+          <Route path="/exercise/:id" element={<ExerciseDetail />} />
           <Route path="/history" element={<History />} />
         </Routes>
       </div>

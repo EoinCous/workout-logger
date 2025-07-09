@@ -1,0 +1,242 @@
+[
+  {
+    "id": "bench-press",
+    "name": "Barbell Bench Press",
+    "muscle": "chest",
+    "equipment": "Barbell",
+    "description": "A compound chest exercise targeting the pectorals, triceps, and front deltoids.",
+    "tips": [
+      "Keep your shoulder blades retracted.",
+      "Lower the bar to mid-chest.",
+      "Drive through your heels."
+    ]
+  },
+  {
+    "id": "lat-pulldown",
+    "name": "Lat Pulldown",
+    "muscle": "back",
+    "equipment": "Cable Machine",
+    "description": "Targets the lats and upper back.",
+    "tips": [
+      "Pull the bar to your upper chest.",
+      "Avoid using momentum.",
+      "Control the negative."
+    ]
+  },
+  {
+    "id": "seated-cable-row",
+    "name": "Seated Cable Row",
+    "muscle": "back",
+    "equipment": "Cable Machine",
+    "description": "A horizontal pulling exercise that targets the middle back and lats.",
+    "tips": [
+      "Keep your back straight and chest up.",
+      "Squeeze your shoulder blades together at the end.",
+      "Avoid leaning too far back."
+    ]
+  },
+  {
+    "id": "single-arm-dumbbell-row",
+    "name": "Single Arm Dumbbell Row",
+    "muscle": "back",
+    "equipment": "Dumbbell",
+    "description": "Targets the lats and rhomboids with an emphasis on unilateral strength.",
+    "tips": [
+      "Keep your torso stable and don't twist.",
+      "Pull with your elbow, not your hand.",
+      "Lower the weight slowly."
+    ]
+  },
+  {
+    "id": "face-pulls",
+    "name": "Face Pulls",
+    "muscle": "shoulders",
+    "equipment": "Cable Machine",
+    "description": "A shoulder and upper back exercise focused on the rear deltoids and traps.",
+    "tips": [
+      "Use a rope attachment and pull towards your forehead.",
+      "Keep elbows high and wide.",
+      "Pause briefly at the peak contraction."
+    ]
+  },
+  {
+    "id": "dumbbell-bicep-curls",
+    "name": "Dumbbell Bicep Curls",
+    "muscle": "biceps",
+    "equipment": "Dumbbells",
+    "description": "An isolation exercise targeting the biceps.",
+    "tips": [
+      "Keep your elbows close to your sides.",
+      "Avoid swinging the weights.",
+      "Squeeze at the top of the curl."
+    ]
+  },
+  {
+    "id": "cable-rope-hammer-curls",
+    "name": "Cable Rope Hammer Curls",
+    "muscle": "biceps",
+    "equipment": "Cable Machine",
+    "description": "Targets the biceps and brachialis using a neutral grip.",
+    "tips": [
+      "Use a rope attachment and keep wrists neutral.",
+      "Avoid using your shoulders to lift.",
+      "Control both the lift and the descent."
+    ]
+  },
+  {
+    "id": "dumbbell-bench-press",
+    "name": "Dumbbell Bench Press",
+    "muscle": "chest",
+    "equipment": "Dumbbells",
+    "description": "A compound chest exercise that also targets shoulders and triceps.",
+    "tips": [
+      "Lower dumbbells to chest level slowly.",
+      "Keep elbows at about a 45-degree angle.",
+      "Press evenly with both arms."
+    ]
+  },
+  {
+    "id": "machine-incline-chest-press",
+    "name": "Machine Incline Chest Press",
+    "muscle": "chest",
+    "equipment": "Machine",
+    "description": "Focuses on the upper chest and anterior deltoids.",
+    "tips": [
+      "Adjust the seat so handles are at chest height.",
+      "Avoid locking your elbows at the top.",
+      "Push through your palms, not fingers."
+    ]
+  },
+  {
+    "id": "seated-dumbbell-shoulder-press",
+    "name": "Seated Dumbbell Shoulder Press",
+    "muscle": "shoulders",
+    "equipment": "Dumbbells",
+    "description": "Targets the front and side deltoids while stabilizing the core.",
+    "tips": [
+      "Start with dumbbells at ear level.",
+      "Avoid arching your lower back.",
+      "Press up in a straight line."
+    ]
+  },
+  {
+    "id": "cable-lateral-raises",
+    "name": "Cable Lateral Raises",
+    "muscle": "shoulders",
+    "equipment": "Cable Machine",
+    "description": "An isolation exercise for the lateral deltoids.",
+    "tips": [
+      "Raise the cable to shoulder height.",
+      "Keep a slight bend in the elbow.",
+      "Avoid shrugging your traps."
+    ]
+  },
+  {
+    "id": "cable-tricep-pushdowns",
+    "name": "Cable Tricep Pushdowns",
+    "muscle": "triceps",
+    "equipment": "Cable Machine",
+    "description": "An isolation movement for the triceps using a rope or straight bar.",
+    "tips": [
+      "Keep your elbows locked at your sides.",
+      "Extend fully at the bottom.",
+      "Avoid using momentum or leaning forward."
+    ]
+  },
+  {
+    "id": "dumbbell-skullcrushers",
+    "name": "Dumbbell Skullcrushers",
+    "muscle": "triceps",
+    "equipment": "Dumbbells",
+    "description": "Targets the long head of the triceps during elbow extension.",
+    "tips": [
+      "Lower the dumbbells slowly to the sides of your head.",
+      "Keep upper arms stationary.",
+      "Don’t let the elbows flare out."
+    ]
+  },
+  {
+    "id": "dumbbell-goblet-squats",
+    "name": "Dumbbell Goblet Squats",
+    "muscle": "quads",
+    "equipment": "Dumbbell",
+    "description": "A front-loaded squat variation targeting the quads, glutes, and core.",
+    "tips": [
+      "Keep chest upright and dumbbell close to your body.",
+      "Push knees out as you descend.",
+      "Drive through the heels to stand up."
+    ]
+  },
+  {
+    "id": "dumbbell-rdls",
+    "name": "Dumbbell RDLs",
+    "muscle": "hamstrings",
+    "equipment": "Dumbbells",
+    "description": "A hip-hinge movement that targets hamstrings and glutes.",
+    "tips": [
+      "Keep a slight bend in the knees.",
+      "Lower dumbbells slowly down the front of your legs.",
+      "Maintain a flat back throughout."
+    ]
+  },
+  {
+    "id": "dumbbell-bulgarian-split-squats",
+    "name": "Dumbbell Bulgarian Split Squats",
+    "muscle": "glutes",
+    "equipment": "Dumbbells",
+    "description": "Unilateral lower body exercise that targets glutes, quads, and hamstrings.",
+    "tips": [
+      "Keep your front foot flat and knee aligned.",
+      "Lower until your back knee nearly touches the ground.",
+      "Push through the heel of the front foot."
+    ]
+  },
+  {
+    "id": "leg-curl-machine",
+    "name": "Leg Curl Machine",
+    "muscle": "hamstrings",
+    "equipment": "Machine",
+    "description": "An isolation exercise focusing on the hamstrings.",
+    "tips": [
+      "Adjust the pad to rest just above the heels.",
+      "Squeeze at the top of the curl.",
+      "Control the weight back down."
+    ]
+  },
+  {
+    "id": "leg-extension-machine",
+    "name": "Leg Extension Machine",
+    "muscle": "quads",
+    "equipment": "Machine",
+    "description": "Isolates the quadriceps through knee extension.",
+    "tips": [
+      "Adjust the seat so your knees align with the pivot.",
+      "Fully extend and squeeze the quads.",
+      "Avoid locking out the knees forcefully."
+    ]
+  },
+  {
+    "id": "cable-glute-kickbacks",
+    "name": "Cable Glute Kickbacks",
+    "muscle": "glutes",
+    "equipment": "Cable Machine",
+    "description": "Targets the gluteus maximus in a hip extension movement.",
+    "tips": [
+      "Use an ankle strap and maintain balance.",
+      "Kick straight back, not up.",
+      "Squeeze your glutes at the top."
+    ]
+  },
+  {
+    "id": "calf-raises",
+    "name": "Calf Raises",
+    "muscle": "calves",
+    "equipment": "Bodyweight / Dumbbell",
+    "description": "Targets the gastrocnemius and soleus muscles of the calves.",
+    "tips": [
+      "Perform full range of motion.",
+      "Pause at the top for a stronger contraction.",
+      "Keep knees slightly bent if needed."
+    ]
+  }
+]
