@@ -1,7 +1,7 @@
 const Home = () => {
     return (
-        <div>
-            <h1>Home page</h1>    
+        <div style={{ paddingBottom: '80px', padding: '1rem' }}>
+            <h1>Home Page</h1>
         </div>
     )
 }
