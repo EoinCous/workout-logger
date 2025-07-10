@@ -1,9 +1,65 @@
+import { useState } from "react";
+import { useWorkout } from "../context/WorkoutContext";
+import { useNavigate } from "react-router-dom";
+
 const WorkoutLog = () => {
-    return (
-        <div>
-            <h1>Log your sets</h1>
+  const { currentPlan, setStatus, setLastWorkout } = useWorkout();
+  const [log, setLog] = useState(
+    currentPlan.exercises.map((exercise) => ({
+      ...exercise,
+      sets: [],
+    }))
+  );
+  const navigate = useNavigate();
+
+  const addSet = (exerciseId) => {
+    const reps = prompt("Enter reps:");
+    const weight = prompt("Enter weight:");
+    if (!reps || !weight) return;
+    setLog((prevLog) =>
+      prevLog.map((exercise) =>
+        exercise.id === exerciseId
+          ? { ...exercise, sets: [...exercise.sets, { reps, weight }] }
+          : exercise
+      )
+    );
+  };
+
+  const completeWorkout = () => {
+    const completedWorkout = {
+      ...currentPlan,
+      exercises: log,
+      completedAt: new Date().toISOString(),
+    };
+    setLastWorkout(completedWorkout);
+    setStatus("complete");
+    navigate("/history");
+  };
+
+  return (
+    <div className="workout-log">
+      <h1>Log Your Sets</h1>
+      <p>Workout Type: {currentPlan.type.toUpperCase()}</p>
+
+      {log.map((exercise) => (
+        <div key={exercise.id} className="exercise-log-card">
+          <h3>{exercise.name}</h3>
+          <ul>
+            {exercise.sets.map((set, index) => (
+              <li key={index}>
+                {set.reps} reps @ {set.weight}kg
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => addSet(exercise.id)}>Add Set</button>
         </div>
-    )
-}
+      ))}
+
+      <button className="complete-workout-btn" onClick={completeWorkout}>
+        Complete Workout
+      </button>
+    </div>
+  );
+};
 
 export default WorkoutLog;

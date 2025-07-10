@@ -1,7 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import '../css/Home.css'
+import { useWorkout } from "../context/WorkoutContext";
 
 const Home = () => {
+  const { lastWorkout } = useWorkout();
+
   const navigate = useNavigate()
 
   const handleStartWorkout = () => navigate('/workout')
@@ -19,7 +22,7 @@ const Home = () => {
 
       <div className="home-section" onClick={handleViewHistory}>
         <h2>📅 Most Recent Workout</h2>
-        <p>Chest & Triceps • 60 mins • 14 Jul</p>
+        <p>{lastWorkout.type} • 60 mins • {lastWorkout.date}</p>
       </div>
 
       <div className="home-section" onClick={handleViewPBs}>
