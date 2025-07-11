@@ -3,7 +3,8 @@ import '../css/Home.css'
 import { useWorkout } from "../context/WorkoutContext";
 
 const Home = () => {
-  const { lastWorkout } = useWorkout();
+  const { getLastWorkout } = useWorkout();
+  const lastWorkout = getLastWorkout();
 
   const navigate = useNavigate()
 
@@ -22,7 +23,11 @@ const Home = () => {
 
       <div className="home-section" onClick={handleViewHistory}>
         <h2>📅 Most Recent Workout</h2>
-        <p>{lastWorkout.type} • 60 mins • {lastWorkout.date}</p>
+        {lastWorkout ? (
+          <p>{lastWorkout.type} • 60 mins • {lastWorkout.date}</p>
+        ) : (
+          <p>No workouts yet. Start planning your first session!</p>
+        )}
       </div>
 
       <div className="home-section" onClick={handleViewPBs}>

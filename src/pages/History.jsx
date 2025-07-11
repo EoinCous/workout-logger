@@ -1,9 +1,27 @@
-const History = () => {
-    return (
-        <div>
-            <h1>History</h1>
-        </div>
-    )
-}
+import { useEffect, useState } from 'react';
 
-export default History
+const History = () => {
+  const [workouts, setWorkouts] = useState([]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('workouts')) || [];
+    // Sort by date descending
+    const sorted = saved.sort((a, b) => new Date(b.date) - new Date(a.date));
+    setWorkouts(sorted);
+  }, []);
+
+  return (
+    <div>
+      <h1>Workout History</h1>
+      {workouts.map((workout) => (
+        <div key={workout.date} className="workout-summary-card">
+          <h3>{workout.type} — {new Date(workout.date).toLocaleDateString()}</h3>
+          <p>{workout.exercises.length} exercises</p>
+          <button onClick={() => viewWorkout(workout.id)}>View Details</button>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default History;

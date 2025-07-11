@@ -8,13 +8,9 @@ export const WorkoutProvider = ({ children }) => {
     const savedPlan = localStorage.getItem("currentPlan");
     return savedPlan ? JSON.parse(savedPlan) : null;
   });
+
   const [status, setStatus] = useState(() => {
     return localStorage.getItem("workoutStatus") || WORKOUT_STATUS.IDLE;
-  });
-
-  const [lastWorkout, setLastWorkout] = useState(() => {
-    const saved = localStorage.getItem("lastWorkout");
-    return saved ? JSON.parse(saved) : null;
   });
 
   const [currentLog, setCurrentLog] = useState(() => {
@@ -22,24 +18,38 @@ export const WorkoutProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : null;
   });
 
-  // Save to localStorage when state changes
+  const [workouts, setWorkouts] = useState(() => {
+    const saved = localStorage.getItem("workouts");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem("workoutStatus", status);
     localStorage.setItem("currentPlan", JSON.stringify(currentPlan));
     localStorage.setItem("currentLog", JSON.stringify(currentLog));
-    localStorage.setItem("lastWorkout", JSON.stringify(lastWorkout));
-  }, [status, currentPlan, currentLog, lastWorkout]);
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+  }, [status, currentPlan, currentLog, workouts]);
+
+  const addWorkoutToHistory = (workout) => {
+    setWorkouts(prev => [...prev, workout]);
+  };
+
+  const getLastWorkout = () => {
+  return workouts.length > 0 ? workouts[workouts.length - 1] : null;
+};
+
 
   return (
     <WorkoutContext.Provider value={{
       status,
       setStatus,
-      lastWorkout,
-      setLastWorkout,
       currentPlan,
       setCurrentPlan,
       currentLog,
-      setCurrentLog
+      setCurrentLog,
+      workouts,
+      addWorkoutToHistory,
+      getLastWorkout
     }}>
       {children}
     </WorkoutContext.Provider>
