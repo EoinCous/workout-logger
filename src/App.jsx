@@ -9,6 +9,7 @@ import { WorkoutProvider } from './context/WorkoutContext'
 import WorkoutPlanner from './pages/WorkoutPlanner'
 import WorkoutLog from './pages/WorkoutLog'
 import WorkoutSummary from './pages/WorkoutSummary'
+import PersonalBests from './pages/PersonalBests'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/exercises" element={<Exercises />} />
             <Route path="/exercise/:id" element={<ExerciseDetail />} />
             <Route path="/history" element={<History />} />
+            <Route path="/personal-bests" element={<PersonalBests />} />
           </Routes>
         </div>
         <BottomNav />

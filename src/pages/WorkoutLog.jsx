@@ -3,13 +3,14 @@ import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 
 const WorkoutLog = () => {
-  const { currentPlan, setStatus, addWorkoutToHistory } = useWorkout();
+  const { currentPlan, setStatus, addWorkoutToHistory, updatePersonalBests } = useWorkout();
   const [log, setLog] = useState(
     currentPlan.exercises.map((exercise) => ({
       ...exercise,
       sets: [],
     }))
   );
+  
   const navigate = useNavigate();
 
   const addSet = (exerciseId) => {
@@ -32,6 +33,7 @@ const WorkoutLog = () => {
       completedAt: new Date().toISOString(),
     };
     addWorkoutToHistory(completedWorkout);
+    updatePersonalBests(completedWorkout);
     setStatus("complete");
     navigate("/history");
   };
