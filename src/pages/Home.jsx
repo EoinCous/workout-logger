@@ -3,7 +3,7 @@ import '../css/Home.css'
 import { useWorkout } from "../context/WorkoutContext";
 
 const Home = () => {
-  const { getLastWorkout } = useWorkout();
+  const { status, getLastWorkout } = useWorkout();
   const lastWorkout = getLastWorkout();
 
   const navigate = useNavigate()
@@ -18,13 +18,41 @@ const Home = () => {
 
       <div className="home-section" onClick={handleStartWorkout}>
         <h2>🏋️ Today's Workout</h2>
-        <p>Start, plan or continue your current session</p>
+        {status === "idle" && (
+          <div>
+            <p>Plan today's workout.</p>
+          </div>
+        )}
+
+        {status === "planning" && (
+          <div>
+            <p>Contiune planning today's workout.</p>
+          </div>
+        )}
+
+        {status === "planned" && (
+          <div>
+            <p>Start today's workout.</p>
+          </div>
+        )}
+
+        {status === "inProgress" && (
+          <div>
+            <p>Your workout is in progress.</p>
+          </div>
+        )}
+
+        {status === "complete" && (
+          <div>
+            <p>You've completed today's workout! 🎉</p>
+          </div>
+        )}
       </div>
 
       <div className="home-section" onClick={handleViewHistory}>
         <h2>📅 Most Recent Workout</h2>
         {lastWorkout ? (
-          <p>{lastWorkout.type} • 60 mins • {lastWorkout.date}</p>
+          <p>{lastWorkout.type.toUpperCase()} • 60 mins • {new Date(lastWorkout.date).toLocaleString()}</p>
         ) : (
           <p>No workouts yet. Start planning your first session!</p>
         )}

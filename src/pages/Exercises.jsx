@@ -15,8 +15,8 @@ const Exercises = () => {
       {Object.keys(grouped).map((muscle) => (
         <div key={muscle}>
           <h2>{muscle.charAt(0).toUpperCase() + muscle.slice(1)}</h2>
-          {grouped[muscle].map((ex) => (
-            <ExerciseCard key={ex.id} exercise={ex} />
+          {grouped[muscle].map((exercise) => (
+            <ExerciseCard key={exercise.id} exercise={exercise} />
           ))}
         </div>
       ))}

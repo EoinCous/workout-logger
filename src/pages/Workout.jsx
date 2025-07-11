@@ -6,11 +6,11 @@ import { WORKOUT_STATUS } from "../constants/workoutStatus";
 const Workout = () => {
   const {
     status,
-    lastWorkout,
-    currentPlan,
-    currentLog,
+    getLastWorkout,
     setStatus,
   } = useWorkout();
+
+  const lastWorkout = getLastWorkout();
 
   const navigate = useNavigate();
 

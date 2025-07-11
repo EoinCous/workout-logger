@@ -1,4 +1,3 @@
-// src/pages/ExerciseDetail.jsx
 import { useParams } from 'react-router-dom'
 import exercisesData from '../data/exercises.json'
 

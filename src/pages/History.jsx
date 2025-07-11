@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
 const History = () => {
   const [workouts, setWorkouts] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('workouts')) || [];
@@ -10,6 +13,10 @@ const History = () => {
     setWorkouts(sorted);
   }, []);
 
+  const viewWorkout = (date) => {
+    navigate(`/workout-summary/${date}`)
+  }
+
   return (
     <div>
       <h1>Workout History</h1>
@@ -17,7 +24,7 @@ const History = () => {
         <div key={workout.date} className="workout-summary-card">
           <h3>{workout.type} — {new Date(workout.date).toLocaleDateString()}</h3>
           <p>{workout.exercises.length} exercises</p>
-          <button onClick={() => viewWorkout(workout.id)}>View Details</button>
+          <button onClick={() => viewWorkout(workout.date)}>View Details</button>
         </div>
       ))}
     </div>
