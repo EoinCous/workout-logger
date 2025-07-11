@@ -3,9 +3,11 @@ import '../css/ExerciseCard.css'
 
 const ExerciseCard = ({ exercise }) => {
   return (
-    <Link to={`/exercise/${exercise.id}`} className="exercise-card">
-      <h3>{exercise.name}</h3>
-      <p>{exercise.muscle}</p>
+    <Link to={`/exercise/${exercise.id}`}>
+      <div className="exercise-card">
+        <h3>{exercise.name}</h3>
+        <p>{exercise.muscle}</p>
+      </div>
     </Link>
   )
 }
