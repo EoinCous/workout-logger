@@ -1,0 +1,29 @@
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exercise-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exercise-info h4 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.exercise-info p {
+  margin: 0.2rem 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.exercise-add-btn.added {
+  background-color: #e0ffe0;
+  color: green;
+  font-weight: bold;
+  cursor: default;
+}

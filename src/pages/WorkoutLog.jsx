@@ -26,6 +26,11 @@ const WorkoutLog = () => {
     );
   };
 
+  const cancelWorkout = () => {
+    setStatus("idle");
+    navigate("/workout");
+  };
+
   const completeWorkout = () => {
     const completedWorkout = {
       ...currentPlan,
@@ -57,9 +62,8 @@ const WorkoutLog = () => {
         </div>
       ))}
 
-      <button className="complete-workout-btn" onClick={completeWorkout}>
-        Complete Workout
-      </button>
+      <button className="cancel-workout-btn" onClick={cancelWorkout}>Cancel Workout</button>
+      <button className="complete-workout-btn" onClick={completeWorkout}>Complete Workout</button>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WorkoutTypeSelector from "../components/WorkoutTypeSelector";
 import ExerciseList from "../components/ExerciseList";
 import SelectedExerciseList from "../components/SelectedExerciseList";
@@ -16,10 +16,17 @@ const WORKOUT_TYPES = {
 };
 
 const WorkoutPlanner = () => {
-  const { setStatus, setCurrentPlan } = useWorkout();
+  const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
   const [workoutType, setWorkoutType] = useState("push");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentPlan) {
+      setWorkoutType(currentPlan.type || "push");
+      setSelectedExercises(currentPlan.exercises || []);
+    }
+  }, [currentPlan]);
 
   const filteredExercises = exercises.filter((ex) =>
     WORKOUT_TYPES[workoutType].includes(ex.muscle)
@@ -42,15 +49,6 @@ const WorkoutPlanner = () => {
     setSelectedExercises(updated);
   };
 
-  const handleSaveWorkout = () => {
-    setCurrentPlan({
-      type: workoutType,
-      exercises: selectedExercises,
-      date: new Date().toISOString(),
-    });
-    setStatus("planned");
-  }
-
   const handleStartWorkout = () => {
     setCurrentPlan({
       type: workoutType,
@@ -64,14 +62,17 @@ const WorkoutPlanner = () => {
   return (
     <div className="planner-container">
       <WorkoutTypeSelector value={workoutType} onChange={setWorkoutType} />
-      <ExerciseList exercises={filteredExercises} onAdd={handleAdd} />
+      <ExerciseList 
+        exercises={filteredExercises} 
+        selectedExercises={selectedExercises}
+        onAdd={handleAdd} 
+      />
       <SelectedExerciseList
         exercises={selectedExercises}
         onRemove={handleRemove}
         onMove={handleMove}
       />
       <PlannerControls
-        onSave={handleSaveWorkout}
         onStart={handleStartWorkout}
         isDisabled={selectedExercises.length === 0}
       />

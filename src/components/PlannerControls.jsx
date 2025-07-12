@@ -1,7 +1,6 @@
-const PlannerControls = ({ onSave, onStart, isDisabled }) => {
+const PlannerControls = ({ onStart, isDisabled }) => {
   return (
     <div className="planner-controls">
-        <button onClick={onSave} disabled={isDisabled}>Save Plan</button>
         <button onClick={onStart} disabled={isDisabled}>Start Workout</button>
     </div>
   );
