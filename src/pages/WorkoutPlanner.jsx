@@ -49,6 +49,15 @@ const WorkoutPlanner = () => {
     setSelectedExercises(updated);
   };
 
+  const handleSaveWorkout = () => {
+    setCurrentPlan({
+      type: workoutType,
+      exercises: selectedExercises,
+      date: new Date().toISOString(),
+    });
+    setStatus("planned");
+  };
+
   const handleStartWorkout = () => {
     setCurrentPlan({
       type: workoutType,
@@ -73,6 +82,7 @@ const WorkoutPlanner = () => {
         onMove={handleMove}
       />
       <PlannerControls
+        onSave={handleSaveWorkout}
         onStart={handleStartWorkout}
         isDisabled={selectedExercises.length === 0}
       />
