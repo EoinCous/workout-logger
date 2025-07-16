@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom'
 import '../css/Home.css'
+import { useNavigate } from 'react-router-dom'
 import { useWorkout } from "../context/WorkoutContext";
 
 const Home = () => {
@@ -11,6 +11,7 @@ const Home = () => {
   const handleStartWorkout = () => navigate('/workout')
   const handleViewHistory = () => navigate('/history')
   const handleViewPBs = () => navigate('/personal-bests')
+  const handleSuggestions = () => navigate('/suggestions')
 
   return (
     <div className="home">
@@ -66,6 +67,11 @@ const Home = () => {
       <div className="home-section">
         <h2>📈 Weekly Stats</h2>
         <p>3 Workouts • Total Volume: 24,300 kg</p>
+      </div>
+
+      <div className="home-section" onClick={handleSuggestions}>
+        <h2>💡 Got suggestions?</h2>
+        <p>Enter an improvement that could be made to Workout Logger</p>
       </div>
     </div>
   )

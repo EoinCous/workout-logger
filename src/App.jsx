@@ -10,6 +10,7 @@ import WorkoutPlanner from './pages/WorkoutPlanner'
 import WorkoutLog from './pages/WorkoutLog'
 import WorkoutSummary from './pages/WorkoutSummary'
 import PersonalBests from './pages/PersonalBests'
+import Suggestions from './pages/Suggestions'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/exercise/:id" element={<ExerciseDetail />} />
             <Route path="/history" element={<History />} />
             <Route path="/personal-bests" element={<PersonalBests />} />
+            <Route path="/suggestions" element={<Suggestions />} />
           </Routes>
         </div>
         <BottomNav />

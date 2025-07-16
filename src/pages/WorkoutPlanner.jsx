@@ -33,14 +33,12 @@ const WorkoutPlanner = () => {
   );
 
   const handleAdd = (exercise) => {
-    console.log(exercise)
     if (!selectedExercises.find((e) => e.id === exercise.id)) {
       setSelectedExercises([...selectedExercises, exercise]);
     }
   };
 
   const handleRemove = (id) => {
-    console.log(id)
     setSelectedExercises(selectedExercises.filter((e) => e.id !== id));
   };
 
