@@ -238,5 +238,28 @@
       "Pause at the top for a stronger contraction.",
       "Keep knees slightly bent if needed."
     ]
+  },
+  {
+    "id": "v-ups",
+    "name": "V Ups",
+    "muscle": "core",
+    "equipment": "Bodyweight",
+    "description": "Targets the core.",
+    "tips": [
+      "Start lying flat on back.",
+      "Raise feet and hands to meet eachother.",
+      "Slowly decline hands and feet back to ground."
+    ]
+  },
+  {
+    "id": "russian-twists",
+    "name": "Russian Twists",
+    "muscle": "core",
+    "equipment": "Bodyweight / Kettlebell",
+    "description": "Targets the core.",
+    "tips": [
+      "Lift feet and back slightly off the ground.",
+      "Touch the floor, alternating the side each time."
+    ]
   }
 ]

@@ -1,6 +1,6 @@
-import "../css/ExerciseList.css"; // Assuming you’ll write your CSS here
+import "../css/ExerciseList.css";
 
-const ExerciseList = ({ exercises, selectedExercises, onAdd }) => {
+const ExerciseList = ({ exercises, selectedExercises, onAdd, onRemove }) => {
   return (
     <div className="exercise-list">
       {exercises.map((ex) => {
@@ -14,8 +14,7 @@ const ExerciseList = ({ exercises, selectedExercises, onAdd }) => {
             </div>
             <button
               className={`exercise-add-btn ${isSelected ? "added" : ""}`}
-              onClick={() => onAdd(ex)}
-              disabled={isSelected}
+              onClick={() => isSelected ? onRemove(ex.id) : onAdd(ex)}
             >
               {isSelected ? "✓" : "+"}
             </button>

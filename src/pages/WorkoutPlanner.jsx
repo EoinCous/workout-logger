@@ -33,12 +33,14 @@ const WorkoutPlanner = () => {
   );
 
   const handleAdd = (exercise) => {
+    console.log(exercise)
     if (!selectedExercises.find((e) => e.id === exercise.id)) {
       setSelectedExercises([...selectedExercises, exercise]);
     }
   };
 
   const handleRemove = (id) => {
+    console.log(id)
     setSelectedExercises(selectedExercises.filter((e) => e.id !== id));
   };
 
@@ -68,6 +70,12 @@ const WorkoutPlanner = () => {
     navigate("/workout-log");
   };
 
+  const handleClearAll = () => {
+    setCurrentPlan({
+      exercises: []
+    })
+  }
+
   return (
     <div className="planner-container">
       <WorkoutTypeSelector value={workoutType} onChange={setWorkoutType} />
@@ -75,6 +83,7 @@ const WorkoutPlanner = () => {
         exercises={filteredExercises} 
         selectedExercises={selectedExercises}
         onAdd={handleAdd} 
+        onRemove={handleRemove}
       />
       <SelectedExerciseList
         exercises={selectedExercises}
@@ -84,6 +93,7 @@ const WorkoutPlanner = () => {
       <PlannerControls
         onSave={handleSaveWorkout}
         onStart={handleStartWorkout}
+        onClearAll={handleClearAll}
         isDisabled={selectedExercises.length === 0}
       />
     </div>
