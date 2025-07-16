@@ -83,17 +83,22 @@ const WorkoutPlanner = () => {
         onAdd={handleAdd} 
         onRemove={handleRemove}
       />
-      <SelectedExerciseList
-        exercises={selectedExercises}
-        onRemove={handleRemove}
-        onMove={handleMove}
-      />
-      <PlannerControls
-        onSave={handleSaveWorkout}
-        onStart={handleStartWorkout}
-        onClearAll={handleClearAll}
-        isDisabled={selectedExercises.length === 0}
-      />
+
+      {selectedExercises.length > 0 && (
+        <>
+          <SelectedExerciseList
+            exercises={selectedExercises}
+            onRemove={handleRemove}
+            onMove={handleMove}
+          />
+          <PlannerControls
+            onSave={handleSaveWorkout}
+            onStart={handleStartWorkout}
+            onClearAll={handleClearAll}
+            isDisabled={selectedExercises.length === 0}
+          />
+        </>
+      )}
     </div>
   );
 };
