@@ -261,5 +261,161 @@
       "Lift feet and back slightly off the ground.",
       "Touch the floor, alternating the side each time."
     ]
+  },
+  {
+    "id": "cable-crossovers",
+    "name": "Cable Crossovers",
+    "muscle": "chest",
+    "equipment": "Cable Machine",
+    "description": "An isolation chest exercise targeting the inner pectorals.",
+    "tips": [
+        "Start with cables high and arms outstretched.",
+        "Bring hands together in front of you with a slight bend in elbows.",
+        "Squeeze the chest at the peak."
+    ]
+  },
+  {
+    "id": "chin-up",
+    "name": "Chin Up",
+    "muscle": "back",
+    "equipment": "Bodyweight",
+    "description": "A bodyweight pulling exercise emphasizing the lats and biceps.",
+    "tips": [
+        "Use an underhand grip.",
+        "Pull your chest to the bar.",
+        "Control the descent."
+    ]
+  },
+  {
+    "id": "deadlift",
+    "name": "Deadlift",
+    "muscle": "hamstrings",
+    "equipment": "Barbell",
+    "description": "A compound lift that targets the posterior chain.",
+    "tips": [
+        "Keep your back flat and bar close to your body.",
+        "Drive through your heels.",
+        "Lock out at the top by squeezing glutes."
+    ]
+  },
+  {
+    "id": "hanging-leg-raises",
+    "name": "Hanging Leg Raises",
+    "muscle": "core",
+    "equipment": "Bodyweight",
+    "description": "Targets the lower abdominals and hip flexors.",
+    "tips": [
+        "Hang from a pull-up bar with straight arms.",
+        "Raise legs to at least 90 degrees.",
+        "Avoid swinging."
+    ]
+  },
+  {
+    "id": "hip-thrusts",
+    "name": "Hip Thrusts",
+    "muscle": "glutes",
+    "equipment": "Barbell",
+    "description": "Targets the glutes with emphasis on hip extension.",
+    "tips": [
+        "Place upper back on a bench and feet flat on the ground.",
+        "Drive through your heels and squeeze at the top.",
+        "Avoid hyperextending your lower back."
+    ]
+  },
+  {
+    "id": "leg-press",
+    "name": "Leg Press",
+    "muscle": "quads",
+    "equipment": "Machine",
+    "description": "Targets the quads, hamstrings, and glutes.",
+    "tips": [
+        "Keep feet flat and knees aligned with toes.",
+        "Lower the sled under control.",
+        "Don't lock your knees at the top."
+    ]
+  },
+  {
+    "id": "lunges",
+    "name": "Lunges",
+    "muscle": "quads",
+    "equipment": "Bodyweight / Dumbbell",
+    "description": "A unilateral lower body movement targeting glutes, quads, and hamstrings.",
+    "tips": [
+        "Keep torso upright.",
+        "Step forward and lower until both knees are at 90 degrees.",
+        "Push through the front heel to return."
+    ]
+  },
+  {
+    "id": "plank",
+    "name": "Plank",
+    "muscle": "core",
+    "equipment": "Bodyweight",
+    "description": "An isometric exercise targeting the core.",
+    "tips": [
+        "Maintain a straight line from head to heels.",
+        "Keep your core tight.",
+        "Don’t let hips sag or pike."
+    ]
+  },
+  {
+    "id": "preacher-curls",
+    "name": "Preacher Curls",
+    "muscle": "biceps",
+    "equipment": "EZ Bar / Machine",
+    "description": "Isolation movement targeting the biceps with arm support.",
+    "tips": [
+        "Keep upper arms fixed against the pad.",
+        "Lower the bar slowly.",
+        "Squeeze at the top."
+    ]
+  },
+  {
+    "id": "pull-ups",
+    "name": "Pull Up",
+    "muscle": "back",
+    "equipment": "Bodyweight",
+    "description": "A compound pulling movement targeting the back and arms.",
+    "tips": [
+        "Use a shoulder-width overhand grip.",
+        "Pull your chin above the bar.",
+        "Control the descent."
+    ]
+  },
+  {
+    "id": "push-ups",
+    "name": "Push Ups",
+    "muscle": "chest",
+    "equipment": "Bodyweight",
+    "description": "A bodyweight pressing movement targeting the chest, shoulders, and triceps.",
+    "tips": [
+        "Keep your body in a straight line.",
+        "Lower chest to the ground.",
+        "Push through palms to return."
+    ]
+  },
+  {
+    "id": "reverse-curls",
+    "name": "Reverse Curls",
+    "muscle": "biceps",
+    "equipment": "Barbell / EZ Bar",
+    "description": "Targets the brachialis and forearms using a pronated grip.",
+    "tips": [
+        "Use an overhand grip.",
+        "Keep elbows at your sides.",
+        "Curl without swinging."
+    ]
+  },
+  {
+    "id": "standing-cable-curls",
+    "name": "Standing Cable Curls",
+    "muscle": "biceps",
+    "equipment": "Cable Machine",
+    "description": "An isolation exercise for biceps with constant tension.",
+    "tips": [
+        "Keep elbows stationary.",
+        "Curl with control.",
+        "Squeeze at the top of the movement."
+    ]
   }
 ]
