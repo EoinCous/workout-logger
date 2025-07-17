@@ -3,20 +3,21 @@ import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 
 const WorkoutLog = () => {
-  const { currentPlan, setStatus, addWorkoutToHistory, updatePersonalBests } = useWorkout();
+  const { currentPlan, setStatus, addWorkoutToHistory } = useWorkout();
   const [log, setLog] = useState(
     currentPlan.exercises.map((exercise) => ({
       ...exercise,
       sets: [],
     }))
   );
-  
+
   const navigate = useNavigate();
 
   const addSet = (exerciseId) => {
     const reps = prompt("Enter reps:");
     const weight = prompt("Enter weight:");
     if (!reps || !weight) return;
+
     setLog((prevLog) =>
       prevLog.map((exercise) =>
         exercise.id === exerciseId
@@ -34,14 +35,15 @@ const WorkoutLog = () => {
   const completeWorkout = () => {
     const completedWorkout = {
       ...currentPlan,
-      exercises: log,
+      exercises: log.filter((exercise) => exercise.sets.length > 0),
       completedAt: new Date().toISOString(),
     };
     addWorkoutToHistory(completedWorkout);
-    updatePersonalBests(completedWorkout);
     setStatus("complete");
     navigate("/history");
   };
+
+  const hasAnySets = log.some((exercise) => exercise.sets.length > 0);
 
   return (
     <div className="workout-log">
@@ -63,7 +65,12 @@ const WorkoutLog = () => {
       ))}
 
       <button className="cancel-workout-btn" onClick={cancelWorkout}>Cancel Workout</button>
-      <button className="complete-workout-btn" onClick={completeWorkout}>Complete Workout</button>
+
+      {hasAnySets && (
+        <button className="complete-workout-btn" onClick={completeWorkout}>
+          Complete Workout
+        </button>
+      )}
     </div>
   );
 };
