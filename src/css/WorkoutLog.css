@@ -1,0 +1,10 @@
+.add-set-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.add-set-form input {
+  width: 60px;
+  padding: 4px;
+  border-radius: 4px;
+}

@@ -1,3 +1,4 @@
+import '../css/WorkoutLog.css';
 import { useState } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
@@ -53,14 +54,59 @@ const WorkoutLog = () => {
       {log.map((exercise) => (
         <div key={exercise.id} className="exercise-log-card">
           <h3>{exercise.name}</h3>
+
           <ul>
             {exercise.sets.map((set, index) => (
-              <li key={index}>
-                {set.reps} reps @ {set.weight}kg
-              </li>
+              <li key={index}>{set.reps} reps @ {set.weight}kg</li>
             ))}
           </ul>
-          <button onClick={() => addSet(exercise.id)}>Add Set</button>
+
+          <div className="add-set-form">
+            <input
+              type="number"
+              placeholder="Reps"
+              value={exercise.newReps || ""}
+              onChange={(e) =>
+                setLog((prevLog) =>
+                  prevLog.map((ex) =>
+                    ex.id === exercise.id ? { ...ex, newReps: e.target.value } : ex
+                  )
+                )
+              }
+            />
+            <input
+              type="number"
+              placeholder="Weight"
+              value={exercise.newWeight || ""}
+              onChange={(e) =>
+                setLog((prevLog) =>
+                  prevLog.map((ex) =>
+                    ex.id === exercise.id ? { ...ex, newWeight: e.target.value } : ex
+                  )
+                )
+              }
+            />
+            <button
+              onClick={() => {
+                const { newReps, newWeight } = exercise;
+                if (!newReps || !newWeight) return;
+                setLog((prevLog) =>
+                  prevLog.map((ex) =>
+                    ex.id === exercise.id
+                      ? {
+                          ...ex,
+                          sets: [...ex.sets, { reps: newReps, weight: newWeight }],
+                          newReps: "",
+                          newWeight: "",
+                        }
+                      : ex
+                  )
+                );
+              }}
+            >
+              ➕
+            </button>
+          </div>
         </div>
       ))}
 

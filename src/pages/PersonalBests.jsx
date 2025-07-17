@@ -33,7 +33,7 @@ const PersonalBests = () => {
     });
 
     return pbs;
-  }, [workouts]); // Only recalculate if workouts change
+  }, [workouts]);
 
   return (
     <div>

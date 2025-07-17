@@ -1,0 +1,45 @@
+.last-workout-summary {
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem;
+}
+
+.exercise-summary {
+  margin-top: 1rem;
+  border-top: 1px solid #444;
+  padding-top: 0.5rem;
+}
+
+.exercise-summary h4 {
+  margin-bottom: 0.25rem;
+}
+
+.exercise-summary ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.workout-date {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.plan-next-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.plan-next-btn:hover {
+  background-color: #0056b3;
+}
