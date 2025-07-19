@@ -1,0 +1,26 @@
+.workout-type-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.workout-type-selector button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ddd;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.workout-type-selector button:hover {
+  background-color: #ccc;
+}
+
+.workout-type-selector button.active {
+  background-color: #007bff;
+  color: white;
+}

@@ -1,3 +1,5 @@
+import '../css/WorkoutTypeSelector.css';
+
 const types = ["push", "pull", "legs", "core", "full"];
 
 const WorkoutTypeSelector = ({ value, onChange }) => {

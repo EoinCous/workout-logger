@@ -1,0 +1,41 @@
+.exercise-detail {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.exercise-detail h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.exercise-detail p {
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+.exercise-detail h3 {
+  margin-top: 16px;
+  font-size: 18px;
+}
+
+.exercise-detail ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.exercise-detail li {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  padding: 0;
+}

@@ -17,7 +17,7 @@ const WORKOUT_TYPES = {
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
-  const [workoutType, setWorkoutType] = useState("push");
+  const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const navigate = useNavigate();
 
