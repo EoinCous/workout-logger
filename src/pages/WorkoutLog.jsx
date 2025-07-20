@@ -1,5 +1,5 @@
 import '../css/WorkoutLog.css';
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 
@@ -17,10 +17,6 @@ const WorkoutLog = () => {
     }));
   });
 
-  useEffect(() => {
-    setCurrentLog(log);
-  }, [log, setCurrentLog]);
-
   const handleInputChange = useCallback((id, field, value) => {
     setLog(prevLog =>
       prevLog.map(exercise =>
@@ -30,8 +26,8 @@ const WorkoutLog = () => {
   }, []);
 
   const addSet = useCallback((id) => {
-    setLog(prevLog =>
-      prevLog.map(exercise => {
+    setLog(prevLog => {
+      const newLog = prevLog.map(exercise => {
         if (exercise.id !== id) return exercise;
 
         const { newReps, newWeight, sets } = exercise;
@@ -43,9 +39,12 @@ const WorkoutLog = () => {
           newReps: "",
           newWeight: "",
         };
-      })
-    );
-  }, []);
+      });
+
+      setCurrentLog(newLog);
+      return newLog;
+    });
+  }, [setCurrentLog]);
 
   const cancelWorkout = () => {
     setStatus("idle");
