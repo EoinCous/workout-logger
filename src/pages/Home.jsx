@@ -1,10 +1,30 @@
 import '../css/Home.css'
 import { useNavigate } from 'react-router-dom'
 import { useWorkout } from "../context/WorkoutContext";
+import { isThisWeek, parseISO } from 'date-fns';
 
 const Home = () => {
-  const { status, getLastWorkout } = useWorkout();
+  const { status, workouts, getLastWorkout } = useWorkout();
+
   const lastWorkout = getLastWorkout();
+  const durationMs = new Date(lastWorkout.completedAt) - new Date(lastWorkout.date);
+  const durationMins = Math.round(durationMs / 1000 / 60);
+
+  const weeklyWorkouts = workouts.filter(workout => 
+    isThisWeek(parseISO(workout.date))
+  );
+  const totalVolume = weeklyWorkouts.reduce((total, workout) => {
+    return total + workout.exercises.reduce((exTotal, ex) => {
+      return exTotal + ex.sets.reduce((setTotal, set) => {
+        return setTotal + set.reps * set.weight;
+      }, 0);
+    }, 0);
+  }, 0);
+  const allSets = weeklyWorkouts.flatMap(workout => 
+    workout.exercises.flatMap(ex => ex.sets)
+  );
+  const totalSets = allSets.length;
+  const totalReps = allSets.reduce((sum, set) => sum + Number(set.reps), 0);
 
   const navigate = useNavigate()
 
@@ -53,7 +73,7 @@ const Home = () => {
       <div className="home-section" onClick={handleViewHistory}>
         <h2>📅 Most Recent Workout</h2>
         {lastWorkout ? (
-          <p>{lastWorkout.type.toUpperCase()} • 60 mins • {new Date(lastWorkout.date).toLocaleString()}</p>
+          <p>{lastWorkout.type.toUpperCase()} • {durationMins} mins • {new Date(lastWorkout.date).toLocaleString()}</p>
         ) : (
           <p>No workouts yet. Start planning your first session!</p>
         )}
@@ -66,7 +86,10 @@ const Home = () => {
 
       <div className="home-section">
         <h2>📈 Weekly Stats</h2>
-        <p>3 Workouts • Total Volume: 24,300 kg</p>
+        <p>Workouts Completed: {weeklyWorkouts.length}</p>
+        <p>Total Volume: {totalVolume} kg</p>
+        <p>Sets Logged: {totalSets}</p>
+        <p>Total Reps: {totalReps}</p>
       </div>
 
       <div className="home-section" onClick={handleSuggestions}>
