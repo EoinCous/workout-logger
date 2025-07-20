@@ -22,8 +22,8 @@ const WorkoutSummary = () => {
       <BackButton />
       <div className="summary-container">
         <h2 className="workout-title">💪 {workout.type.toUpperCase()} Workout</h2>
-        <p className="workout-meta">Started at: {formattedStartDate}</p>
-        <p className="workout-meta">Completed at: {formattedCompletedDate}</p>
+        <p className="workout-meta">Started: {formattedStartDate}</p>
+        <p className="workout-meta">Completed: {formattedCompletedDate}</p>
         <p className="workout-meta">Duration: {durationMins} minutes</p>
 
         {workout.exercises.map((ex, index) => (

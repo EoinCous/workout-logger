@@ -1,63 +1,87 @@
 import '../css/WorkoutLog.css';
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 
 const WorkoutLog = () => {
-  const { currentPlan, setStatus, addWorkoutToHistory } = useWorkout();
-  const [log, setLog] = useState(
-    currentPlan.exercises.map((exercise) => ({
-      ...exercise,
-      sets: [],
-    }))
-  );
-
+  const { setStatus, currentPlan, currentLog, setCurrentLog, addWorkoutToHistory } = useWorkout();
   const navigate = useNavigate();
 
-  const addSet = (exerciseId) => {
-    const reps = prompt("Enter reps:");
-    const weight = prompt("Enter weight:");
-    if (!reps || !weight) return;
+  const [log, setLog] = useState(() => {
+    if (currentLog) return currentLog;
+    return currentPlan.exercises.map((exercise) => ({
+      ...exercise,
+      sets: [],
+      newReps: "",
+      newWeight: "",
+    }));
+  });
 
-    setLog((prevLog) =>
-      prevLog.map((exercise) =>
-        exercise.id === exerciseId
-          ? { ...exercise, sets: [...exercise.sets, { reps, weight }] }
-          : exercise
+  useEffect(() => {
+    setCurrentLog(log);
+  }, [log, setCurrentLog]);
+
+  const handleInputChange = useCallback((id, field, value) => {
+    setLog(prevLog =>
+      prevLog.map(exercise =>
+        exercise.id === id ? { ...exercise, [field]: value } : exercise
       )
     );
-  };
+  }, []);
+
+  const addSet = useCallback((id) => {
+    setLog(prevLog =>
+      prevLog.map(exercise => {
+        if (exercise.id !== id) return exercise;
+
+        const { newReps, newWeight, sets } = exercise;
+        if (!newReps || !newWeight) return exercise;
+
+        return {
+          ...exercise,
+          sets: [...sets, { reps: newReps, weight: newWeight }],
+          newReps: "",
+          newWeight: "",
+        };
+      })
+    );
+  }, []);
 
   const cancelWorkout = () => {
     setStatus("idle");
+    setCurrentLog(null);
     navigate("/workout");
   };
 
   const completeWorkout = () => {
     const completedWorkout = {
       ...currentPlan,
-      exercises: log.filter((exercise) => exercise.sets.length > 0),
+      exercises: log.filter(exercise => exercise.sets.length > 0),
       completedAt: new Date().toISOString(),
     };
+
     addWorkoutToHistory(completedWorkout);
     setStatus("complete");
+    setCurrentLog(null);
     navigate("/history");
   };
 
-  const hasAnySets = log.some((exercise) => exercise.sets.length > 0);
+  const hasAnySets = log.some(exercise => exercise.sets.length > 0);
 
   return (
     <div className="workout-log">
       <h1>Log Your Sets</h1>
       <p>Workout Type: {currentPlan.type.toUpperCase()}</p>
 
-      {log.map((exercise) => (
-        <div key={exercise.id} className="exercise-log-card">
-          <h3>{exercise.name}</h3>
+      {log.map(({ id, name, sets, newReps, newWeight }) => (
+        <div key={id} className="exercise-log-card">
+          <h3>{name}</h3>
 
           <ul>
-            {exercise.sets.map((set, index) => (
-              <li key={index}>{set.reps} reps @ {set.weight}kg</li>
+            {sets.map((set, index) => (
+              <li key={index}>
+                {set.reps} reps @ {set.weight}kg
+              </li>
             ))}
           </ul>
 
@@ -65,52 +89,23 @@ const WorkoutLog = () => {
             <input
               type="number"
               placeholder="Reps"
-              value={exercise.newReps || ""}
-              onChange={(e) =>
-                setLog((prevLog) =>
-                  prevLog.map((ex) =>
-                    ex.id === exercise.id ? { ...ex, newReps: e.target.value } : ex
-                  )
-                )
-              }
+              value={newReps}
+              onChange={(e) => handleInputChange(id, "newReps", e.target.value)}
             />
             <input
               type="number"
               placeholder="Weight"
-              value={exercise.newWeight || ""}
-              onChange={(e) =>
-                setLog((prevLog) =>
-                  prevLog.map((ex) =>
-                    ex.id === exercise.id ? { ...ex, newWeight: e.target.value } : ex
-                  )
-                )
-              }
+              value={newWeight}
+              onChange={(e) => handleInputChange(id, "newWeight", e.target.value)}
             />
-            <button
-              onClick={() => {
-                const { newReps, newWeight } = exercise;
-                if (!newReps || !newWeight) return;
-                setLog((prevLog) =>
-                  prevLog.map((ex) =>
-                    ex.id === exercise.id
-                      ? {
-                          ...ex,
-                          sets: [...ex.sets, { reps: newReps, weight: newWeight }],
-                          newReps: "",
-                          newWeight: "",
-                        }
-                      : ex
-                  )
-                );
-              }}
-            >
-              ➕
-            </button>
+            <button onClick={() => addSet(id)}>➕</button>
           </div>
         </div>
       ))}
 
-      <button className="cancel-workout-btn" onClick={cancelWorkout}>Cancel Workout</button>
+      <button className="cancel-workout-btn" onClick={cancelWorkout}>
+        Cancel Workout
+      </button>
 
       {hasAnySets && (
         <button className="complete-workout-btn" onClick={completeWorkout}>
