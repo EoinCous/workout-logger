@@ -1,0 +1,47 @@
+.pb-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: var(--colourprimary);
+  color: var(--coloursecondary);
+  min-height: 100vh;
+}
+
+.pb-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: var(--coloursecondary);
+}
+
+.pb-card {
+  background-color: #1e1e1e;
+  border-left: 6px solid var(--colouraccent);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+
+.pb-card:hover {
+  transform: translateY(-2px);
+}
+
+.pb-exercise {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--coloursecondary);
+}
+
+.pb-value {
+  margin: 0.5rem 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--colouraccent);
+}
+
+.pb-date {
+  color: #bbb;
+  font-size: 0.85rem;
+}

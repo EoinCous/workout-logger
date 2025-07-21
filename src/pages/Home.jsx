@@ -11,7 +11,7 @@ const Home = () => {
   const durationMins = Math.round(durationMs / 1000 / 60);
 
   const weeklyWorkouts = workouts.filter(workout => 
-    isThisWeek(parseISO(workout.date))
+    isThisWeek(parseISO(workout.date), { weekStartsOn: 1 })
   );
   const totalVolume = weeklyWorkouts.reduce((total, workout) => {
     return total + workout.exercises.reduce((exTotal, ex) => {
@@ -35,7 +35,7 @@ const Home = () => {
 
   return (
     <div className="home">
-      <h1>Welcome Back</h1>
+      <h1>RepLog</h1>
 
       <div className="home-section" onClick={handleStartWorkout}>
         <h2>🏋️ Today's Workout</h2>
@@ -86,10 +86,16 @@ const Home = () => {
 
       <div className="home-section">
         <h2>📈 Weekly Stats</h2>
-        <p>Workouts Completed: {weeklyWorkouts.length}</p>
-        <p>Total Volume: {totalVolume} kg</p>
-        <p>Sets Logged: {totalSets}</p>
-        <p>Total Reps: {totalReps}</p>
+        {weeklyWorkouts.length === 0 ? (
+          <p>No workouts logged this week. Let's get moving! 💪</p>
+        ) : (
+          <>
+            <p>Workouts Completed: {weeklyWorkouts.length}</p>
+            <p>Total Volume: {totalVolume} kg</p>
+            <p>Sets Logged: {totalSets}</p>
+            <p>Total Reps: {totalReps}</p>
+          </>
+        )}
       </div>
 
       <div className="home-section" onClick={handleSuggestions}>

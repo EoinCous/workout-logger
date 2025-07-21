@@ -38,36 +38,34 @@ const Workout = () => {
       <div>
         {lastWorkout ? (
           <>
-            <h2>Last Workout Summary</h2>
             <div className="last-workout-summary">
-            <h3>Type: {lastWorkout.type}</h3>
+              <h2>Last Workout</h2>
+              <h3>Type: {lastWorkout.type}</h3>
 
-            {lastWorkout.exercises.map((ex) => (
-              <div key={ex.id} className="exercise-summary">
-                <h4>{ex.name}</h4>
-                <ul>
-                  {ex.sets.map((set, index) => (
-                    <li key={index}>
-                      {set.reps} reps @ {set.weight}kg
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              {lastWorkout.exercises.map((ex) => (
+                <div key={ex.id} className="exercise-summary">
+                  <h4>{ex.name}</h4>
+                  <ul>
+                    {ex.sets.map((set, index) => (
+                      <li key={index}>
+                        {set.reps} reps @ {set.weight}kg
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
 
-            <p className="workout-date">
-              Completed on: {new Date(lastWorkout.completedAt).toLocaleDateString()} @{" "}
-              {new Date(lastWorkout.completedAt).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
-
-            
+              <p className="workout-date">
+                Completed on: {new Date(lastWorkout.completedAt).toLocaleDateString()} @{" "}
+                {new Date(lastWorkout.completedAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
             <button className="plan-next-btn" onClick={handlePlanNextWorkout}>
               Plan Next Workout
             </button>
-          </div>
           </> 
         ) : (
           <button onClick={handleStartPlanning}>Plan Your First Workout</button>
