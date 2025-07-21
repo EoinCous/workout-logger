@@ -1,7 +1,7 @@
 import '../css/Home.css'
 import { useNavigate } from 'react-router-dom'
 import { useWorkout } from "../context/WorkoutContext";
-import { isThisWeek, parseISO } from 'date-fns';
+import { isThisWeek, parseISO, isToday } from 'date-fns';
 
 const Home = () => {
   const { status, workouts, getLastWorkout } = useWorkout();
@@ -63,11 +63,15 @@ const Home = () => {
           </div>
         )}
 
-        {status === "complete" && (
+        {status === "complete" && lastWorkout && isToday(parseISO(lastWorkout.date)) ? (
           <div>
             <p>You've completed today's workout! 🎉</p>
           </div>
-        )}
+        ) : status === "complete" ? (
+          <div>
+            <p>Plan today's workout.</p>
+          </div>
+        ) : null}
       </div>
 
       <div className="home-section" onClick={handleViewHistory}>
