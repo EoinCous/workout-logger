@@ -1,5 +1,5 @@
 import '../css/WorkoutLog.css';
-import { useState, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 
@@ -7,27 +7,29 @@ const WorkoutLog = () => {
   const { setStatus, currentPlan, currentLog, setCurrentLog, addWorkoutToHistory } = useWorkout();
   const navigate = useNavigate();
 
-  const [log, setLog] = useState(() => {
-    if (currentLog) return currentLog;
-    return currentPlan.exercises.map((exercise) => ({
-      ...exercise,
-      sets: [],
-      newReps: "",
-      newWeight: "",
-    }));
-  });
+  useEffect(() => {
+    if (!currentLog && currentPlan) {
+      const initializedLog = currentPlan.exercises.map((exercise) => ({
+        ...exercise,
+        sets: [],
+        newReps: "",
+        newWeight: "",
+      }));
+      setCurrentLog(initializedLog);
+    }
+  }, [currentLog, currentPlan, setCurrentLog]);
 
   const handleInputChange = useCallback((id, field, value) => {
-    setLog(prevLog =>
+    setCurrentLog(prevLog =>
       prevLog.map(exercise =>
         exercise.id === id ? { ...exercise, [field]: value } : exercise
       )
     );
-  }, []);
+  }, [setCurrentLog]);
 
   const addSet = useCallback((id) => {
-    setLog(prevLog => {
-      const newLog = prevLog.map(exercise => {
+    setCurrentLog(prevLog => {
+      return prevLog.map(exercise => {
         if (exercise.id !== id) return exercise;
 
         const { newReps, newWeight, sets } = exercise;
@@ -40,9 +42,6 @@ const WorkoutLog = () => {
           newWeight: "",
         };
       });
-
-      setCurrentLog(newLog);
-      return newLog;
     });
   }, [setCurrentLog]);
 
@@ -55,7 +54,7 @@ const WorkoutLog = () => {
   const completeWorkout = () => {
     const completedWorkout = {
       ...currentPlan,
-      exercises: log.filter(exercise => exercise.sets.length > 0),
+      exercises: currentLog.filter(ex => ex.sets.length > 0),
       completedAt: new Date().toISOString(),
     };
 
@@ -65,14 +64,16 @@ const WorkoutLog = () => {
     navigate("/history");
   };
 
-  const hasAnySets = log.some(exercise => exercise.sets.length > 0);
+  const hasAnySets = currentLog.some(exercise => exercise.sets.length > 0);
+
+  if (!currentLog) return <p>Loading workout...</p>;
 
   return (
     <div className="workout-log">
       <h1>Log Your Sets</h1>
       <p>Workout Type: {currentPlan.type.toUpperCase()}</p>
 
-      {log.map(({ id, name, sets, newReps, newWeight }) => (
+      {currentLog.map(({ id, name, sets, newReps, newWeight }) => (
         <div key={id} className="exercise-log-card">
           <h3>{name}</h3>
 
