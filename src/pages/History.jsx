@@ -1,27 +1,24 @@
 import '../css/History.css';
-import { useEffect, useState } from 'react';
+import { useWorkout } from '../context/WorkoutContext';
 import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 
 const History = () => {
-  const [workouts, setWorkouts] = useState([]);
+  const { workouts, removeWorkout } = useWorkout();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('workouts')) || [];
-    const sorted = saved.sort((a, b) => new Date(b.date) - new Date(a.date));
-    setWorkouts(sorted);
-  }, []);
+  const sortedWorkouts = useMemo(() => {
+    return [...workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [workouts]);
 
   const viewWorkout = (date) => {
     navigate(`/workout-summary/${date}`);
   };
 
   const handleDeleteWorkout = (dateToDelete) => {
-    if (!window.confirm("Are you sure you want to delete this workout?")) return;
-
-    const updatedWorkouts = workouts.filter(workout => workout.date !== dateToDelete);
-    localStorage.setItem('workouts', JSON.stringify(updatedWorkouts));
-    setWorkouts(updatedWorkouts);
+    if (window.confirm("Are you sure you want to delete this workout?")) {
+      removeWorkout(dateToDelete)
+    }
   };
 
   return (
@@ -30,7 +27,7 @@ const History = () => {
       {workouts.length === 0 ? (
         <p>No workouts logged yet.</p>
       ) : (
-        workouts.map((workout) => (
+        sortedWorkouts.map((workout) => (
           <div key={workout.date} className="workout-summary-card">
             <h3>{workout.type} — {new Date(workout.date).toLocaleDateString()}</h3>
             <p>{workout.exercises.length} exercises</p>

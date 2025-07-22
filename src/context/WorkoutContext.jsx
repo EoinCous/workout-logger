@@ -34,6 +34,10 @@ export const WorkoutProvider = ({ children }) => {
     setWorkouts(prev => [...prev, workout]);
   };
 
+  const removeWorkout = (dateToDelete) => {
+    setWorkouts(prev => prev.filter(workout => workout.date !== dateToDelete));
+  };
+
   const getLastWorkout = () => {
     return workouts.length > 0 ? workouts[workouts.length - 1] : null;
   };
@@ -48,6 +52,7 @@ export const WorkoutProvider = ({ children }) => {
       setCurrentLog,
       workouts,
       addWorkoutToHistory,
+      removeWorkout,
       getLastWorkout
     }}>
       {children}
