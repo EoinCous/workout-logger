@@ -4,7 +4,7 @@ import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 
 const WorkoutLog = () => {
-  const { setStatus, currentPlan, currentLog, setCurrentLog, addWorkoutToHistory } = useWorkout();
+  const { setStatus, currentPlan, currentLog, setCurrentLog, addWorkout } = useWorkout();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,15 +58,15 @@ const WorkoutLog = () => {
       completedAt: new Date().toISOString(),
     };
 
-    addWorkoutToHistory(completedWorkout);
+    addWorkout(completedWorkout);
     setStatus("complete");
     setCurrentLog(null);
     navigate("/history");
   };
 
-  const hasAnySets = currentLog.some(exercise => exercise.sets.length > 0);
-
   if (!currentLog) return <p>Loading workout...</p>;
+
+  const hasAnySets = currentLog.some(exercise => exercise.sets.length > 0);
 
   return (
     <div className="workout-log">

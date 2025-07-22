@@ -1,0 +1,112 @@
+.weekly-progress-page {
+  background-color: var(--colourprimary);
+  color: var(--coloursecondary);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.weekly-progress-page h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--colouraccent);
+}
+
+.weekly-summary-card {
+  background-color: #1e1e1e;
+  border-left: 5px solid var(--colouraccent);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.weekly-summary-card h2 {
+  margin-bottom: 1rem;
+  color: var(--coloursecondary);
+}
+
+.weekly-summary-card p {
+  margin: 0.3rem 0;
+}
+
+.weekly-goal-section {
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  border-left: 5px solid var(--colouraccent);
+}
+
+.weekly-goal-section h3 {
+  margin-bottom: 0.5rem;
+  color: var(--colouraccent);
+}
+
+.weekly-goal-section progress {
+  width: 100%;
+  height: 1.25rem;
+  margin: 0.5rem 0;
+  appearance: none;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #333;
+  border-radius: 5px;
+}
+
+progress::-webkit-progress-value {
+  background-color: var(--colouraccent);
+  border-radius: 5px;
+}
+
+.goal-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.goal-input input {
+  background-color: #222;
+  color: var(--coloursecondary);
+  border: 1px solid var(--colouraccent);
+  padding: 0.5rem;
+  border-radius: 5px;
+  width: 100px;
+}
+
+.goal-input button {
+  background-color: var(--colouraccent);
+  color: var(--coloursecondary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.goal-input button:hover {
+  background-color: #1565c0;
+}
+
+.workout-breakdown {
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border-left: 5px solid var(--colouraccent);
+}
+
+.workout-breakdown h3 {
+  color: var(--colouraccent);
+  margin-bottom: 1rem;
+}
+
+.workout-breakdown ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.workout-breakdown li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #333;
+}

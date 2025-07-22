@@ -11,6 +11,7 @@ import WorkoutLog from './pages/WorkoutLog'
 import WorkoutSummary from './pages/WorkoutSummary'
 import PersonalBests from './pages/PersonalBests'
 import Suggestions from './pages/Suggestions'
+import WeeklyProgress from './pages/WeeklyProgress'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/personal-bests" element={<PersonalBests />} />
             <Route path="/suggestions" element={<Suggestions />} />
+            <Route path="/weekly-progress" element={<WeeklyProgress />} />
           </Routes>
         </div>
         <BottomNav />

@@ -4,40 +4,23 @@ import { useWorkout } from "../context/WorkoutContext";
 import { isThisWeek, parseISO, isToday } from 'date-fns';
 
 const Home = () => {
-  const { status, workouts, getLastWorkout } = useWorkout();
+  const { status, workouts, getLastWorkout, weeklyGoal } = useWorkout();
 
   const lastWorkout = getLastWorkout();
   const durationMs = new Date(lastWorkout.completedAt) - new Date(lastWorkout.date);
   const durationMins = Math.round(durationMs / 1000 / 60);
 
   const weeklyWorkouts = workouts.filter(workout => 
-    isThisWeek(parseISO(workout.date), { weekStartsOn: 1 })
+      isThisWeek(parseISO(workout.date), { weekStartsOn: 1 })
   );
-  const totalVolume = weeklyWorkouts.reduce((total, workout) => {
-    return total + workout.exercises.reduce((exTotal, ex) => {
-      return exTotal + ex.sets.reduce((setTotal, set) => {
-        return setTotal + set.reps * set.weight;
-      }, 0);
-    }, 0);
-  }, 0);
-  const allSets = weeklyWorkouts.flatMap(workout => 
-    workout.exercises.flatMap(ex => ex.sets)
-  );
-  const totalSets = allSets.length;
-  const totalReps = allSets.reduce((sum, set) => sum + Number(set.reps), 0);
 
   const navigate = useNavigate()
-
-  const handleStartWorkout = () => navigate('/workout')
-  const handleViewHistory = () => navigate('/history')
-  const handleViewPBs = () => navigate('/personal-bests')
-  const handleSuggestions = () => navigate('/suggestions')
 
   return (
     <div className="home">
       <h1>RepLog</h1>
 
-      <div className="home-section" onClick={handleStartWorkout}>
+      <div className="home-section" onClick={() => navigate('/workout')}>
         <h2>🏋️ Today's Workout</h2>
         {status === "idle" && (
           <div>
@@ -74,7 +57,7 @@ const Home = () => {
         ) : null}
       </div>
 
-      <div className="home-section" onClick={handleViewHistory}>
+      <div className="home-section" onClick={() => navigate('/history')}>
         <h2>📅 Most Recent Workout</h2>
         {lastWorkout ? (
           <p>{lastWorkout.type.toUpperCase()} • {durationMins} mins • {new Date(lastWorkout.date).toLocaleString()}</p>
@@ -83,26 +66,24 @@ const Home = () => {
         )}
       </div>
 
-      <div className="home-section" onClick={handleViewPBs}>
+      <div className="home-section" onClick={() => navigate('/personal-bests')}>
         <h2>🏆 Personal Bests</h2>
         <p>Your all-time best lifts</p>
       </div>
 
-      <div className="home-section">
+      <div className="home-section" onClick={() => navigate('/weekly-progress')}>
         <h2>📈 Weekly Stats</h2>
-        {weeklyWorkouts.length === 0 ? (
-          <p>No workouts logged this week. Let's get moving! 💪</p>
+        {weeklyGoal ? (
+          <div>
+          <p>Workouts Completed: {weeklyWorkouts.length} / {weeklyGoal}</p>  
+          <progress max={weeklyGoal} value={weeklyWorkouts.length}></progress>
+        </div>
         ) : (
-          <>
-            <p>Workouts Completed: {weeklyWorkouts.length}</p>
-            <p>Total Volume: {totalVolume} kg</p>
-            <p>Sets Logged: {totalSets}</p>
-            <p>Total Reps: {totalReps}</p>
-          </>
+          <p>Set your weekly goal</p>
         )}
       </div>
 
-      <div className="home-section" onClick={handleSuggestions}>
+      <div className="home-section" onClick={() => navigate('/suggestions')}>
         <h2>💡 Got suggestions?</h2>
         <p>Enter an improvement that could be made to Workout Logger</p>
       </div>

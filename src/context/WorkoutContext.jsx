@@ -23,14 +23,20 @@ export const WorkoutProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [weeklyGoal, setWeeklyGoal] = useState(() => {
+    const saved = localStorage.getItem("weeklyGoal");
+    return saved ? JSON.parse(saved) : null;
+  });
+
   useEffect(() => {
     localStorage.setItem("workoutStatus", status);
     localStorage.setItem("currentPlan", JSON.stringify(currentPlan));
     localStorage.setItem("currentLog", JSON.stringify(currentLog));
     localStorage.setItem("workouts", JSON.stringify(workouts));
-  }, [status, currentPlan, currentLog, workouts]);
+    localStorage.setItem("weeklyGoal", JSON.stringify(weeklyGoal));
+  }, [status, currentPlan, currentLog, workouts, weeklyGoal]);
 
-  const addWorkoutToHistory = (workout) => {
+  const addWorkout = (workout) => {
     setWorkouts(prev => [...prev, workout]);
   };
 
@@ -51,9 +57,11 @@ export const WorkoutProvider = ({ children }) => {
       currentLog,
       setCurrentLog,
       workouts,
-      addWorkoutToHistory,
+      addWorkout,
       removeWorkout,
-      getLastWorkout
+      getLastWorkout,
+      weeklyGoal,
+      setWeeklyGoal
     }}>
       {children}
     </WorkoutContext.Provider>
