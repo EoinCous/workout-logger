@@ -45,6 +45,17 @@ const WorkoutLog = () => {
     });
   }, [setCurrentLog]);
 
+  const removeSet = useCallback((exerciseId, setIndex) => {
+    setCurrentLog(prevLog =>
+      prevLog.map(exercise => {
+        if (exercise.id !== exerciseId) return exercise;
+
+        const newSets = exercise.sets.filter((_, i) => i !== setIndex);
+        return { ...exercise, sets: newSets };
+      })
+    );
+  }, [setCurrentLog]);
+
   const cancelWorkout = () => {
     setStatus("idle");
     setCurrentLog(null);
@@ -81,6 +92,13 @@ const WorkoutLog = () => {
             {sets.map((set, index) => (
               <li key={index}>
                 {set.reps} reps @ {set.weight}kg
+                <button
+                  className="remove-set-btn"
+                  onClick={() => removeSet(id, index)}
+                  aria-label="Remove set"
+                >
+                  ❌
+                </button>
               </li>
             ))}
           </ul>

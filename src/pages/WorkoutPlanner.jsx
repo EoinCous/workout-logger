@@ -70,6 +70,7 @@ const WorkoutPlanner = () => {
 
   const handleClearAll = () => {
     setCurrentPlan({
+      type: workoutType,
       exercises: []
     })
   }
