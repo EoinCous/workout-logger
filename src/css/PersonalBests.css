@@ -7,13 +7,6 @@
   min-height: 100vh;
 }
 
-.pb-title {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
-  color: var(--coloursecondary);
-}
-
 .pb-card {
   background-color: #1e1e1e;
   border-left: 6px solid var(--colouraccent);

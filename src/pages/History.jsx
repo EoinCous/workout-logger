@@ -23,7 +23,7 @@ const History = () => {
 
   return (
     <div>
-      <h1>Workout History</h1>
+      <h1 className='page-title'>📅 History</h1>
       {workouts.length === 0 ? (
         <p>No workouts logged yet.</p>
       ) : (

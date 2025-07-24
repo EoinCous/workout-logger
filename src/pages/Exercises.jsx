@@ -17,7 +17,7 @@ const Exercises = () => {
 
   return (
     <div className="exercises-page">
-      <h1 className="exercises-heading">Exercises</h1>
+      <h1 className="page-title">📋 Exercises</h1>
 
       <div className="filters">
         <input

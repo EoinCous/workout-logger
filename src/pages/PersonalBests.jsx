@@ -38,7 +38,7 @@ const PersonalBests = () => {
 
   return (
     <div className="pb-container">
-      <h2 className="pb-title">🏆 Personal Bests</h2>
+      <h2 className="page-title">🏆 Personal Bests</h2>
       {Object.values(personalBests).map(pb => (
         <div key={pb.exerciseId} className="pb-card">
           <h3 className="pb-exercise">{pb.name}</h3>

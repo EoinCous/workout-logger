@@ -28,7 +28,7 @@ const WeeklyProgress = () => {
 
   return (
     <div className="weekly-progress-page">
-      <h1>📅 Weekly Progress</h1>
+      <h1 className='page-title'>📈 Weekly Progress</h1>
 
       <div className="weekly-summary-card">
         <h2>Summary</h2>

@@ -18,7 +18,7 @@ const Home = () => {
 
   return (
     <div className="home">
-      <h1>RepLog</h1>
+      <h1 className='page-title'>RepLog</h1>
 
       <div className="home-section" onClick={() => navigate('/workout')}>
         <h2>🏋️ Today's Workout</h2>

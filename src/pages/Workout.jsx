@@ -38,6 +38,7 @@ const Workout = () => {
       <div>
         {lastWorkout ? (
           <>
+            <h1 className='page-title'>🏋️ Workout</h1>
             <div className="last-workout-summary">
               <h2>Last Workout</h2>
               <h3>Type: {lastWorkout.type}</h3>
