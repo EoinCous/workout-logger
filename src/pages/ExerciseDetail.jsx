@@ -11,7 +11,7 @@ const ExerciseDetail = () => {
 
   return (
     <div className="exercise-detail">
-      <BackButton />
+      <BackButton page={'/exercises'}/>
       <h1 className='page-title'>{exercise.name}</h1>
       <p><strong>Muscle Group:</strong> {exercise.muscle}</p>
       <p><strong>Equipment:</strong> {exercise.equipment}</p>

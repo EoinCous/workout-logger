@@ -4,7 +4,7 @@ import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 
 const WorkoutLog = () => {
-  const { setStatus, currentPlan, currentLog, setCurrentLog, addWorkout } = useWorkout();
+  const { setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, addWorkout } = useWorkout();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const WorkoutLog = () => {
         if (exercise.id !== id) return exercise;
 
         const { newReps, newWeight, sets } = exercise;
-        if (!newReps || !newWeight) return exercise;
+        if (!isValidInput(newReps) || !isValidInput(newWeight)) return exercise;
 
         return {
           ...exercise,
@@ -44,6 +44,11 @@ const WorkoutLog = () => {
       });
     });
   }, [setCurrentLog]);
+
+  const isValidInput = (value) => {
+    const num = Number(value);
+    return !isNaN(num) && num >= 0;
+  };
 
   const removeSet = useCallback((exerciseId, setIndex) => {
     setCurrentLog(prevLog =>
@@ -72,7 +77,8 @@ const WorkoutLog = () => {
     addWorkout(completedWorkout);
     setStatus("complete");
     setCurrentLog(null);
-    navigate("/history");
+    setCurrentPlan(null);
+    navigate(`/workout-summary/${completedWorkout.date}`);
   };
 
   if (!currentLog) return <p>Loading workout...</p>;
