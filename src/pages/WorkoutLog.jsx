@@ -2,9 +2,10 @@ import '../css/WorkoutLog.css';
 import { useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
+import { getCurrentPBs } from '../utils/pbUtils';
 
 const WorkoutLog = () => {
-  const { setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, addWorkout } = useWorkout();
+  const { setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, addWorkout } = useWorkout();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,6 +74,33 @@ const WorkoutLog = () => {
       exercises: currentLog.filter(ex => ex.sets.length > 0),
       completedAt: new Date().toISOString(),
     };
+
+      const currentPBs = getCurrentPBs(workouts);
+      const newPBs = {};
+
+      completedWorkout.exercises.forEach(exercise => {
+        const existingPB = currentPBs[exercise.id];
+
+        exercise.sets.forEach(set => {
+          const weight = parseFloat(set.weight);
+          const reps = parseInt(set.reps, 10);
+
+          const isBetter =
+            !existingPB ||
+            weight > existingPB.weight ||
+            (weight === existingPB.weight && reps > existingPB.reps);
+
+          if (isBetter) {
+            newPBs[exercise.id] = {
+              name: exercise.name,
+              weight,
+              reps,
+            };
+          }
+        });
+      });
+
+      completedWorkout.personalBests = newPBs;
 
     addWorkout(completedWorkout);
     setStatus("complete");

@@ -9,8 +9,8 @@ export const WorkoutProvider = ({ children }) => {
   });
 
   const [currentPlan, setCurrentPlan] = useState(() => {
-    const savedPlan = localStorage.getItem("currentPlan");
-    return savedPlan ? JSON.parse(savedPlan) : null;
+    const saved = localStorage.getItem("currentPlan");
+    return saved ? JSON.parse(saved) : null;
   });
 
   const [currentLog, setCurrentLog] = useState(() => {

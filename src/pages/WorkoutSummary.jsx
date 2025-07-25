@@ -39,6 +39,19 @@ const WorkoutSummary = () => {
                 </ul>
               </div>
             ))}
+
+            {workout.personalBests && Object.keys(workout.personalBests).length > 0 && (
+              <div className="new-pbs">
+                <h3>🏅 New Personal Bests</h3>
+                <ul>
+                  {Object.values(workout.personalBests).map(personalBest => (
+                    <li key={personalBest.name}>
+                      {personalBest.name}: {personalBest.weight}kg × {personalBest.reps} reps
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
       </div>
     </div>
   );

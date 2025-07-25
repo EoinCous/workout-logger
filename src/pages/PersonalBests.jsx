@@ -1,40 +1,12 @@
 import { useWorkout } from "../context/WorkoutContext";
 import { useMemo } from "react";
+import { getCurrentPBs } from "../utils/pbUtils";
 import "../css/PersonalBests.css";
 
 const PersonalBests = () => {
   const { workouts } = useWorkout();
 
-  const personalBests = useMemo(() => {
-    const pbs = {};
-
-    workouts.forEach(workout => {
-      workout.exercises.forEach(exercise => {
-        exercise.sets.forEach(set => {
-          const weight = parseFloat(set.weight);
-          const reps = parseInt(set.reps, 10);
-          const existing = pbs[exercise.id];
-
-          const isNewPB =
-            !existing ||
-            weight > existing.weight ||
-            (weight === existing.weight && reps > existing.reps);
-
-          if (isNewPB) {
-            pbs[exercise.id] = {
-              exerciseId: exercise.id,
-              name: exercise.name,
-              weight,
-              reps,
-              date: workout.date,
-            };
-          }
-        });
-      });
-    });
-
-    return pbs;
-  }, [workouts]);
+  const personalBests = useMemo(() => getCurrentPBs(workouts), [workouts]);
 
   return (
     <div className="pb-container">
