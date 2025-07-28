@@ -7,8 +7,11 @@ const Home = () => {
   const { status, workouts, getLastWorkout, weeklyGoal } = useWorkout();
 
   const lastWorkout = getLastWorkout();
-  const durationMs = new Date(lastWorkout.completedAt) - new Date(lastWorkout.date);
-  const durationMins = Math.round(durationMs / 1000 / 60);
+
+  const workoutDuration = () => {
+    const durationMs = new Date(lastWorkout.completedAt) - new Date(lastWorkout.date);
+    return Math.round(durationMs / 1000 / 60);
+  }
 
   const weeklyWorkouts = workouts.filter(workout => 
       isThisWeek(parseISO(workout.date), { weekStartsOn: 1 })
@@ -60,7 +63,7 @@ const Home = () => {
       <div className="home-section" onClick={() => navigate('/history')}>
         <h2>📅 Most Recent Workout</h2>
         {lastWorkout ? (
-          <p>{lastWorkout.type.toUpperCase()} • {durationMins} mins • {new Date(lastWorkout.date).toLocaleString()}</p>
+          <p>{lastWorkout.type.toUpperCase()} • {workoutDuration()} mins • {new Date(lastWorkout.date).toLocaleString()}</p>
         ) : (
           <p>No workouts yet. Start planning your first session!</p>
         )}
