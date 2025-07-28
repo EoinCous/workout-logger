@@ -1,20 +1,26 @@
-import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Workout from './pages/Workout'
-import Exercises from './pages/Exercises'
-import History from './pages/History'
-import BottomNav from './components/BottomNav'
-import ExerciseDetail from './pages/ExerciseDetail'
-import { WorkoutProvider } from './context/WorkoutContext'
-import WorkoutPlanner from './pages/WorkoutPlanner'
-import WorkoutLog from './pages/WorkoutLog'
-import WorkoutSummary from './pages/WorkoutSummary'
-import PersonalBests from './pages/PersonalBests'
-import Suggestions from './pages/Suggestions'
-import WeeklyProgress from './pages/WeeklyProgress'
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Workout from './pages/Workout';
+import Exercises from './pages/Exercises';
+import History from './pages/History';
+import BottomNav from './components/BottomNav';
+import ExerciseDetail from './pages/ExerciseDetail';
+import WorkoutPlanner from './pages/WorkoutPlanner';
+import WorkoutLog from './pages/WorkoutLog';
+import WorkoutSummary from './pages/WorkoutSummary';
+import PersonalBests from './pages/PersonalBests';
+import Suggestions from './pages/Suggestions';
+import WeeklyProgress from './pages/WeeklyProgress';
+import { WorkoutProvider } from './context/WorkoutContext';
+import { useAuthentication } from './context/AuthenticationContext';
+import AuthenticationPage from './pages/AuthenticationPage';
 
 function App() {
-  return (
+  const { user, authenticationLoading } = useAuthentication();
+
+  if (authenticationLoading) return <p>Loading...</p>;
+
+  return user ? (
     <WorkoutProvider>
       <div className="app-container">
         <div className="page-content">
@@ -35,7 +41,9 @@ function App() {
         <BottomNav />
       </div>
     </WorkoutProvider>
-  )
+  ) : (
+    <AuthenticationPage />
+  );
 }
 
-export default App
+export default App;
