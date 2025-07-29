@@ -1,8 +1,3 @@
-.workout-log {
-  padding: 1rem;
-  color: #f3f4f6; /* Keeping this slate-100 for good contrast */
-}
-
 .exercise-log-card {
   background-color: #1f2937; /* slate-800 */
   border-radius: 0.75rem;
