@@ -19,6 +19,7 @@ const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
+  const [workoutSaved, setWorkoutSaved] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +28,10 @@ const WorkoutPlanner = () => {
       setSelectedExercises(currentPlan.exercises || []);
     }
   }, [currentPlan]);
+
+  useEffect(() => {
+    setWorkoutSaved(false);
+  }, [workoutType, selectedExercises]);
 
   const filteredExercises = exercises.filter((ex) =>
     WORKOUT_TYPES[workoutType].includes(ex.muscle)
@@ -56,6 +61,7 @@ const WorkoutPlanner = () => {
       date: new Date().toISOString(),
     });
     setStatus("planned");
+    setWorkoutSaved(true);
   };
 
   const handleStartWorkout = () => {
@@ -96,7 +102,7 @@ const WorkoutPlanner = () => {
             onSave={handleSaveWorkout}
             onStart={handleStartWorkout}
             onClearAll={handleClearAll}
-            isDisabled={selectedExercises.length === 0}
+            workoutSaved={workoutSaved}
           />
         </>
       )}

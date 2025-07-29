@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentPBs } from '../utils/pbUtils';
 
 const WorkoutLog = () => {
-  const { setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, addWorkout } = useWorkout();
+  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, addWorkout } = useWorkout();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!currentLog && currentPlan) {
+    if (!currentLog && currentPlan && status === "inProgress") {
       const initializedLog = currentPlan.exercises.map((exercise) => ({
         ...exercise,
         sets: [],
