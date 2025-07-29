@@ -3,6 +3,7 @@ import { useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import { getCurrentPBs } from '../utils/pbUtils';
+import { Link } from 'react-router-dom';
 
 const WorkoutLog = () => {
   const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, addWorkout } = useWorkout();
@@ -120,7 +121,11 @@ const WorkoutLog = () => {
 
       {currentLog.map(({ id, name, sets, newReps, newWeight }) => (
         <div key={id} className="exercise-log-card">
-          <h3>{name}</h3>
+          <h3>
+            <Link to={`/exercise/${id}`} state={{ from: '/workout' }} className="exercise-link">
+              {name} <span className="info-icon">ℹ️</span>
+            </Link>
+          </h3>
 
           <ul>
             {sets.map((set, index) => (

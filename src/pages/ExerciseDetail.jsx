@@ -1,5 +1,5 @@
 import '../css/ExerciseDetail.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import exercisesData from '../data/exercises.json';
 import BackButton from '../components/BackButton';
 import { useWorkout } from '../context/WorkoutContext';
@@ -8,6 +8,8 @@ import { useMemo } from 'react';
 
 const ExerciseDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const previousPage = location.state?.from || 'exercises';
   const { workouts } = useWorkout();
   const exercise = exercisesData.find((ex) => ex.id === id);
 
@@ -60,7 +62,7 @@ const ExerciseDetail = () => {
 
   return (
     <div className="exercise-detail">
-      <BackButton page={'/exercises'} />
+      <BackButton previousPage={previousPage} />
       <h1 className='page-title'>{exercise.name}</h1>
       <p><strong>Muscle Group:</strong> {exercise.muscle}</p>
       <p><strong>Equipment:</strong> {exercise.equipment}</p>

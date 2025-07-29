@@ -19,7 +19,7 @@ const WorkoutSummary = () => {
 
   return (
     <div>
-      <BackButton page={'/history'}/>
+      <BackButton previousPage={'/history'}/>
       <div className="summary-container">
         <h2 className="workout-title">💪 {workout.type.toUpperCase()} Workout</h2>
         <p className="workout-meta">Started: {formattedStartDate}</p>

@@ -6,30 +6,10 @@
   flex-wrap: wrap;
 }
 
-/* Base button style */
-.planner-controls button {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-/* Save button */
-.save-button {
-  background-color: #007bff;
-  color: white;
-}
-
-/* Saved state */
 .save-button.saved {
   background-color: #28a745;
-  cursor: default;
 }
 
-/* Clear All button */
 .clear-button {
   background-color: #dc3545;
   color: white;
