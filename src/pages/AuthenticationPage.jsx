@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useAuthentication } from '../context/AuthenticationContext';
+import { fetchWorkouts } from '../supabase/supabaseWorkoutService';
+import { useWorkout } from '../context/WorkoutContext';
 
 const AuthenticationPage = () => {
-  const { signUp, login } = useAuthentication();
+  const { user, signUp, login } = useAuthentication();
+  const { setWorkouts } = useWorkout();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mode, setMode] = useState('login'); // or 'signup'
+  const [mode, setMode] = useState('login');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -14,6 +17,9 @@ const AuthenticationPage = () => {
     try {
       if (mode === 'login') {
         await login(email, password);
+
+        const workouts = await fetchWorkouts(user.id);
+        setWorkouts(workouts);
       } else {
         await signUp(email, password);
       }

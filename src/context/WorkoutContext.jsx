@@ -57,6 +57,7 @@ export const WorkoutProvider = ({ children }) => {
       currentLog,
       setCurrentLog,
       workouts,
+      setWorkouts,
       addWorkout,
       removeWorkout,
       getLastWorkout,

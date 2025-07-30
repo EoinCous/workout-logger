@@ -28,8 +28,11 @@ export const AuthenticationProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+    if (loginError) {
+      console.error('Login error:', loginError.message);
+      throw loginError;
+    }
   };
 
   const logout = async () => {
