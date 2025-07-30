@@ -3,7 +3,7 @@ import { useAuthentication } from '../context/AuthenticationContext';
 import { fetchWorkouts } from '../supabase/supabaseWorkoutService';
 import { useWorkout } from '../context/WorkoutContext';
 
-const AuthenticationPage = () => {
+const Authentication = () => {
   const { user, signUp, login } = useAuthentication();
   const { setWorkouts } = useWorkout();
   const [email, setEmail] = useState('');
@@ -44,4 +44,4 @@ const AuthenticationPage = () => {
   );
 };
 
-export default AuthenticationPage;
+export default Authentication;

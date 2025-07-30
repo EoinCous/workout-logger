@@ -8,7 +8,7 @@ import { useAuthentication } from '../context/AuthenticationContext';
 import { Link } from 'react-router-dom';
 
 const WorkoutLog = () => {
-  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, addWorkout } = useWorkout();
+  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, setWorkouts, addWorkout } = useWorkout();
   const { user } = useAuthentication();
   const navigate = useNavigate();
 
@@ -109,13 +109,14 @@ const WorkoutLog = () => {
     try {
       await insertWorkout(user.id, completedWorkout);
       const workouts = await fetchWorkouts(user.id);
+      setWorkouts(workouts);
       console.log(workouts);
       console.log("Workout inserted successfully");
     } catch (error) {
       console.error("Failed to insert workout:", error.message);
     }
 
-    addWorkout(completedWorkout);
+    // addWorkout(completedWorkout);
     setStatus("complete");
     setCurrentLog(null);
     setCurrentPlan(null);

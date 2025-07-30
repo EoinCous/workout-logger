@@ -13,7 +13,7 @@ import Suggestions from './pages/Suggestions';
 import WeeklyProgress from './pages/WeeklyProgress';
 import { WorkoutProvider } from './context/WorkoutContext';
 import { useAuthentication } from './context/AuthenticationContext';
-import AuthenticationPage from './pages/AuthenticationPage';
+import Authentication from './pages/Authentication';
 
 function App() {
   const { user, authenticationLoading } = useAuthentication();
@@ -42,7 +42,7 @@ function App() {
       </div>
     </WorkoutProvider>
   ) : (
-    <AuthenticationPage />
+    <Authentication />
   );
 }
 

@@ -11,7 +11,7 @@ const ExerciseDetail = () => {
   const location = useLocation();
   const previousPage = location.state?.from || 'exercises';
   const { workouts } = useWorkout();
-  const exercise = exercisesData.find((ex) => ex.id === id);
+  const exercise = exercisesData.find((exercise) => exercise.id === id);
 
   const chartData = useMemo(() => {
     const dataByDate = {};
@@ -19,13 +19,13 @@ const ExerciseDetail = () => {
     workouts.forEach(workout => {
       const date = new Date(workout.date).toLocaleDateString();
 
-      workout.exercises.forEach(ex => {
-        if (ex.id === id) {
+      workout.exercises.forEach(exercise => {
+        if (exercise.id === id) {
           let totalWeight = 0;
           let totalVolume = 0;
           let count = 0;
 
-          ex.sets.forEach(set => {
+          exercise.sets.forEach(set => {
             const weight = parseFloat(set.weight);
             const reps = parseInt(set.reps, 10);
 
