@@ -6,12 +6,9 @@ import { getCurrentPBs } from '../utils/pbUtils';
 import { fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
 import { useAuthentication } from '../context/AuthenticationContext';
 import { Link } from 'react-router-dom';
-import { fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
-import { useAuthentication } from '../context/AuthenticationContext';
 
 const WorkoutLog = () => {
   const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, addWorkout } = useWorkout();
-  const { user } = useAuthentication();
   const { user } = useAuthentication();
   const navigate = useNavigate();
 

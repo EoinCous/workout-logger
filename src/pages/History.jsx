@@ -2,9 +2,12 @@ import '../css/History.css';
 import { useWorkout } from '../context/WorkoutContext';
 import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
+import { deleteWorkout } from '../supabase/supabaseWorkoutService';
+import { useAuthentication } from '../context/AuthenticationContext';
 
 const History = () => {
   const { workouts, removeWorkout } = useWorkout();
+  const { user } = useAuthentication();
   const navigate = useNavigate();
 
   const sortedWorkouts = useMemo(() => {
@@ -15,9 +18,16 @@ const History = () => {
     navigate(`/workout-summary/${date}`);
   };
 
-  const handleDeleteWorkout = (dateToDelete) => {
+  const handleDeleteWorkout = async (dateToDelete) => {
     if (window.confirm("Are you sure you want to delete this workout?")) {
       removeWorkout(dateToDelete)
+      try {
+        // pass the id that is generated in supabase into delete workout
+        await deleteWorkout(user.id);
+        console.log("Workout deleted successfully");
+      } catch (error) {
+        console.error("Failed to insert workout:", error.message);
+      }
     }
   };
 
