@@ -7,12 +7,22 @@ export const fetchWorkouts = async (userId) => {
     .eq('user_id', userId)
     .order('date', { ascending: false });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    throw error;
+  }
+
+  return data.map((workout) => ({
+    id: workout.id,
+    date: workout.date,
+    type: workout.type,
+    exercises: workout.exercises,
+    personalBests: workout.personal_bests,
+    completedAt: workout.completed_at,
+  }));
 };
 
 export const insertWorkout = async (userId, workout) => {
-  const cleanedExercises = workout.exercises.map(exercise => ({ id: exercise.id, sets: exercise.sets }));
+  const cleanedExercises = formatExercises(workout.exercises);
 
   const { data, error } = await supabase
     .from('workouts')
@@ -42,20 +52,28 @@ export const deleteWorkout = async (userId, id) => {
 };
 
 export const fetchCurrentPlan = async (userId) => {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('current_plan')
-    .select('*')
+    .select('id, date, exercises, type')
     .eq('user_id', userId)
-    .maybeSingle(); // automatically returns null instead of error if no row
+    .maybeSingle();
 
   if (error) throw error;
   return data;
 };
 
-export const upsertCurrentPlan = async (userId) => {
+export const upsertCurrentPlan = async (userId, currentPlan) => {
+  const cleanedExercises = formatExercises(currentPlan.exercises);
+
   const { data, error } = await supabase
     .from('current_plan')
-    .upsert({ data: {...plan}, userId }, { onConflict: ['user_id'] })
+    .upsert(
+      { user_id: userId,
+        date: currentPlan.date,
+        exercises: cleanedExercises,
+        type: currentPlan.type }, 
+      { onConflict: ['user_id'] }
+    )
     .select()
     .single();
 
@@ -66,21 +84,28 @@ export const upsertCurrentPlan = async (userId) => {
 export const fetchWeeklyGoal = async (userId) => {
   const { data, error } = await supabase
     .from('weekly_goal')
-    .select('*')
+    .select('weekly_goal')
     .eq('user_id', userId)
-    .maybeSingle(); // automatically returns null instead of error if no row
+    .maybeSingle();
 
   if (error) throw error;
-  return data;
+  return { weeklyGoal: data.weekly_goal };
 };
 
 export const upsertWeeklyGoal = async (userId, goal) => {
   const { data, error } = await supabase
     .from('weekly_goal')
-    .upsert({ data: {...goal}, userId }, { onConflict: ['user_id'] })
+    .upsert(
+      { user_id: userId, weekly_goal: goal }, 
+      { onConflict: ['user_id'] }
+    )
     .select()
     .single();
 
   if (error) throw error;
   return data;
 };
+
+const formatExercises = (exercises) => {
+  return exercises.map(exercise => ({ id: exercise.id, sets: exercise.sets }));
+}

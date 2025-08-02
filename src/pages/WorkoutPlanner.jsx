@@ -6,6 +6,8 @@ import PlannerControls from "../components/PlannerControls";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import exercises from "../data/exercises.json";
+import { upsertCurrentPlan } from "../supabase/supabaseWorkoutService";
+import { useAuthentication } from "../context/AuthenticationContext";
 
 const WORKOUT_TYPES = {
   push: ["chest", "shoulders", "triceps"],
@@ -17,6 +19,7 @@ const WORKOUT_TYPES = {
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
+  const { user } = useAuthentication();
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
@@ -54,32 +57,54 @@ const WorkoutPlanner = () => {
     setSelectedExercises(updated);
   };
 
-  const handleSaveWorkout = () => {
-    setCurrentPlan({
-      type: workoutType,
-      exercises: selectedExercises,
-      date: new Date().toISOString(),
-    });
-    setStatus("planned");
-    setWorkoutSaved(true);
+  const handleSaveWorkout = async () => {
+    if (!user?.id) {
+      throw new Error("No authenticated user.");
+    }
+    const plan = buildPlan();
+    setCurrentPlan(plan);
+    try {
+      await upsertCurrentPlan(user.id, plan);
+      setStatus("planned");
+      setWorkoutSaved(true);
+    } catch (err) {
+      console.error("Failed to save plan:", err);
+    }
   };
 
-  const handleStartWorkout = () => {
-    setCurrentPlan({
-      type: workoutType,
-      exercises: selectedExercises,
-      date: new Date().toISOString(),
-    });
-    setStatus("inProgress");
-    navigate("/workout-log");
+  const handleStartWorkout = async () => {
+    if (!user?.id) {
+      throw new Error("No authenticated user.");
+    }
+    const plan = buildPlan();
+    setCurrentPlan(plan);
+    try {
+      await upsertCurrentPlan(user.id, plan);
+      setStatus("inProgress");
+      navigate("/workout-log");
+    } catch (err) {
+      console.error("Failed to start workout:", err);
+    }
   };
 
-  const handleClearAll = () => {
-    setCurrentPlan({
-      type: workoutType,
-      exercises: []
-    })
+  const handleClearAll = async () => {
+    if (!user?.id) {
+      throw new Error("No authenticated user.");
+    }
+    const plan = { type: workoutType, exercises: [], date: new Date().toISOString() };
+    setCurrentPlan(plan);
+    try {
+    await upsertCurrentPlan(user.id, plan);
+    } catch (err) {
+      console.error("Failed to clear plan:", err);
+    }
   }
+
+  const buildPlan = () => ({
+    type: workoutType,
+    exercises: selectedExercises,
+    date: new Date().toISOString(),
+  });
 
   return (
     <div className="planner-container">

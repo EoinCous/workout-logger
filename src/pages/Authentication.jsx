@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useAuthentication } from '../context/AuthenticationContext';
-import { fetchWorkouts } from '../supabase/supabaseWorkoutService';
+import { fetchCurrentPlan, fetchWeeklyGoal, fetchWorkouts } from '../supabase/supabaseWorkoutService';
 import { useWorkout } from '../context/WorkoutContext';
 
 const Authentication = () => {
   const { user, signUp, login } = useAuthentication();
-  const { setWorkouts } = useWorkout();
+  const { setCurrentPlan, setWorkouts, setWeeklyGoal } = useWorkout();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('login');
@@ -16,10 +16,31 @@ const Authentication = () => {
     setError('');
     try {
       if (mode === 'login') {
-        await login(email, password);
+        // attempt login
+        const result = await login(email, password);
+        
+        // try to get session from login result, otherwise fetch it explicitly
+        let userId = result?.data?.session?.user?.id;
+        if (!userId) {
+          const {
+            data: { session },
+            error: sessionError,
+          } = await supabase.auth.getSession();
+          if (sessionError) throw sessionError;
+          userId = session?.user?.id;
+        }
 
-        const workouts = await fetchWorkouts(user.id);
-        setWorkouts(workouts);
+        if (!userId) throw new Error("Failed to get user after login");
+
+        const [workoutsData, currentPlanData, weeklyGoalData] = await Promise.all([
+          fetchWorkouts(userId),
+          fetchCurrentPlan(userId),
+          fetchWeeklyGoal(userId),
+        ]);
+
+        setWorkouts(workoutsData || []);
+        setCurrentPlan(currentPlanData || null);
+        setWeeklyGoal(weeklyGoalData);
       } else {
         await signUp(email, password);
       }

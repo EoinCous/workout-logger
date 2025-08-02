@@ -3,12 +3,12 @@ import { useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import { getCurrentPBs } from '../utils/pbUtils';
-import { fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
+import { fetchWorkouts, insertWorkout, upsertCurrentPlan } from '../supabase/supabaseWorkoutService';
 import { useAuthentication } from '../context/AuthenticationContext';
 import { Link } from 'react-router-dom';
 
 const WorkoutLog = () => {
-  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, setWorkouts, addWorkout } = useWorkout();
+  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, setWorkouts } = useWorkout();
   const { user } = useAuthentication();
   const navigate = useNavigate();
 
@@ -79,48 +79,46 @@ const WorkoutLog = () => {
       completedAt: new Date().toISOString()
     };
 
-    const currentPBs = getCurrentPBs(workouts);
-    const newPBs = {};
+    // const currentPBs = getCurrentPBs(workouts);
+    // const newPBs = {};
 
-    completedWorkout.exercises.forEach(exercise => {
-      const existingPB = currentPBs[exercise.id];
+    // completedWorkout.exercises.forEach(exercise => {
+    //   const existingPB = currentPBs[exercise.id];
 
-      exercise.sets.forEach(set => {
-        const weight = parseFloat(set.weight);
-        const reps = parseInt(set.reps, 10);
+    //   exercise.sets.forEach(set => {
+    //     const weight = parseFloat(set.weight);
+    //     const reps = parseInt(set.reps, 10);
 
-        const isBetter =
-          !existingPB ||
-          weight > existingPB.weight ||
-          (weight === existingPB.weight && reps > existingPB.reps);
+    //     const isBetter =
+    //       !existingPB ||
+    //       weight > existingPB.weight ||
+    //       (weight === existingPB.weight && reps > existingPB.reps);
 
-        if (isBetter) {
-          newPBs[exercise.id] = {
-            name: exercise.name,
-            weight,
-            reps,
-          };
-        }
-      });
-    });
+    //     if (isBetter) {
+    //       newPBs[exercise.id] = {
+    //         name: exercise.name,
+    //         weight,
+    //         reps,
+    //       };
+    //     }
+    //   });
+    // });
 
-    completedWorkout.personalBests = newPBs;
+    // completedWorkout.personalBests = newPBs;
 
     try {
-      await insertWorkout(user.id, completedWorkout);
-      const workouts = await fetchWorkouts(user.id);
-      setWorkouts(workouts);
-      console.log(workouts);
-      console.log("Workout inserted successfully");
-    } catch (error) {
-      console.error("Failed to insert workout:", error.message);
-    }
+      const insertedWorkout = await insertWorkout(user.id, completedWorkout);
+      navigate(`/workout-summary/${insertedWorkout.id}`, { state: { workout: insertedWorkout } });
 
-    // addWorkout(completedWorkout);
-    setStatus("complete");
-    setCurrentLog(null);
-    setCurrentPlan(null);
-    navigate(`/workout-summary/${completedWorkout.date}`);
+      const fetchedWorkouts = await fetchWorkouts(user.id);
+      setWorkouts(fetchedWorkouts);
+      await upsertCurrentPlan(user.id, null);
+      setCurrentPlan(null);
+      setStatus("complete");
+      setCurrentLog(null);
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   if (!currentLog) return <p>Loading workout...</p>;
