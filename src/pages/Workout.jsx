@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWorkout } from "../context/WorkoutContext";
 import { WORKOUT_STATUS } from "../constants/workoutStatus";
+import { hydrateExercises } from '../utils/exerciseUtils';
 
 const Workout = () => {
   const {
@@ -43,7 +44,7 @@ const Workout = () => {
               <h2>Last Workout</h2>
               <h3>Type: {lastWorkout.type}</h3>
 
-              {lastWorkout.exercises.map((ex) => (
+              {hydrateExercises(lastWorkout.exercises).map((ex) => (
                 <div key={ex.id} className="exercise-summary">
                   <h4>{ex.name}</h4>
                   <ul>
@@ -64,12 +65,17 @@ const Workout = () => {
                 })}
               </p>
             </div>
-            <button className="plan-next-btn" onClick={handlePlanNextWorkout}>
+            <button className="plan-btn" onClick={handlePlanNextWorkout}>
               Plan Next Workout
             </button>
           </> 
         ) : (
-          <button onClick={handleStartPlanning}>Plan Your First Workout</button>
+          <div>
+            <h1 className='page-title'>🏋️ Workout</h1>
+            <button className="plan-btn" onClick={handleStartPlanning}>
+              Plan Your First Workout
+            </button>
+          </div>
         )}
       </div>
     );

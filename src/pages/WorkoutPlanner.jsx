@@ -6,6 +6,9 @@ import PlannerControls from "../components/PlannerControls";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import exercises from "../data/exercises.json";
+import { upsertCurrentPlan } from "../supabase/supabaseWorkoutService";
+import { useAuthentication } from "../context/AuthenticationContext";
+import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 
 const WORKOUT_TYPES = {
   push: ["chest", "shoulders", "triceps"],
@@ -17,6 +20,7 @@ const WORKOUT_TYPES = {
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
+  const { userId, logout } = useAuthentication();
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
@@ -54,32 +58,49 @@ const WorkoutPlanner = () => {
     setSelectedExercises(updated);
   };
 
-  const handleSaveWorkout = () => {
-    setCurrentPlan({
-      type: workoutType,
-      exercises: selectedExercises,
-      date: new Date().toISOString(),
-    });
-    setStatus("planned");
+  const handleSaveWorkout = async () => {
+    const plan = buildPlan();
     setWorkoutSaved(true);
+    setCurrentPlan(plan);
+    try {
+      await upsertCurrentPlan(userId, plan);
+      setStatus("planned");
+    } catch (err) {
+      setWorkoutSaved(false);
+      handleSupabaseAuthError(err, logout);
+      console.error("Failed to save plan:", err);
+    }
   };
 
-  const handleStartWorkout = () => {
-    setCurrentPlan({
-      type: workoutType,
-      exercises: selectedExercises,
-      date: new Date().toISOString(),
-    });
-    setStatus("inProgress");
-    navigate("/workout-log");
+  const handleStartWorkout = async () => {
+    const plan = buildPlan();
+    setCurrentPlan(plan);
+    try {
+      await upsertCurrentPlan(userId, plan);
+      setStatus("inProgress");
+      navigate("/workout-log");
+    } catch (err) {
+      handleSupabaseAuthError(err, logout);
+      console.error("Failed to start workout:", err);
+    }
   };
 
-  const handleClearAll = () => {
-    setCurrentPlan({
-      type: workoutType,
-      exercises: []
-    })
+  const handleClearAll = async () => {
+    const plan = { type: workoutType, exercises: [], date: new Date().toISOString() };
+    setCurrentPlan(plan);
+    try {
+    await upsertCurrentPlan(userId, plan);
+    } catch (err) {
+      handleSupabaseAuthError(err, logout);
+      console.error("Failed to clear plan:", err);
+    }
   }
+
+  const buildPlan = () => ({
+    type: workoutType,
+    exercises: selectedExercises,
+    date: new Date().toISOString(),
+  });
 
   return (
     <div className="planner-container">

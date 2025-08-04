@@ -2,10 +2,13 @@ import '../css/WeeklyProgress.css';
 import { useState } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { isThisWeek, parseISO } from 'date-fns';
+import { upsertWeeklyGoal } from '../supabase/supabaseWorkoutService';
+import { useAuthentication } from '../context/AuthenticationContext';
 
 const WeeklyProgress = () => {
   const { workouts, setWeeklyGoal, weeklyGoal } = useWorkout();
   const [newGoal, setNewGoal] = useState(weeklyGoal || "");
+  const { userId } = useAuthentication();
 
   const weeklyWorkouts = workouts.filter(workout =>
     isThisWeek(parseISO(workout.date), { weekStartsOn: 1 })
@@ -25,6 +28,17 @@ const WeeklyProgress = () => {
 
   const totalSets = allSets.length;
   const totalReps = allSets.reduce((sum, set) => sum + Number(set.reps), 0);
+
+  const updateGoal = async () => {
+    if (newGoal === weeklyGoal) return;
+
+    try {
+      await upsertWeeklyGoal(userId, newGoal);
+      setWeeklyGoal(newGoal);
+    } catch (e) {
+      console.error("Failed to upsert weekly goal:", e);
+    }
+  }
 
   return (
     <div className="weekly-progress-page">
@@ -48,9 +62,10 @@ const WeeklyProgress = () => {
             type="number"
             placeholder="Set new goal"
             value={newGoal}
+            max={7}
             onChange={(e) => setNewGoal(Number(e.target.value))}
           />
-          <button onClick={() => setWeeklyGoal(newGoal)}>Update Goal</button>
+          <button onClick={updateGoal}>Update Goal</button>
         </div>
       </div>
 

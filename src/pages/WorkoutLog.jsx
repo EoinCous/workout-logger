@@ -2,11 +2,14 @@ import '../css/WorkoutLog.css';
 import { useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
-import { getCurrentPBs } from '../utils/pbUtils';
+import { clearCurrentPlan, fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
+import { useAuthentication } from '../context/AuthenticationContext';
 import { Link } from 'react-router-dom';
+import { handleSupabaseAuthError } from '../utils/authErrorHandler';
 
 const WorkoutLog = () => {
-  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, addWorkout } = useWorkout();
+  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, setWorkouts } = useWorkout();
+  const { userId, logout } = useAuthentication();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,45 +72,29 @@ const WorkoutLog = () => {
     navigate("/workout");
   };
 
-  const completeWorkout = () => {
+  const completeWorkout = async () => {
     const completedWorkout = {
       ...currentPlan,
       exercises: currentLog.filter(ex => ex.sets.length > 0),
-      completedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString()
     };
+    
+    try {
+      await insertWorkout(userId, completedWorkout);
 
-      const currentPBs = getCurrentPBs(workouts);
-      const newPBs = {};
+      const fetchedWorkouts = await fetchWorkouts(userId);
+      setWorkouts(fetchedWorkouts);
 
-      completedWorkout.exercises.forEach(exercise => {
-        const existingPB = currentPBs[exercise.id];
+      await clearCurrentPlan(userId);
+      setCurrentPlan(null);
+      setStatus("complete");
+      setCurrentLog(null);
 
-        exercise.sets.forEach(set => {
-          const weight = parseFloat(set.weight);
-          const reps = parseInt(set.reps, 10);
-
-          const isBetter =
-            !existingPB ||
-            weight > existingPB.weight ||
-            (weight === existingPB.weight && reps > existingPB.reps);
-
-          if (isBetter) {
-            newPBs[exercise.id] = {
-              name: exercise.name,
-              weight,
-              reps,
-            };
-          }
-        });
-      });
-
-      completedWorkout.personalBests = newPBs;
-
-    addWorkout(completedWorkout);
-    setStatus("complete");
-    setCurrentLog(null);
-    setCurrentPlan(null);
-    navigate(`/workout-summary/${completedWorkout.date}`);
+      navigate(`/workout-summary`, { state: { workout: completedWorkout } });
+    } catch (error) {
+      handleSupabaseAuthError(err, logout);
+      console.error(error);
+    }
   };
 
   if (!currentLog) return <p>Loading workout...</p>;
@@ -117,7 +104,7 @@ const WorkoutLog = () => {
   return (
     <div className="workout-log">
       <h1>Log Your Sets</h1>
-      <p>Workout Type: {currentPlan.type.toUpperCase()}</p>
+      <p>Workout Type: {currentPlan?.type?.toUpperCase() ?? "Unknown"}</p>
 
       {currentLog.map(({ id, name, sets, newReps, newWeight }) => (
         <div key={id} className="exercise-log-card">
