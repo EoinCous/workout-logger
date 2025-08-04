@@ -21,7 +21,7 @@ const BottomNav = () => {
         <p>History</p>
       </NavLink>
       <NavLink to="/profile" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
-        <span role="img" aria-label="profile">📅</span>
+        <span role="img" aria-label="profile">👤</span>
         <p>Profile</p>
       </NavLink>
     </nav>

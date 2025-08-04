@@ -98,7 +98,8 @@ export const fetchWeeklyGoal = async (userId) => {
     .maybeSingle();
 
   if (error) throw error;
-  return { weeklyGoal: data.weekly_goal };
+  const weeklyGoal = { weeklyGoal: data?.weekly_goal }
+  return weeklyGoal.weeklyGoal;
 };
 
 export const upsertWeeklyGoal = async (userId, goal) => {

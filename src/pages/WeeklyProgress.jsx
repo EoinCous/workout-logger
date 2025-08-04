@@ -54,8 +54,8 @@ const WeeklyProgress = () => {
 
       <div className="weekly-goal-section">
         <h3>🎯 Weekly Workout Goal</h3>
-        <p>{weeklyWorkouts.length} / {weeklyGoal || "?"}</p>
-        <progress max={weeklyGoal || 1} value={weeklyWorkouts.length}></progress>
+        <p>{weeklyWorkouts.length} / {weeklyGoal.weeklyGoal || "?"}</p>
+        <progress max={weeklyGoal.weeklyGoal || 1} value={weeklyWorkouts.length}></progress>
 
         <div className="goal-input">
           <input

@@ -78,7 +78,8 @@ const WorkoutLog = () => {
       exercises: currentLog.filter(ex => ex.sets.length > 0),
       completedAt: new Date().toISOString()
     };
-    
+
+    navigate(`/workout-summary`, { state: { workout: completedWorkout } });
     try {
       await insertWorkout(userId, completedWorkout);
 
@@ -89,11 +90,10 @@ const WorkoutLog = () => {
       setCurrentPlan(null);
       setStatus("complete");
       setCurrentLog(null);
-
-      navigate(`/workout-summary`, { state: { workout: completedWorkout } });
     } catch (error) {
       handleSupabaseAuthError(err, logout);
       console.error(error);
+      navigate('/workout-log');
     }
   };
 

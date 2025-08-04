@@ -3,6 +3,7 @@ import { useAuthentication } from '../context/AuthenticationContext';
 import { fetchCurrentPlan, fetchWeeklyGoal, fetchWorkouts } from '../supabase/supabaseWorkoutService';
 import { useWorkout } from '../context/WorkoutContext';
 import '../css/Authentication.css';
+import { useNavigate } from 'react-router-dom';
 
 const Authentication = () => {
   const { signUp, login } = useAuthentication();
@@ -11,6 +12,7 @@ const Authentication = () => {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('login');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,13 +36,15 @@ const Authentication = () => {
 
         setWorkouts(workoutsData || []);
         setCurrentPlan(currentPlanData || null);
-        setWeeklyGoal(weeklyGoalData);
+        setWeeklyGoal(weeklyGoalData || null);
+
+        navigate('/')
       } else {
         await signUp(email, password);
         alert(`We’ve sent a verification link to ${email}. Please open your inbox and click the link to confirm your email.`)
       }
     } catch (err) {
-      setError(err || 'Something went wrong.');
+      console.error(err || 'Something went wrong.');
     }
   };
 

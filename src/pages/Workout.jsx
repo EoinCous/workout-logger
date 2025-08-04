@@ -58,7 +58,7 @@ const Workout = () => {
               ))}
 
               <p className="workout-date">
-                Completed on: {new Date(lastWorkout.completedAt).toLocaleDateString()} @{" "}
+                Completed: {new Date(lastWorkout.completedAt).toLocaleDateString()} @{" "}
                 {new Date(lastWorkout.completedAt).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",

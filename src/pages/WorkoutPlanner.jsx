@@ -77,11 +77,12 @@ const WorkoutPlanner = () => {
     setCurrentPlan(plan);
     try {
       await upsertCurrentPlan(userId, plan);
-      setStatus("inProgress");
       navigate("/workout-log");
+      setStatus("inProgress");
     } catch (err) {
       handleSupabaseAuthError(err, logout);
       console.error("Failed to start workout:", err);
+      navigate('workout-planner')
     }
   };
 
