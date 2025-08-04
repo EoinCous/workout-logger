@@ -1,12 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import '../css/WorkoutSummary.css';
 import BackButton from '../components/BackButton';
-import exercisesData from '../data/exercises.json';
-
-const exerciseById = exercisesData.reduce((acc, ex) => {
-  acc[ex.id] = ex;
-  return acc;
-}, {});
+import { hydrateExercises } from '../utils/exerciseUtils';
 
 const WorkoutSummary = () => {
   const location = useLocation();
@@ -21,13 +16,7 @@ const WorkoutSummary = () => {
   const durationMs = new Date(workout.completedAt) - new Date(workout.date);
   const durationMins = Math.round(durationMs / 1000 / 60);
 
-  const hydratedExercises = workout.exercises.map(exercise => {
-    return {
-      id: exercise.id,
-      sets: exercise.sets,
-      ...exerciseById[exercise.id]
-    }
-  })
+  const hydratedExercises = hydrateExercises(workout.exercises);
 
   return (
     <div>

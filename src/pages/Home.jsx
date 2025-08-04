@@ -78,7 +78,7 @@ const Home = () => {
         <h2>📈 Weekly Stats</h2>
         {weeklyGoal ? (
           <div>
-          <p>Workouts Completed: {weeklyWorkouts.length} / {weeklyGoal}</p>  
+          <p>Workouts Completed: {weeklyWorkouts.length} / {weeklyGoal.weeklyGoal}</p>  
           <progress max={weeklyGoal} value={weeklyWorkouts.length}></progress>
         </div>
         ) : (

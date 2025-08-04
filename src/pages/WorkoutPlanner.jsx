@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import exercises from "../data/exercises.json";
 import { upsertCurrentPlan } from "../supabase/supabaseWorkoutService";
 import { useAuthentication } from "../context/AuthenticationContext";
+import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 
 const WORKOUT_TYPES = {
   push: ["chest", "shoulders", "triceps"],
@@ -19,7 +20,7 @@ const WORKOUT_TYPES = {
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
-  const { user } = useAuthentication();
+  const { userId, logout } = useAuthentication();
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
@@ -58,44 +59,39 @@ const WorkoutPlanner = () => {
   };
 
   const handleSaveWorkout = async () => {
-    if (!user?.id) {
-      throw new Error("No authenticated user.");
-    }
     const plan = buildPlan();
+    setWorkoutSaved(true);
     setCurrentPlan(plan);
     try {
-      await upsertCurrentPlan(user.id, plan);
+      await upsertCurrentPlan(userId, plan);
       setStatus("planned");
-      setWorkoutSaved(true);
     } catch (err) {
+      setWorkoutSaved(false);
+      handleSupabaseAuthError(err, logout);
       console.error("Failed to save plan:", err);
     }
   };
 
   const handleStartWorkout = async () => {
-    if (!user?.id) {
-      throw new Error("No authenticated user.");
-    }
     const plan = buildPlan();
     setCurrentPlan(plan);
     try {
-      await upsertCurrentPlan(user.id, plan);
+      await upsertCurrentPlan(userId, plan);
       setStatus("inProgress");
       navigate("/workout-log");
     } catch (err) {
+      handleSupabaseAuthError(err, logout);
       console.error("Failed to start workout:", err);
     }
   };
 
   const handleClearAll = async () => {
-    if (!user?.id) {
-      throw new Error("No authenticated user.");
-    }
     const plan = { type: workoutType, exercises: [], date: new Date().toISOString() };
     setCurrentPlan(plan);
     try {
-    await upsertCurrentPlan(user.id, plan);
+    await upsertCurrentPlan(userId, plan);
     } catch (err) {
+      handleSupabaseAuthError(err, logout);
       console.error("Failed to clear plan:", err);
     }
   }

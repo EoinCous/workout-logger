@@ -54,7 +54,7 @@ export const deleteWorkout = async (userId, id) => {
 export const fetchCurrentPlan = async (userId) => {
   const { data, error } = await supabase
     .from('current_plan')
-    .select('id, date, exercises, type')
+    .select('date, exercises, type')
     .eq('user_id', userId)
     .maybeSingle();
 
@@ -80,6 +80,15 @@ export const upsertCurrentPlan = async (userId, currentPlan) => {
   if (error) throw error;
   return data;
 };
+
+export const clearCurrentPlan = async (userId) => {
+  const { error } = await supabase
+      .from('current_plan')
+      .delete()
+      .eq('user_id', userId);
+
+    if (error) throw error;
+}
 
 export const fetchWeeklyGoal = async (userId) => {
   const { data, error } = await supabase

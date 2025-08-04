@@ -2,14 +2,14 @@ import '../css/WorkoutLog.css';
 import { useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
-import { getCurrentPBs } from '../utils/pbUtils';
-import { fetchWorkouts, insertWorkout, upsertCurrentPlan } from '../supabase/supabaseWorkoutService';
+import { clearCurrentPlan, fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
 import { useAuthentication } from '../context/AuthenticationContext';
 import { Link } from 'react-router-dom';
+import { handleSupabaseAuthError } from '../utils/authErrorHandler';
 
 const WorkoutLog = () => {
-  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, setWorkouts } = useWorkout();
-  const { user } = useAuthentication();
+  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, setWorkouts } = useWorkout();
+  const { userId, logout } = useAuthentication();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,46 +78,22 @@ const WorkoutLog = () => {
       exercises: currentLog.filter(ex => ex.sets.length > 0),
       completedAt: new Date().toISOString()
     };
-
-    // const currentPBs = getCurrentPBs(workouts);
-    // const newPBs = {};
-
-    // completedWorkout.exercises.forEach(exercise => {
-    //   const existingPB = currentPBs[exercise.id];
-
-    //   exercise.sets.forEach(set => {
-    //     const weight = parseFloat(set.weight);
-    //     const reps = parseInt(set.reps, 10);
-
-    //     const isBetter =
-    //       !existingPB ||
-    //       weight > existingPB.weight ||
-    //       (weight === existingPB.weight && reps > existingPB.reps);
-
-    //     if (isBetter) {
-    //       newPBs[exercise.id] = {
-    //         name: exercise.name,
-    //         weight,
-    //         reps,
-    //       };
-    //     }
-    //   });
-    // });
-
-    // completedWorkout.personalBests = newPBs;
-
+    
     try {
-      const insertedWorkout = await insertWorkout(user.id, completedWorkout);
-      navigate(`/workout-summary/${insertedWorkout.id}`, { state: { workout: insertedWorkout } });
+      await insertWorkout(userId, completedWorkout);
 
-      const fetchedWorkouts = await fetchWorkouts(user.id);
+      const fetchedWorkouts = await fetchWorkouts(userId);
       setWorkouts(fetchedWorkouts);
-      await upsertCurrentPlan(user.id, null);
+
+      await clearCurrentPlan(userId);
       setCurrentPlan(null);
       setStatus("complete");
       setCurrentLog(null);
+
+      navigate(`/workout-summary`, { state: { workout: completedWorkout } });
     } catch (error) {
-      console.error(error.message);
+      handleSupabaseAuthError(err, logout);
+      console.error(error);
     }
   };
 
@@ -128,7 +104,7 @@ const WorkoutLog = () => {
   return (
     <div className="workout-log">
       <h1>Log Your Sets</h1>
-      <p>Workout Type: {currentPlan.type.toUpperCase()}</p>
+      <p>Workout Type: {currentPlan?.type?.toUpperCase() ?? "Unknown"}</p>
 
       {currentLog.map(({ id, name, sets, newReps, newWeight }) => (
         <div key={id} className="exercise-log-card">
