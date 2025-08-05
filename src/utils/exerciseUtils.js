@@ -6,6 +6,8 @@ const exerciseById = exercisesData.reduce((acc, ex) => {
 }, {});
 
 export const hydrateExercises = (exercises) => {
+    if (!Array.isArray(exercises)) return [];
+    
     return exercises.map(exercise => {
         return {
             id: exercise.id,

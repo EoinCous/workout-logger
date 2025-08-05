@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import WorkoutTypeSelector from "../components/WorkoutTypeSelector";
 import ExerciseList from "../components/ExerciseList";
 import SelectedExerciseList from "../components/SelectedExerciseList";
@@ -9,6 +9,7 @@ import exercises from "../data/exercises.json";
 import { upsertCurrentPlan } from "../supabase/supabaseWorkoutService";
 import { useAuthentication } from "../context/AuthenticationContext";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
+import { hydrateExercises } from "../utils/exerciseUtils";
 
 const WORKOUT_TYPES = {
   push: ["chest", "shoulders", "triceps"],
@@ -24,17 +25,23 @@ const WorkoutPlanner = () => {
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
+  const isHydrating = useRef(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (currentPlan) {
+      isHydrating.current = true;
       setWorkoutType(currentPlan.type || "push");
-      setSelectedExercises(currentPlan.exercises || []);
+      setSelectedExercises(hydrateExercises(currentPlan.exercises) || []);
     }
   }, [currentPlan]);
 
   useEffect(() => {
-    setWorkoutSaved(false);
+    if (isHydrating.current) {
+      isHydrating.current = false;
+    } else {
+      setWorkoutSaved(false);
+    }
   }, [workoutType, selectedExercises]);
 
   const filteredExercises = exercises.filter((ex) =>
@@ -66,9 +73,9 @@ const WorkoutPlanner = () => {
       await upsertCurrentPlan(userId, plan);
       setStatus("planned");
     } catch (err) {
+      console.error("Failed to save plan:", err);
       setWorkoutSaved(false);
       handleSupabaseAuthError(err, logout);
-      console.error("Failed to save plan:", err);
     }
   };
 

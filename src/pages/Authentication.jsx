@@ -28,6 +28,8 @@ const Authentication = () => {
         const userId = result.user.id;
         if (!userId) throw new Error("Failed to get user after login");
 
+        navigate('/');
+
         const [workoutsData, currentPlanData, weeklyGoalData] = await Promise.all([
           fetchWorkouts(userId),
           fetchCurrentPlan(userId),
@@ -37,8 +39,6 @@ const Authentication = () => {
         setWorkouts(workoutsData || []);
         setCurrentPlan(currentPlanData || null);
         setWeeklyGoal(weeklyGoalData || null);
-
-        navigate('/')
       } else {
         await signUp(email, password);
         alert(`We’ve sent a verification link to ${email}. Please open your inbox and click the link to confirm your email.`)
