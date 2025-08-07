@@ -112,6 +112,7 @@ const WorkoutPlanner = () => {
 
   return (
     <div className="planner-container">
+      <h1 className="page-title">Plan Workout</h1>
       <WorkoutTypeSelector value={workoutType} onChange={setWorkoutType} />
       <ExerciseList 
         exercises={filteredExercises} 

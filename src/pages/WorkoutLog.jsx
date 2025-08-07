@@ -6,9 +6,10 @@ import { clearCurrentPlan, fetchWorkouts, insertWorkout } from '../supabase/supa
 import { useAuthentication } from '../context/AuthenticationContext';
 import { Link } from 'react-router-dom';
 import { handleSupabaseAuthError } from '../utils/authErrorHandler';
+import { getCurrentPBs } from '../utils/pbUtils';
 
 const WorkoutLog = () => {
-  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, setWorkouts } = useWorkout();
+  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, setWorkouts } = useWorkout();
   const { userId, logout } = useAuthentication();
   const navigate = useNavigate();
 
@@ -38,11 +39,13 @@ const WorkoutLog = () => {
         if (exercise.id !== id) return exercise;
 
         const { newReps, newWeight, sets } = exercise;
-        if (!isValidInput(newReps) || !isValidInput(newWeight)) return exercise;
+
+        if (!isValidInput(newReps)) return exercise;
+        const validWeight = isValidInput(newWeight) ? newWeight : "0";
 
         return {
           ...exercise,
-          sets: [...sets, { reps: newReps, weight: newWeight }],
+          sets: [...sets, { reps: newReps, weight: validWeight }],
           newReps: "",
           newWeight: "",
         };
@@ -51,6 +54,7 @@ const WorkoutLog = () => {
   }, [setCurrentLog]);
 
   const isValidInput = (value) => {
+    if (value === "") return false;
     const num = Number(value);
     return !isNaN(num) && num >= 0;
   };
@@ -78,8 +82,10 @@ const WorkoutLog = () => {
       exercises: currentLog.filter(ex => ex.sets.length > 0),
       completedAt: new Date().toISOString()
     };
-
+    const personalBests = newPersonalBests(workouts, completedWorkout);
+    completedWorkout.personalBests = personalBests;
     navigate(`/workout-summary`, { state: { workout: completedWorkout } });
+    
     try {
       await insertWorkout(userId, completedWorkout);
 
@@ -97,13 +103,32 @@ const WorkoutLog = () => {
     }
   };
 
+  const newPersonalBests = ((previousWorkouts, completedWorkout) => {
+    const previousPBs = getCurrentPBs(previousWorkouts);
+    const updatedPBs = getCurrentPBs([...previousWorkouts, completedWorkout]);
+
+    const newPBs = {};
+    for (const [id, updated] of Object.entries(updatedPBs)) {
+      const prev = previousPBs[id];
+      if (
+        !prev || // new exercise logged
+        updated.weight > prev.weight || // heavier lift
+        (updated.weight === prev.weight && updated.reps > prev.reps) // same weight, more reps
+      ) {
+        newPBs[id] = updated;
+      }
+    }
+
+    return newPBs;
+  })
+
   if (!currentLog) return <p>Loading workout...</p>;
 
   const hasAnySets = currentLog.some(exercise => exercise.sets.length > 0);
 
   return (
     <div className="workout-log">
-      <h1>Log Your Sets</h1>
+      <h1 className='page-title'>Log Sets</h1>
       <p>Workout Type: {currentPlan?.type?.toUpperCase() ?? "Unknown"}</p>
 
       {currentLog.map(({ id, name, sets, newReps, newWeight }) => (

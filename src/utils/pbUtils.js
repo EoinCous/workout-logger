@@ -9,7 +9,6 @@ export function getCurrentPBs(workouts) {
   const pbs = {};
 
   workouts.forEach(workout => {
-    console.log(workout)
     workout.exercises.forEach(exercise => {
       
       // hydrate from master list
