@@ -1,19 +1,22 @@
 .workout-type-selector {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Keep buttons on the same line */
+  justify-content: center;
   margin-bottom: 16px;
 }
 
 .workout-type-selector button {
+  flex: 1; /* Make buttons take equal width */
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
   background-color: #ddd;
   color: #333;
   font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, font-size 0.2s ease, padding 0.2s ease;
 }
 
 .workout-type-selector button:hover {
@@ -21,6 +24,26 @@
 }
 
 .workout-type-selector button.active {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--colouraccent);
+  color: var(--coloursecondary);
+}
+
+/* Smaller screens */
+@media (max-width: 600px) {
+  .workout-type-selector {
+    gap: 4px;
+  }
+  
+  .workout-type-selector button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 400px) {
+  .workout-type-selector button {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
 }

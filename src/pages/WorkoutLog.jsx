@@ -1,5 +1,5 @@
 import '../css/WorkoutLog.css';
-import { useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import { clearCurrentPlan, fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
@@ -12,6 +12,7 @@ const WorkoutLog = () => {
   const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, setWorkouts } = useWorkout();
   const { userId, logout } = useAuthentication();
   const navigate = useNavigate();
+  const [workoutNotes, setWorkoutNotes] = useState("");
 
   useEffect(() => {
     if (!currentLog && currentPlan && status === "inProgress") {
@@ -80,7 +81,8 @@ const WorkoutLog = () => {
     const completedWorkout = {
       ...currentPlan,
       exercises: currentLog.filter(ex => ex.sets.length > 0),
-      completedAt: new Date().toISOString()
+      completedAt: new Date().toISOString(),
+      notes: workoutNotes
     };
     const personalBests = newPersonalBests(workouts, completedWorkout);
     completedWorkout.personalBests = personalBests;
@@ -171,6 +173,14 @@ const WorkoutLog = () => {
           </div>
         </div>
       ))}
+
+      <textarea
+        className="workout-notes"
+        placeholder="Optional notes about your workout..."
+        value={workoutNotes}
+        maxLength={500}
+        onChange={(e) => setWorkoutNotes(e.target.value)}
+      />
 
       <button className="cancel-workout-btn" onClick={cancelWorkout}>
         Cancel Workout

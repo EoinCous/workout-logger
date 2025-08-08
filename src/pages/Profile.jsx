@@ -17,7 +17,7 @@ const Profile = () => {
       <div className="profile-card">
         <p><strong>User Email:</strong> {userEmail}</p>
         <p><strong>Total Workouts:</strong> {totalWorkouts}</p>
-        <p><strong>Weekly Goal:</strong> {weeklyGoal?.weeklyGoal || "Not set"}</p>
+        <p><strong>Weekly Goal:</strong> {weeklyGoal || "Not set"}</p>
         <p><strong>Last Workout:</strong> {lastWorkout}</p>
       </div>
       <button className="logout-btn" onClick={logout}>

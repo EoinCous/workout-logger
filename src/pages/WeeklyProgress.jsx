@@ -1,7 +1,7 @@
 import '../css/WeeklyProgress.css';
 import { useState } from "react";
 import { useWorkout } from "../context/WorkoutContext";
-import { isThisWeek, parseISO } from 'date-fns';
+import { format, isThisWeek, parseISO } from 'date-fns';
 import { upsertWeeklyGoal } from '../supabase/supabaseWorkoutService';
 import { useAuthentication } from '../context/AuthenticationContext';
 
@@ -77,7 +77,7 @@ const WeeklyProgress = () => {
           <ul>
             {weeklyWorkouts.map((workout, i) => (
               <li key={i}>
-                {workout.type} on {new Date(workout.date).toLocaleDateString()}
+                {workout.type} on {format(parseISO(workout.date), 'EEEE')}
               </li>
             ))}
           </ul>

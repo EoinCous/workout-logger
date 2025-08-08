@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 export const fetchWorkouts = async (userId) => {
   const { data, error } = await supabase
     .from('workouts')
-    .select('id, date, type, exercises, personal_bests, completed_at')
+    .select('id, date, type, exercises, personal_bests, completed_at, notes')
     .eq('user_id', userId)
     .order('date', { ascending: false });
 
@@ -18,6 +18,7 @@ export const fetchWorkouts = async (userId) => {
     exercises: workout.exercises,
     personalBests: workout.personal_bests,
     completedAt: workout.completed_at,
+    notes: workout.notes
   }));
 };
 
@@ -32,7 +33,8 @@ export const insertWorkout = async (userId, workout) => {
       type: workout.type,
       exercises: cleanedExercises,
       personal_bests: workout.personalBests,
-      completed_at: workout.completedAt 
+      completed_at: workout.completedAt,
+      notes: workout.notes
     })
     .select()
     .single();

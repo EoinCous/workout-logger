@@ -81,3 +81,13 @@
 .exercise-log-card li {
   list-style: none;
 }
+
+.workout-notes {
+  width: 100%;
+  min-height: 80px;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
