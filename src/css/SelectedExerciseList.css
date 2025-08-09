@@ -1,0 +1,26 @@
+.selected-exercise {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem;
+    margin-bottom: 0.5rem;
+    background-color: #222;
+    border-radius: 8px;
+}
+.selected-exercise span {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+.selected-exercise button {
+    margin-left: 0.3rem;
+}
+
+.selected-exercise p {
+  margin: 0.2rem 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.selected-exercise .remove-exercise {
+    background-color: #dc3545;
+}

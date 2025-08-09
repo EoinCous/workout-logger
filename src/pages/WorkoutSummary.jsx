@@ -56,7 +56,7 @@ const WorkoutSummary = () => {
 
           {workout.notes && (
             <div className="workout-notes-summary">
-              <h3>Workout Notes 📝</h3>
+              <h3>Notes 📝</h3>
               <p>{workout.notes}</p>
             </div>
           )}

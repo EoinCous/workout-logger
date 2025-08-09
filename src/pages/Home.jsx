@@ -88,7 +88,7 @@ const Home = () => {
 
       <div className="home-section" onClick={() => navigate('/suggestions')}>
         <h2>💡 Got suggestions?</h2>
-        <p>Enter an improvement that could be made to Workout Logger</p>
+        <p>Enter an improvement that could be made to RepLog</p>
       </div>
     </div>
   )
