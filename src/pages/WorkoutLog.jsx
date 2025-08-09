@@ -1,5 +1,5 @@
 import '../css/WorkoutLog.css';
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import { clearCurrentPlan, fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
@@ -9,34 +9,44 @@ import { handleSupabaseAuthError } from '../utils/authErrorHandler';
 import { getCurrentPBs } from '../utils/pbUtils';
 
 const WorkoutLog = () => {
-  const { status, setStatus, currentPlan, setCurrentPlan, currentLog, setCurrentLog, workouts, setWorkouts } = useWorkout();
+  const { 
+    status, setStatus, 
+    currentPlan, setCurrentPlan, 
+    currentLog, setCurrentLog, 
+    workouts, setWorkouts 
+  } = useWorkout();
   const { userId, logout } = useAuthentication();
   const navigate = useNavigate();
-  const [workoutNotes, setWorkoutNotes] = useState("");
 
   useEffect(() => {
-    if (!currentLog && currentPlan && status === "inProgress") {
-      const initializedLog = currentPlan.exercises.map((exercise) => ({
-        ...exercise,
-        sets: [],
-        newReps: "",
-        newWeight: "",
-      }));
-      setCurrentLog(initializedLog);
+    if (!currentLog && currentPlan?.exercises && status === "inProgress") {
+      const initialisedLog = {
+        exercises: currentPlan.exercises.map((exercise) => ({
+          ...exercise,
+          sets: [],
+          newReps: "",
+          newWeight: "",
+        })),
+        notes: ""
+      };
+      setCurrentLog(initialisedLog);
     }
-  }, [currentLog, currentPlan, setCurrentLog]);
+    
+  }, [currentLog, currentPlan, setCurrentLog, status]);
 
   const handleInputChange = useCallback((id, field, value) => {
-    setCurrentLog(prevLog =>
-      prevLog.map(exercise =>
+    setCurrentLog(prevLog => ({
+      ...prevLog,
+      exercises: prevLog.exercises.map(exercise =>
         exercise.id === id ? { ...exercise, [field]: value } : exercise
       )
-    );
+    }));
   }, [setCurrentLog]);
 
   const addSet = useCallback((id) => {
-    setCurrentLog(prevLog => {
-      return prevLog.map(exercise => {
+    setCurrentLog(prevLog => ({ 
+      ...prevLog,  
+      exercises: prevLog.exercises.map(exercise => {
         if (exercise.id !== id) return exercise;
 
         const { newReps, newWeight, sets } = exercise;
@@ -50,8 +60,8 @@ const WorkoutLog = () => {
           newReps: "",
           newWeight: "",
         };
-      });
-    });
+      })
+    }));
   }, [setCurrentLog]);
 
   const isValidInput = (value) => {
@@ -61,13 +71,15 @@ const WorkoutLog = () => {
   };
 
   const removeSet = useCallback((exerciseId, setIndex) => {
-    setCurrentLog(prevLog =>
-      prevLog.map(exercise => {
+    setCurrentLog(prevLog => ({
+      ...prevLog,
+      exercises: prevLog.exercises.map(exercise => {
         if (exercise.id !== exerciseId) return exercise;
 
         const newSets = exercise.sets.filter((_, i) => i !== setIndex);
         return { ...exercise, sets: newSets };
       })
+    })
     );
   }, [setCurrentLog]);
 
@@ -80,9 +92,9 @@ const WorkoutLog = () => {
   const completeWorkout = async () => {
     const completedWorkout = {
       ...currentPlan,
-      exercises: currentLog.filter(ex => ex.sets.length > 0),
+      exercises: currentLog.exercises.filter(ex => ex.sets.length > 0),
       completedAt: new Date().toISOString(),
-      notes: workoutNotes
+      notes: currentLog.notes
     };
     const personalBests = newPersonalBests(workouts, completedWorkout);
     completedWorkout.personalBests = personalBests;
@@ -99,7 +111,7 @@ const WorkoutLog = () => {
       setStatus("complete");
       setCurrentLog(null);
     } catch (error) {
-      handleSupabaseAuthError(err, logout);
+      handleSupabaseAuthError(error, logout);
       console.error(error);
       navigate('/workout-log');
     }
@@ -126,14 +138,14 @@ const WorkoutLog = () => {
 
   if (!currentLog) return <p>Loading workout...</p>;
 
-  const hasAnySets = currentLog.some(exercise => exercise.sets.length > 0);
+  const hasAnySets = currentLog?.exercises?.some(exercise => exercise.sets.length > 0) ?? false;
 
   return (
     <div className="workout-log">
       <h1 className='page-title'>Log Sets</h1>
       <p>Workout Type: {currentPlan?.type?.toUpperCase() ?? "Unknown"}</p>
 
-      {currentLog.map(({ id, name, sets, newReps, newWeight }) => (
+      {currentLog.exercises.map(({ id, name, sets, newReps, newWeight }) => (
         <div key={id} className="exercise-log-card">
           <h3>
             <Link to={`/exercise/${id}`} state={{ from: '/workout' }} className="exercise-link">
@@ -174,13 +186,19 @@ const WorkoutLog = () => {
         </div>
       ))}
 
-      <textarea
-        className="workout-notes"
-        placeholder="Optional notes about your workout..."
-        value={workoutNotes}
-        maxLength={500}
-        onChange={(e) => setWorkoutNotes(e.target.value)}
-      />
+      {hasAnySets && (
+        <textarea
+          className="workout-notes"
+          placeholder="Optional notes about your workout..."
+          value={currentLog.notes}
+          maxLength={500}
+          onChange={(e) => 
+            setCurrentLog(prevLog => ({
+              ...prevLog,
+              notes: e.target.value
+            }))}
+        />
+      )}
 
       <button className="cancel-workout-btn" onClick={cancelWorkout}>
         Cancel Workout

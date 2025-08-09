@@ -25,6 +25,7 @@ const WorkoutPlanner = () => {
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
+  const [search, setSearch] = useState("");
   const isHydrating = useRef(true);
   const navigate = useNavigate();
 
@@ -44,9 +45,9 @@ const WorkoutPlanner = () => {
     }
   }, [workoutType, selectedExercises]);
 
-  const filteredExercises = exercises.filter((ex) =>
-    WORKOUT_TYPES[workoutType].includes(ex.muscle)
-  );
+  const filteredExercises = exercises
+    .filter((ex) => WORKOUT_TYPES[workoutType].includes(ex.muscle))
+    .filter((ex) => ex.name.toLowerCase().includes(search.toLowerCase()));
 
   const handleAdd = (exercise) => {
     if (!selectedExercises.find((e) => e.id === exercise.id)) {
@@ -114,6 +115,15 @@ const WorkoutPlanner = () => {
     <div className="planner-container">
       <h1 className="page-title">Plan Workout</h1>
       <WorkoutTypeSelector value={workoutType} onChange={setWorkoutType} />
+      
+      <input
+        type="text"
+        placeholder="Search exercises..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-input"
+      />
+
       <ExerciseList 
         exercises={filteredExercises} 
         selectedExercises={selectedExercises}

@@ -8,13 +8,13 @@ const BottomNav = () => {
         <span role="img" aria-label="home">🏠</span>
         <p>Home</p>
       </NavLink>
-      <NavLink to="/workout" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
-        <span role="img" aria-label="workout">🏋️</span>
-        <p>Workout</p>
-      </NavLink>
       <NavLink to="/exercises" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
         <span role="img" aria-label="exercises">📚</span>
         <p>Exercises</p>
+      </NavLink>
+      <NavLink to="/workout" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+        <span role="img" aria-label="workout">🏋️</span>
+        <p>Workout</p>
       </NavLink>
       <NavLink to="/history" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
         <span role="img" aria-label="history">📅</span>

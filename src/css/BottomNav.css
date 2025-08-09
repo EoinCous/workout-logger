@@ -19,6 +19,9 @@
   color: #aaa;
   text-decoration: none;
   font-size: 12px;
+  border-radius: 25%;
+  width: 15%;
+  height: 90%;
 }
 
 .nav-item span {
@@ -26,5 +29,5 @@
 }
 
 .nav-item.active {
-  background-color: #1e88e5;
+  background-color: var(--colouraccent);
 }
