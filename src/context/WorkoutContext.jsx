@@ -37,7 +37,7 @@ export const WorkoutProvider = ({ children }) => {
   }, [status, currentPlan, currentLog, workouts, weeklyGoal]);
 
   const getLastWorkout = () => {
-    return workouts.length > 0 ? workouts[workouts.length - 1] : null;
+    return workouts.length > 0 ? workouts[0] : null;
   };
 
   return (

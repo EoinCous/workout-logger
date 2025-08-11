@@ -12,7 +12,7 @@ const SelectedExerciseList = ({ exercises, onRemove, onMove }) => {
                     <p className='text-muted'>{exercise.muscle}</p>
                 </div>
                 
-                <div>
+                <div className='buttons'>
                     <button disabled={index === 0} onClick={() => onMove(index, index - 1)}>
                         <FaChevronUp />
                     </button>

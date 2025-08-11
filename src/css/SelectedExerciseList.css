@@ -24,3 +24,9 @@
 .selected-exercise .remove-exercise {
     background-color: #dc3545;
 }
+
+.selected-exercise .buttons {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}

@@ -1,7 +1,10 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import '../css/BottomNav.css'
 
 const BottomNav = () => {
+  const { pathname } = useLocation();
+  const isWorkoutActive = ['/workout', '/workout-planner', '/workout-log'].includes(pathname);
+
   return (
     <nav className="bottom-nav">
       <NavLink to="/" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
@@ -12,7 +15,7 @@ const BottomNav = () => {
         <span role="img" aria-label="exercises">📚</span>
         <p>Exercises</p>
       </NavLink>
-      <NavLink to="/workout" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+      <NavLink to="/workout" className={`nav-item${isWorkoutActive ? ' active' : ''}`}>
         <span role="img" aria-label="workout">🏋️</span>
         <p>Workout</p>
       </NavLink>

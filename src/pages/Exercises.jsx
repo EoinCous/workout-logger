@@ -42,12 +42,17 @@ const Exercises = () => {
       </div>
 
       <div className="exercise-list">
-        {filteredExercises.length === 0 ? (
-          <p className="no-results">No exercises found.</p>
-        ) : (
+        {filteredExercises.length > 0 ? (
           filteredExercises.map((exercise) => (
             <ExerciseCard key={exercise.id} exercise={exercise} />
           ))
+        ) : (
+          <p className="no-results">
+            No exercises found. 
+            Try search in "all muscles". 
+            If it's not there, 
+            you can request the addition of your exercise through the suggestions form in the Home page.
+          </p>
         )}
       </div>
     </div>

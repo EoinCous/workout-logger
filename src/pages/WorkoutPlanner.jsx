@@ -124,12 +124,24 @@ const WorkoutPlanner = () => {
         className="search-input"
       />
 
-      <ExerciseList 
-        exercises={filteredExercises} 
-        selectedExercises={selectedExercises}
-        onAdd={handleAdd} 
-        onRemove={handleRemove}
-      />
+      <div className="exercise-list">
+        {filteredExercises.length > 0 ? (
+          <ExerciseList 
+            exercises={filteredExercises} 
+            selectedExercises={selectedExercises}
+            onAdd={handleAdd} 
+            onRemove={handleRemove}
+          />
+        ) : (
+          <p className="no-results">
+            No exercises found. 
+            Try search in "full" workout type. 
+            If it's not there, 
+            you can request the addition of your exercise through the suggestions form in the Home page.
+          </p>
+        )}
+      </div>
+      
 
       {selectedExercises.length > 0 && (
         <>

@@ -1,7 +1,7 @@
 .workout-type-selector {
   display: flex;
   gap: 8px;
-  flex-wrap: nowrap; /* Keep buttons on the same line */
+  flex-wrap: nowrap;
   justify-content: center;
   margin-bottom: 25px;
 }
