@@ -2,6 +2,7 @@ import '../css/Exercises.css';
 import { useState } from 'react';
 import exercisesData from '../data/exercises.json';
 import ExerciseCard from '../components/ExerciseCard';
+import SearchInput from '../components/SearchInput';
 
 const Exercises = () => {
   const [search, setSearch] = useState('');
@@ -20,12 +21,9 @@ const Exercises = () => {
       <h1 className="page-title">📋 Exercises</h1>
 
       <div className="filters">
-        <input
-          type="text"
-          placeholder="Search exercises..."
+        <SearchInput
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
+          onChange={setSearch}
         />
 
         <select

@@ -14,6 +14,7 @@ import WeeklyProgress from './pages/WeeklyProgress';
 import { useAuthentication } from './context/AuthenticationContext';
 import Authentication from './pages/Authentication';
 import Profile from './pages/Profile';
+import OneRepMax from './pages/OneRepMax';
 
 function App() {
   const { userId, authenticationLoading } = useAuthentication();
@@ -36,6 +37,7 @@ function App() {
           <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/weekly-progress" element={<WeeklyProgress />} />
           <Route path='/profile' element={<Profile />} />
+          <Route path='one-rep-max' element={<OneRepMax />} />
         </Routes>
       </div>
       <BottomNav />

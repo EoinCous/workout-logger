@@ -1,7 +1,6 @@
 .pb-container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 1.5rem;
   background-color: var(--colourprimary);
   color: var(--coloursecondary);
   min-height: 100vh;

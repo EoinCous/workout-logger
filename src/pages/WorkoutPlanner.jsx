@@ -10,6 +10,7 @@ import { upsertCurrentPlan } from "../supabase/supabaseWorkoutService";
 import { useAuthentication } from "../context/AuthenticationContext";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { hydrateExercises } from "../utils/exerciseUtils";
+import SearchInput from "../components/SearchInput";
 
 const WORKOUT_TYPES = {
   push: ["chest", "shoulders", "triceps"],
@@ -116,12 +117,9 @@ const WorkoutPlanner = () => {
       <h1 className="page-title">Plan Workout</h1>
       <WorkoutTypeSelector value={workoutType} onChange={setWorkoutType} />
       
-      <input
-        type="text"
-        placeholder="Search exercises..."
+      <SearchInput
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="search-input"
+        onChange={setSearch}
       />
 
       <div className="exercise-list">

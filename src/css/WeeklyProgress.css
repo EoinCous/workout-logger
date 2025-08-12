@@ -74,7 +74,6 @@ progress::-webkit-progress-value {
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
 }
 
 .goal-input button:hover {

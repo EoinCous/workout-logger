@@ -48,6 +48,7 @@ const Workout = () => {
                 <div key={ex.id} className="exercise-summary">
                   <h4>{ex.name}</h4>
                   <ul>
+            
                     {ex.sets.map((set, index) => (
                       <li key={index}>
                         {set.reps} reps @ {set.weight}kg

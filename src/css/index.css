@@ -2,6 +2,7 @@
   --colourprimary: #121212;
   --coloursecondary: #ffffff;
   --colouraccent: #1e88e5;
+  --colourdelete: #dc3545;
 }
 
 /* Apply box-sizing reset */

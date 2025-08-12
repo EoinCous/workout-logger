@@ -86,6 +86,11 @@ const Home = () => {
         )}
       </div>
 
+      <div className="home-section" onClick={() => navigate('/one-rep-max')}>
+        <h2>💪 One Rep Max</h2>
+        <p>View an estimate of your one rep max for a specific exercise</p>
+      </div>
+
       <div className="home-section" onClick={() => navigate('/suggestions')}>
         <h2>💡 Got suggestions?</h2>
         <p>Enter an improvement that could be made to RepLog</p>

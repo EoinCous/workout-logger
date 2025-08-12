@@ -1,5 +1,5 @@
 import '../css/WorkoutLog.css';
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import { clearCurrentPlan, fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
@@ -7,6 +7,7 @@ import { useAuthentication } from '../context/AuthenticationContext';
 import { Link } from 'react-router-dom';
 import { handleSupabaseAuthError } from '../utils/authErrorHandler';
 import { getCurrentPBs } from '../utils/pbUtils';
+import exerciseList from '../data/exercises.json';
 
 const WorkoutLog = () => {
   const { 
@@ -16,6 +17,7 @@ const WorkoutLog = () => {
     workouts, setWorkouts 
   } = useWorkout();
   const { userId, logout } = useAuthentication();
+  const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +35,12 @@ const WorkoutLog = () => {
     }
     
   }, [currentLog, currentPlan, setCurrentLog, status]);
+
+  const availableExercises = currentLog
+    ? exerciseList.filter(
+        ex => !currentLog.exercises.some(logEx => logEx.id === ex.id)
+      )
+    : exerciseList;
 
   const handleInputChange = useCallback((id, field, value) => {
     setCurrentLog(prevLog => ({
@@ -82,6 +90,28 @@ const WorkoutLog = () => {
     })
     );
   }, [setCurrentLog]);
+
+  const addExercise = (exerciseId) => {
+    if (!exerciseId) return;
+
+    const exerciseToAdd = exerciseList.find(ex => ex.id === exerciseId);
+    if (!exerciseToAdd) return;
+
+    setCurrentLog(prevLog => ({
+      ...prevLog,
+      exercises: [
+        ...prevLog.exercises,
+        {
+          ...exerciseToAdd,
+          sets: [],
+          newReps: "",
+          newWeight: "",
+        }
+      ]
+    }));
+
+    setSelectedExerciseId(""); // Reset dropdown
+  };
 
   const cancelWorkout = () => {
     setStatus("idle");
@@ -185,6 +215,19 @@ const WorkoutLog = () => {
           </div>
         </div>
       ))}
+
+      <div className="add-exercise">
+        <select
+          value={selectedExerciseId}
+          onChange={(e) => setSelectedExerciseId(e.target.value)}
+        >
+          <option value="">Select exercise...</option>
+          {availableExercises.map(ex => (
+            <option key={ex.id} value={ex.id}>{ex.name}</option>
+          ))}
+        </select>
+        <button onClick={() => addExercise(selectedExerciseId)}>Add Exercise</button>
+      </div>
 
       {hasAnySets && (
         <textarea

@@ -22,7 +22,7 @@
 }
 
 .selected-exercise .remove-exercise {
-    background-color: #dc3545;
+    background-color: var(--colourdelete);
 }
 
 .selected-exercise .buttons {

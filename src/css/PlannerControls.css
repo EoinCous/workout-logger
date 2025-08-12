@@ -20,7 +20,7 @@
 }
 
 .clear-button {
-  background-color: #dc3545;
+  background-color: var(--colourdelete);
   color: white;
 }
 
