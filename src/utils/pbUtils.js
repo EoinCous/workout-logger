@@ -14,6 +14,7 @@ export function getCurrentPBs(workouts) {
       // hydrate from master list
       const master = exerciseById[exercise.id];
       const name = master?.name || exercise.id; // fallback if missing
+      const muscle = master?.muscle;
 
       exercise.sets.forEach(set => {
         const weight = parseFloat(set.weight);
@@ -31,6 +32,7 @@ export function getCurrentPBs(workouts) {
           pbs[exercise.id] = {
             exerciseId: exercise.id,
             name,
+            muscle,
             weight,
             reps,
             date: workout.date,

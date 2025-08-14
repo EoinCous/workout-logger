@@ -4,36 +4,79 @@
   background-color: var(--colourprimary);
   color: var(--coloursecondary);
   min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Muscle group section */
+.pb-muscle-group {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #252525;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Muscle group title bar */
+.pb-muscle-title {
+  margin: 0;
+  padding: 0.8rem 1rem;
+  font-size: 1.2rem;
+  background-color: #333;
+  border-left: 6px solid var(--colouraccent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* PB cards inside a group */
+.pb-group-list {
+  padding: 0.5rem 1rem;
+  animation: expand 0.25s ease-out;
 }
 
 .pb-card {
   background-color: #1e1e1e;
-  border-left: 6px solid var(--colouraccent);
+  border-left: 4px solid var(--colouraccent);
   border-radius: 6px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.2s;
 }
 
 .pb-card:hover {
   transform: translateY(-2px);
+  background-color: #2a2a2a;
 }
 
 .pb-exercise {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--coloursecondary);
 }
 
 .pb-value {
-  margin: 0.5rem 0;
+  margin: 0.4rem 0;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--colouraccent);
 }
 
 .pb-date {
   color: #bbb;
   font-size: 0.85rem;
+}
+
+/* Expand animation */
+@keyframes expand {
+  from {
+    opacity: 0;
+    transform: scaleY(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
