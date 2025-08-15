@@ -16,7 +16,7 @@ const ExerciseDetail = () => {
   const chartData = useMemo(() => {
     const dataByDate = {};
 
-    workouts.forEach(workout => {
+    workouts.reverse().forEach(workout => {
       const date = new Date(workout.date).toLocaleDateString();
 
       workout.exercises.forEach(exercise => {
