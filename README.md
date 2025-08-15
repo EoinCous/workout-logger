@@ -1,12 +1,27 @@
-# React + Vite
+# RepLog 🏋️‍♂️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web app for planning and tracking your gym workouts.
 
-Currently, two official plugins are available:
+**Live Site:** [https://workout-logger-gamma.vercel.app/](https://workout-logger-gamma.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 📋 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Workout Planning** – Create structured workout plans ahead of time.
+- **Workout Logging** – Track your sets, reps, and weights during training.
+- **Exercise Information** – View details about different exercises.
+- **Personal Bests** – Keep track of your PRs for each exercise.
+- **Workout History** – Browse old workouts for progress tracking.
+- **Authentication** – Secure sign-up and login with Supabase.
+- **Weekly Goal Tracking** – Set and monitor your workout frequency goals.
+- **1RM Calculator** – Estimate your one-rep max for lifts.
+
+---
+
+## 🛠 Tech Stack
+
+- [ReactJS](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [Supabase](https://supabase.com/) – Authentication & database
+- Custom CSS (no frameworks)
