@@ -22,7 +22,7 @@ const WORKOUT_TYPES = {
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
-  const { userId, logout } = useAuthentication();
+  const { user, logout } = useAuthentication();
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
@@ -72,7 +72,7 @@ const WorkoutPlanner = () => {
     setWorkoutSaved(true);
     setCurrentPlan(plan);
     try {
-      await upsertCurrentPlan(userId, plan);
+      await upsertCurrentPlan(user?.id, plan);
       setStatus("planned");
     } catch (err) {
       console.error("Failed to save plan:", err);
@@ -85,7 +85,7 @@ const WorkoutPlanner = () => {
     const plan = buildPlan();
     setCurrentPlan(plan);
     try {
-      await upsertCurrentPlan(userId, plan);
+      await upsertCurrentPlan(user?.id, plan);
       navigate("/workout-log");
       setStatus("inProgress");
     } catch (err) {
@@ -99,7 +99,7 @@ const WorkoutPlanner = () => {
     const plan = { type: workoutType, exercises: [], date: new Date().toISOString() };
     setCurrentPlan(plan);
     try {
-    await upsertCurrentPlan(userId, plan);
+    await upsertCurrentPlan(user?.id, plan);
     } catch (err) {
       handleSupabaseAuthError(err, logout);
       console.error("Failed to clear plan:", err);

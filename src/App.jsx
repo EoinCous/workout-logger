@@ -17,11 +17,11 @@ import Profile from './pages/Profile';
 import OneRepMax from './pages/OneRepMax';
 
 function App() {
-  const { userId, authenticationLoading } = useAuthentication();
+  const { user, authenticationLoading } = useAuthentication();
 
   if (authenticationLoading) return <p>Loading...</p>;
 
-  return userId ? (
+  return user ? (
     <div className="app-container">
       <div className="page-content">
         <Routes>
@@ -37,7 +37,7 @@ function App() {
           <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/weekly-progress" element={<WeeklyProgress />} />
           <Route path='/profile' element={<Profile />} />
-          <Route path='one-rep-max' element={<OneRepMax />} />
+          <Route path='/one-rep-max' element={<OneRepMax />} />
         </Routes>
       </div>
       <BottomNav />

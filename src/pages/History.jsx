@@ -7,7 +7,7 @@ import { handleSupabaseAuthError } from '../utils/authErrorHandler';
 
 const History = () => {
   const { workouts, setWorkouts } = useWorkout();
-  const { userId, logout } = useAuthentication();
+  const { user, logout } = useAuthentication();
   const navigate = useNavigate();
 
   const viewWorkout = (workout) => {
@@ -17,8 +17,8 @@ const History = () => {
   const handleDeleteWorkout = async (workoutId) => {
     if (window.confirm("Are you sure you want to delete this workout?")) {
       try {
-        await deleteWorkout(userId, workoutId);
-        const workouts = await fetchWorkouts(userId);
+        await deleteWorkout(user?.id, workoutId);
+        const workouts = await fetchWorkouts(user?.id);
         setWorkouts(workouts);
       } catch (error) {
         handleSupabaseAuthError(err, logout);

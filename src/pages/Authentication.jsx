@@ -26,7 +26,7 @@ const Authentication = () => {
         const result = await login(email, password);
 
         const userId = result.user.id;
-        if (!userId) throw new Error("Failed to get user after login");
+        // if (!userId) throw new Error("Failed to get user after login");
 
         navigate('/');
 

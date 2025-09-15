@@ -16,7 +16,7 @@ const WorkoutLog = () => {
     currentLog, setCurrentLog, 
     workouts, setWorkouts 
   } = useWorkout();
-  const { userId, logout } = useAuthentication();
+  const { user, logout } = useAuthentication();
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const navigate = useNavigate();
 
@@ -131,12 +131,12 @@ const WorkoutLog = () => {
     navigate(`/workout-summary`, { state: { workout: completedWorkout } });
     
     try {
-      await insertWorkout(userId, completedWorkout);
+      await insertWorkout(user?.id, completedWorkout);
 
-      const fetchedWorkouts = await fetchWorkouts(userId);
+      const fetchedWorkouts = await fetchWorkouts(user?.id);
       setWorkouts(fetchedWorkouts);
 
-      await clearCurrentPlan(userId);
+      await clearCurrentPlan(user?.id);
       setCurrentPlan(null);
       setStatus("complete");
       setCurrentLog(null);

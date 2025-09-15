@@ -27,11 +27,12 @@ export const AuthenticationProvider = ({ children }) => {
     };
     init();
 
-    // subscribe to auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        setUser(null);
+      } else {
+        setUser(session?.user ?? null);
+      }
     });
 
     return () => {
@@ -48,7 +49,7 @@ export const AuthenticationProvider = ({ children }) => {
   const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      console.error('Login error:', error.message);
+      console.error("Login error:", error.message);
       throw error;
     }
     return data;
@@ -58,11 +59,8 @@ export const AuthenticationProvider = ({ children }) => {
     await supabase.auth.signOut();
   };
 
-  const userId = user?.id ?? null;
-  const userEmail = user?.email ?? null;
-
   return (
-    <AuthenticationContext.Provider value={{ userId, userEmail, authenticationLoading, signUp, login, logout }}>
+    <AuthenticationContext.Provider value={{ user, authenticationLoading, signUp, login, logout }}>
       {children}
     </AuthenticationContext.Provider>
   );

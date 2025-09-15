@@ -8,7 +8,7 @@ import { useAuthentication } from '../context/AuthenticationContext';
 const WeeklyProgress = () => {
   const { workouts, setWeeklyGoal, weeklyGoal } = useWorkout();
   const [newGoal, setNewGoal] = useState(weeklyGoal || "");
-  const { userId } = useAuthentication();
+  const { user } = useAuthentication();
 
   const weeklyWorkouts = workouts.filter(workout =>
     isThisWeek(parseISO(workout.date), { weekStartsOn: 1 })
@@ -33,7 +33,7 @@ const WeeklyProgress = () => {
     if (newGoal === weeklyGoal) return;
 
     try {
-      await upsertWeeklyGoal(userId, newGoal);
+      await upsertWeeklyGoal(user?.id, newGoal);
       setWeeklyGoal(newGoal);
     } catch (e) {
       console.error("Failed to upsert weekly goal:", e);
