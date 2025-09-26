@@ -13,9 +13,25 @@ export const AuthenticationProvider = ({ children }) => {
     // initialize session
     const init = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+
+        const session = data.session;
+
         if (!isMounted) return;
-        setUser(data.session?.user ?? null);
+
+        if (session) {
+          const isExpired = session.expires_at * 1000 < Date.now();
+          if (isExpired) {
+            console.warn("Session expired, clearing...");
+            await supabase.auth.signOut();
+            setUser(null);
+          } else {
+            setUser(session.user);
+          }
+        } else {
+          setUser(null);
+        }
       } catch (e) {
         console.error("Failed to get initial session:", e);
         if (!isMounted) return;
@@ -25,13 +41,14 @@ export const AuthenticationProvider = ({ children }) => {
         setAuthenticationLoading(false);
       }
     };
+
     init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || !session) {
         setUser(null);
       } else {
-        setUser(session?.user ?? null);
+        setUser(session.user);
       }
     });
 
