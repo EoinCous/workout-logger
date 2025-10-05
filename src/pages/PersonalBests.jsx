@@ -38,7 +38,6 @@ const PersonalBests = () => {
           <h3 
             className="pb-muscle-title" 
             onClick={() => toggleGroup(muscle)}
-            style={{ cursor: "pointer" }}
           >
             {muscle.charAt(0).toUpperCase() + muscle.slice(1)}
             {openGroups[muscle] ? " ▼" : " ►"}

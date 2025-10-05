@@ -417,5 +417,17 @@
         "Curl with control.",
         "Squeeze at the top of the movement."
     ]
+  },
+  {
+    "id": "front-dumbbell-squat",
+    "name": "Front Dumbbell Squat",
+    "muscle": "legs",
+    "equipment": "Dumbbell",
+    "description": "A lower body exercise that targets the quads, glutes, and core by holding dumbbells at shoulder height.",
+    "tips": [
+      "Hold the dumbbells at shoulder level with elbows pointing slightly forward.",
+      "Keep your chest up and core engaged throughout the movement.",
+      "Squat down until your thighs are at least parallel to the floor, then drive through your heels to stand up."
+    ]
   }
 ]

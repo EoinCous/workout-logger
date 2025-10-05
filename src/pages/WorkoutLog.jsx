@@ -204,12 +204,24 @@ const WorkoutLog = () => {
               placeholder="Reps"
               value={newReps}
               onChange={(e) => handleInputChange(id, "newReps", e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addSet(id);
+                }
+              }}
             />
             <input
               type="number"
               placeholder="Weight"
               value={newWeight}
               onChange={(e) => handleInputChange(id, "newWeight", e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addSet(id);
+                }
+              }}
             />
             <button onClick={() => addSet(id)}>➕</button>
           </div>
