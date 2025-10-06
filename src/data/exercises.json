@@ -421,13 +421,49 @@
   {
     "id": "front-dumbbell-squat",
     "name": "Front Dumbbell Squat",
-    "muscle": "legs",
+    "muscle": "quads",
     "equipment": "Dumbbell",
     "description": "A lower body exercise that targets the quads, glutes, and core by holding dumbbells at shoulder height.",
     "tips": [
       "Hold the dumbbells at shoulder level with elbows pointing slightly forward.",
       "Keep your chest up and core engaged throughout the movement.",
       "Squat down until your thighs are at least parallel to the floor, then drive through your heels to stand up."
+    ]
+  },
+  {
+    "id": "dumbbell-incline-press",
+    "name": "Dumbbell Incline Press",
+    "muscle": "chest",
+    "equipment": "Dumbbell / Bench",
+    "description": "A compound pressing movement performed on an incline bench to target the upper chest and shoulders.",
+    "tips": [
+      "Set the bench to a 30–45° incline.",
+      "Press the dumbbells upward without letting them touch.",
+      "Lower slowly until your elbows are just below the bench line."
+    ]
+  },
+  {
+    "id": "front-raises",
+    "name": "Front Raises",
+    "muscle": "shoulders",
+    "equipment": "Dumbbell / Plate / Cable",
+    "description": "An isolation exercise that targets the front deltoids by lifting the weights in front of the body.",
+    "tips": [
+      "Keep a slight bend in your elbows.",
+      "Raise the weights to shoulder height.",
+      "Avoid swinging your torso — control each rep."
+    ]
+  },
+  {
+    "id": "overhead-tricep-extensions",
+    "name": "Overhead Tricep Extensions",
+    "muscle": "triceps",
+    "equipment": "Dumbbell / Cable / EZ Bar",
+    "description": "An isolation movement focusing on the long head of the triceps by extending the arms overhead.",
+    "tips": [
+      "Keep your elbows close to your head.",
+      "Lower the weight slowly behind your head.",
+      "Fully extend your arms at the top for a strong contraction."
     ]
   }
 ]

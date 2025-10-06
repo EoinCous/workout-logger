@@ -198,33 +198,27 @@ const WorkoutLog = () => {
             ))}
           </ul>
 
-          <div className="add-set-form">
+          <form
+            className="add-set-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              addSet(id);
+            }}
+          >
             <input
               type="number"
               placeholder="Reps"
               value={newReps}
               onChange={(e) => handleInputChange(id, "newReps", e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addSet(id);
-                }
-              }}
             />
             <input
               type="number"
               placeholder="Weight"
               value={newWeight}
               onChange={(e) => handleInputChange(id, "newWeight", e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addSet(id);
-                }
-              }}
             />
-            <button onClick={() => addSet(id)}>➕</button>
-          </div>
+            <button type="submit">➕</button>
+          </form>
         </div>
       ))}
 
