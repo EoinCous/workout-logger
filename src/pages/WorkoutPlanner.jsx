@@ -11,6 +11,7 @@ import { useAuthentication } from "../context/AuthenticationContext";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { hydrateExercises } from "../utils/exerciseUtils";
 import SearchInput from "../components/SearchInput";
+import "../css/WorkoutPlanner.css";
 
 const WORKOUT_TYPES = {
   push: ["chest", "shoulders", "triceps"],
@@ -27,6 +28,7 @@ const WorkoutPlanner = () => {
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
   const [search, setSearch] = useState("");
+  const [showAddSection, setShowAddSection] = useState(true);
   const isHydrating = useRef(true);
   const navigate = useNavigate();
 
@@ -117,29 +119,38 @@ const WorkoutPlanner = () => {
       <h1 className="page-title">Plan Workout</h1>
       <WorkoutTypeSelector value={workoutType} onChange={setWorkoutType} />
       
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-      />
+      <div className="add-exercise-section">
+        <h3 
+          className="collapsible-header" 
+          onClick={() => setShowAddSection(!showAddSection)}
+        >
+          Add Exercises {showAddSection ? "▾" : "▸"}
+        </h3>
 
-      <div className="exercise-list">
-        {filteredExercises.length > 0 ? (
-          <ExerciseList 
-            exercises={filteredExercises} 
-            selectedExercises={selectedExercises}
-            onAdd={handleAdd} 
-            onRemove={handleRemove}
-          />
-        ) : (
-          <p className="no-results">
-            No exercises found. 
-            Try search in "full" workout type. 
-            If it's not there, 
-            you can request the addition of your exercise through the suggestions form in the Home page.
-          </p>
+        {showAddSection && (
+          <div className="collapsible-content">
+            <SearchInput value={search} onChange={setSearch} />
+
+            <div className="exercise-list">
+              {filteredExercises.length > 0 ? (
+                <ExerciseList
+                  exercises={filteredExercises}
+                  selectedExercises={selectedExercises}
+                  onAdd={handleAdd}
+                  onRemove={handleRemove}
+                />
+              ) : (
+                <p className="no-results">
+                  No exercises found.
+                  Try search in "full" workout type. 
+                  If it's not there, 
+                  you can request the addition of your exercise through the suggestions form in the Home page.
+                </p>
+              )}
+            </div>
+          </div>
         )}
-      </div>
-      
+      </div>      
 
       {selectedExercises.length > 0 && (
         <>

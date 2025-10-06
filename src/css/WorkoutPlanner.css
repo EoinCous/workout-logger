@@ -1,0 +1,25 @@
+.add-exercise-section {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 1.5rem;
+  background-color: #1a1a1a;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.collapsible-header:hover {
+  opacity: 0.8;
+}
+
+.collapsible-content {
+  margin-top: 0.5rem;
+}

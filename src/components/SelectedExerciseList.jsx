@@ -6,8 +6,8 @@ const SelectedExerciseList = ({ exercises, onRemove, onMove }) => {
 
   const handleDragEnd = (result) => {
     const { source, destination } = result;
-    if (!destination) return; // Dropped outside the list
-    if (source.index === destination.index) return; // No change
+    if (!destination) return;
+    if (source.index === destination.index) return;
     onMove(source.index, destination.index);
   };
 
@@ -34,6 +34,7 @@ const SelectedExerciseList = ({ exercises, onRemove, onMove }) => {
                       }`}
                     >
                       <div className="exercise-info">
+                        <span className="exercise-index">{index + 1}. </span>
                         <span>{exercise.name}</span>
                         <p className="text-muted">{exercise.muscle}</p>
                       </div>
