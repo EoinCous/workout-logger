@@ -48,7 +48,9 @@ const WorkoutPlanner = () => {
     }
   }, [workoutType, selectedExercises]);
 
-  const filteredExercises = exercises
+  const sortedExercises = exercises.sort((a, b) => a.name.localeCompare(b.name));
+
+  const filteredExercises = sortedExercises
     .filter((ex) => WORKOUT_TYPES[workoutType].includes(ex.muscle))
     .filter((ex) => ex.name.toLowerCase().includes(search.toLowerCase()));
 

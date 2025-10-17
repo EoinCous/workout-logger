@@ -173,7 +173,9 @@ const WorkoutLog = () => {
   return (
     <div className="workout-log">
       <h1 className='page-title'>Log Sets</h1>
-      <p>Workout Type: {currentPlan?.type?.toUpperCase() ?? "Unknown"}</p>
+      <p className="workout-type">
+        <span>{currentPlan?.type?.toUpperCase() ?? "UNKNOWN"}</span>
+      </p>
 
       {currentLog.exercises.map(({ id, name, sets, newReps, newWeight }) => (
         <div key={id} className="exercise-log-card">
@@ -217,7 +219,7 @@ const WorkoutLog = () => {
               value={newWeight}
               onChange={(e) => handleInputChange(id, "newWeight", e.target.value)}
             />
-            <button type="submit">➕</button>
+            <button type="submit">+</button>
           </form>
         </div>
       ))}

@@ -14,7 +14,8 @@ const Exercises = () => {
     const matchesMuscle = selectedMuscle === 'All Muscles' || ex.muscle === selectedMuscle;
     const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
     return matchesMuscle && matchesSearch;
-  });
+  })
+  .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="exercises-page">

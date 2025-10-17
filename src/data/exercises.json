@@ -465,5 +465,17 @@
       "Lower the weight slowly behind your head.",
       "Fully extend your arms at the top for a strong contraction."
     ]
+  },
+  {
+    "id": "dumbbell-lateral-raise",
+    "name": "Dumbbell Lateral Raise",
+    "muscle": "shoulders",
+    "equipment": "Dumbbell",
+    "description": "An isolation exercise that targets the lateral deltoids to build wider, stronger shoulders.",
+    "tips": [
+      "Keep a slight bend in your elbows throughout the movement.",
+      "Raise your arms until they are parallel to the floor.",
+      "Avoid shrugging or using momentum — control the lift and lower slowly."
+    ]
   }
 ]
