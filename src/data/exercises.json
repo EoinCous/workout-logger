@@ -477,5 +477,29 @@
       "Raise your arms until they are parallel to the floor.",
       "Avoid shrugging or using momentum — control the lift and lower slowly."
     ]
+  },
+  {
+    "id": "bent-over-dumbbell-reverse-fly",
+    "name": "Bent-Over Dumbbell Reverse Fly",
+    "muscle": "back",
+    "equipment": "Dumbbell",
+    "description": "An isolation exercise that targets the rear deltoids and upper back by moving the arms outward in a bent-over position.",
+    "tips": [
+      "Keep a slight bend in your elbows throughout the movement.",
+      "Maintain a flat back and neutral spine.",
+      "Raise the dumbbells until your arms are parallel to the floor, then lower them slowly."
+    ]
+  },
+  {
+    "id": "dumbbell-shrug",
+    "name": "Dumbbell Shrug",
+    "muscle": "back",
+    "equipment": "Dumbbell",
+    "description": "A simple but effective exercise that strengthens and builds the trapezius muscles by elevating the shoulders.",
+    "tips": [
+      "Hold the dumbbells at your sides with straight arms.",
+      "Lift your shoulders straight up toward your ears.",
+      "Pause briefly at the top, then lower slowly without rolling your shoulders."
+    ]
   }
 ]

@@ -11,6 +11,7 @@ const calculate1RM = (weight, reps) => {
 const OneRepMax = () => {
   const { workouts } = useWorkout();
   const personalBests = useMemo(() => getCurrentPBs(workouts), [workouts]);
+  const sortedPersonalBests = Object.values(personalBests).sort((a, b) => a.name.localeCompare(b.name));
 
   const [selectedExercise, setSelectedExercise] = useState("");
   const [weight, setWeight] = useState("");
@@ -36,7 +37,7 @@ const OneRepMax = () => {
         <label>Choose exercise (from PBs):</label>
         <select value={selectedExercise} onChange={handleSelectChange}>
           <option value="">-- Select an exercise --</option>
-          {Object.values(personalBests).map(pb => (
+          {sortedPersonalBests.map(pb => (
             <option key={pb.exerciseId} value={pb.exerciseId}>
               {pb.name}
             </option>
