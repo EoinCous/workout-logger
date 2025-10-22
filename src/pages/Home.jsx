@@ -4,9 +4,9 @@ import { useWorkout } from "../context/WorkoutContext";
 import { isThisWeek, parseISO, isToday } from 'date-fns';
 
 const Home = () => {
-  const { status, workouts, getLastWorkout, weeklyGoal } = useWorkout();
+  const { status, workouts, getLatestWorkout, weeklyGoal } = useWorkout();
 
-  const lastWorkout = getLastWorkout();
+  const lastWorkout = getLatestWorkout();
 
   const workoutDuration = () => {
     const durationMs = new Date(lastWorkout.completedAt) - new Date(lastWorkout.date);

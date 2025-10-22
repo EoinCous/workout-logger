@@ -1,5 +1,5 @@
 import '../css/Workout.css';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWorkout } from "../context/WorkoutContext";
 import { WORKOUT_STATUS } from "../constants/workoutStatus";
@@ -8,13 +8,14 @@ import { hydrateExercises } from '../utils/exerciseUtils';
 const Workout = () => {
   const {
     status,
-    getLastWorkout,
+    getLatestWorkouts,
     setStatus,
   } = useWorkout();
 
-  const lastWorkout = getLastWorkout();
-
+  const latestWorkouts = getLatestWorkouts();
   const navigate = useNavigate();
+
+  const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
     if (status === WORKOUT_STATUS.PLANNING || status === WORKOUT_STATUS.PLANNED) {
@@ -34,45 +35,58 @@ const Workout = () => {
     navigate("/workout-planner");
   };
 
+  const toggleExpand = (id) => {
+    setExpanded((prev) => ({
+      ...prev,
+      [id]: !prev[id], // toggle individual workout
+    }));
+  };
+
   if (status === WORKOUT_STATUS.COMPLETE || status === WORKOUT_STATUS.IDLE) {
     return (
       <div>
-        {lastWorkout ? (
+        <h1 className='page-title'>🏋️ Workout</h1>
+        {latestWorkouts && latestWorkouts.length > 0 ? (
           <>
-            <h1 className='page-title'>🏋️ Workout</h1>
-            <div className="last-workout-summary">
-              <h2>Last Workout</h2>
-              <h3>Type: {lastWorkout.type}</h3>
+          <div className='latest-workouts'>
+            <h2>Latest Workouts</h2>
 
-              {hydrateExercises(lastWorkout.exercises).map((ex) => (
-                <div key={ex.id} className="exercise-summary">
-                  <h4>{ex.name}</h4>
-                  <ul>
-            
-                    {ex.sets.map((set, index) => (
-                      <li key={index}>
-                        {set.reps} reps @ {set.weight}kg
-                      </li>
-                    ))}
-                  </ul>
+            {latestWorkouts.map((workout) => (
+              <div key={workout.id} className="last-workout-summary">
+                <div
+                  className="workout-header"
+                  onClick={() => toggleExpand(workout.id)}
+                >
+                  <h3>{workout.type} — {new Date(workout.date).toLocaleDateString()}</h3>
+                  <h3>{expanded[workout.id] ? "▸" : "▾"}</h3>
                 </div>
-              ))}
 
-              <p className="workout-date">
-                Completed: {new Date(lastWorkout.completedAt).toLocaleDateString()} @{" "}
-                {new Date(lastWorkout.completedAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
-            </div>
+                {expanded[workout.id] && (
+                  <div className="workout-details">
+                    {hydrateExercises(workout.exercises).map((ex) => (
+                      <div key={ex.id} className="exercise-summary">
+                        <h4>{ex.name}</h4>
+                        <ul>
+                          {ex.sets.map((set, index) => (
+                            <li key={index}>
+                              {set.reps} reps @ {set.weight}kg
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+            
             <button className="plan-btn" onClick={handlePlanNextWorkout}>
               Plan Next Workout
             </button>
-          </> 
+          </>
         ) : (
           <div>
-            <h1 className='page-title'>🏋️ Workout</h1>
             <button className="plan-btn" onClick={handleStartPlanning}>
               Plan Your First Workout
             </button>

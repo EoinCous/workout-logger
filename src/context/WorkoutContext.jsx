@@ -36,8 +36,12 @@ export const WorkoutProvider = ({ children }) => {
     localStorage.setItem("weeklyGoal", JSON.stringify(weeklyGoal));
   }, [status, currentPlan, currentLog, workouts, weeklyGoal]);
 
-  const getLastWorkout = () => {
+  const getLatestWorkout = () => {
     return workouts.length > 0 ? workouts[0] : null;
+  };
+
+  const getLatestWorkouts = () => {
+    return workouts.slice(0, 3);
   };
 
   return (
@@ -50,7 +54,8 @@ export const WorkoutProvider = ({ children }) => {
       setCurrentLog,
       workouts,
       setWorkouts,
-      getLastWorkout,
+      getLatestWorkout,
+      getLatestWorkouts,
       weeklyGoal,
       setWeeklyGoal
     }}>

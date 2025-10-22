@@ -1,9 +1,23 @@
-.last-workout-summary {
-  background-color: #1a1a1a;
+.latest-workouts {
   color: #fff;
   padding: 1rem;
-  border-radius: 10px;
   margin: 1rem;
+
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  background-color: #0f172a;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.workout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.last-workout-summary {
+  border-bottom: 2px solid var(--colouraccent);
+  margin-top: 1.5rem;
 }
 
 .exercise-summary {
