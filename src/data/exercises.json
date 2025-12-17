@@ -501,5 +501,18 @@
       "Lift your shoulders straight up toward your ears.",
       "Pause briefly at the top, then lower slowly without rolling your shoulders."
     ]
+  },
+  {
+    "id": "barbell-rows",
+    "name": "Barbell Rows",
+    "muscle": "back",
+    "equipment": "Barbell",
+    "description": "A compound pulling exercise that targets the lats, upper back, and lower back while also engaging the biceps.",
+    "tips": [
+      "Stand with feet shoulder-width apart and grip the bar slightly wider than shoulder width.",
+      "Hinge at the hips and keep your back flat with chest up.",
+      "Pull the bar towards your lower ribs while squeezing your shoulder blades.",
+      "Lower the bar under control to full arm extension."
+    ]
   }
 ]
