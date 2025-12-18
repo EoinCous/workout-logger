@@ -132,8 +132,8 @@
     ]
   },
   {
-    "id": "cable-tricep-pushdowns",
-    "name": "Cable Tricep Pushdowns",
+    "id": "tricep-pushdowns",
+    "name": "Tricep Pushdowns",
     "muscle": "triceps",
     "equipment": "Cable Machine",
     "description": "An isolation movement for the triceps using a rope or straight bar.",
