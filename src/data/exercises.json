@@ -514,5 +514,31 @@
       "Pull the bar towards your lower ribs while squeezing your shoulder blades.",
       "Lower the bar under control to full arm extension."
     ]
+  },
+  {
+    "id": "barbell-shoulder-press",
+    "name": "Barbell Shoulder Press",
+    "muscle": "shoulders",
+    "equipment": "Barbell",
+    "description": "A compound pressing exercise targeting the front and side delts while also engaging the triceps and upper chest.",
+    "tips": [
+      "Grip the bar slightly wider than shoulder-width.",
+      "Keep your core tight and avoid arching your lower back.",
+      "Press the bar overhead until arms are fully extended.",
+      "Lower with control to just below chin level."
+    ]
+  },
+  {
+    "id": "decline-sit-ups",
+    "name": "Decline Sit-Ups",
+    "muscle": "core",
+    "equipment": "Decline Bench",
+    "description": "An abdominal exercise that increases resistance by positioning the torso below hip height.",
+    "tips": [
+      "Secure your feet at the top of the decline bench.",
+      "Lower yourself slowly until your back is nearly parallel to the bench.",
+      "Crunch up while keeping tension in your core.",
+      "Avoid pulling your neck with your hands."
+    ]
   }
 ]
