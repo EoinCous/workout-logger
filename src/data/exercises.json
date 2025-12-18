@@ -169,7 +169,7 @@
   },
   {
     "id": "dumbbell-rdls",
-    "name": "Dumbbell RDLs",
+    "name": "Dumbbell Romanian Deadlifts",
     "muscle": "hamstrings",
     "equipment": "Dumbbells",
     "description": "A hip-hinge movement that targets hamstrings and glutes.",
@@ -320,18 +320,6 @@
         "Place upper back on a bench and feet flat on the ground.",
         "Drive through your heels and squeeze at the top.",
         "Avoid hyperextending your lower back."
-    ]
-  },
-  {
-    "id": "leg-press",
-    "name": "Leg Press",
-    "muscle": "quads",
-    "equipment": "Machine",
-    "description": "Targets the quads, hamstrings, and glutes.",
-    "tips": [
-        "Keep feet flat and knees aligned with toes.",
-        "Lower the sled under control.",
-        "Don't lock your knees at the top."
     ]
   },
   {
@@ -539,6 +527,45 @@
       "Lower yourself slowly until your back is nearly parallel to the bench.",
       "Crunch up while keeping tension in your core.",
       "Avoid pulling your neck with your hands."
+    ]
+  },
+  {
+    "id": "barbell-rdls",
+    "name": "Barbell Romanian Deadlifts",
+    "muscle": "hamstrings",
+    "equipment": "Barbell",
+    "description": "A hip-hinge exercise that targets the hamstrings and glutes while strengthening the lower back.",
+    "tips": [
+      "Stand with feet hip-width apart and grip the bar just outside your legs.",
+      "Hinge at the hips while keeping a slight bend in the knees.",
+      "Lower the bar down the thighs until you feel a hamstring stretch.",
+      "Drive hips forward and squeeze glutes to return to standing."
+    ]
+  },
+  {
+    "id": "barbell-back-squat",
+    "name": "Barbell Back Squat",
+    "muscle": "quads",
+    "equipment": "Barbell",
+    "description": "A compound lower-body exercise targeting the quads, glutes, and hamstrings while developing overall leg strength.",
+    "tips": [
+      "Place the bar across your upper traps and keep your chest up.",
+      "Squat by driving knees out and hips back simultaneously.",
+      "Keep your feet flat and maintain a neutral spine.",
+      "Drive through your heels to stand tall."
+    ]
+  },
+  {
+    "id": "leg-press",
+    "name": "Leg Press",
+    "muscle": "quads",
+    "equipment": "Leg Press Machine",
+    "description": "A machine-based compound exercise that targets the quadriceps with support for the lower back and hips.",
+    "tips": [
+      "Place feet shoulder-width apart on the platform.",
+      "Lower the sled under control until knees reach 90 degrees.",
+      "Avoid letting your lower back round.",
+      "Drive through your mid-foot and extend without locking your knees."
     ]
   }
 ]
