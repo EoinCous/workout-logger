@@ -6,6 +6,26 @@
   background-color: #1a1a1a;
 }
 
+.filters-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.filters-row select {
+  background-color: #121212;
+  color: var(--coloursecondary);
+  border: 1px solid var(--colouraccent);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 16px;
+}
+
+.filters-row select:focus {
+  outline: none;
+  box-shadow: 0 0 4px var(--colouraccent);
+}
+
 .collapsible-header {
   display: flex;
   justify-content: space-between;

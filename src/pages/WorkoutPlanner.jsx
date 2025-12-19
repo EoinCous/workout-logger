@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import WorkoutTypeSelector from "../components/WorkoutTypeSelector";
 import ExerciseList from "../components/ExerciseList";
 import SelectedExerciseList from "../components/SelectedExerciseList";
@@ -13,12 +13,14 @@ import { hydrateExercises } from "../utils/exerciseUtils";
 import SearchInput from "../components/SearchInput";
 import "../css/WorkoutPlanner.css";
 
-const WORKOUT_TYPES = {
+const CATEGORIES = {
+  all: [
+    "chest","shoulders","triceps","back","biceps","quads","hamstrings","glutes","calves","core"
+  ],
   push: ["chest", "shoulders", "triceps"],
   pull: ["back", "biceps"],
   legs: ["quads", "hamstrings", "glutes", "calves"],
-  core: ["core"],
-  full: ["chest", "back", "quads", "hamstrings", "glutes", "calves", "core", "shoulders", "biceps", "triceps"],
+  core: ["core"]
 };
 
 const WorkoutPlanner = () => {
@@ -29,30 +31,43 @@ const WorkoutPlanner = () => {
   const [workoutSaved, setWorkoutSaved] = useState(false);
   const [search, setSearch] = useState("");
   const [showAddSection, setShowAddSection] = useState(true);
+  const [category, setCategory] = useState("all");
+  const [muscle, setMuscle] = useState("all");
   const isHydrating = useRef(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentPlan) {
-      isHydrating.current = true;
-      setWorkoutType(currentPlan.type || "push");
-      setSelectedExercises(hydrateExercises(currentPlan.exercises) || []);
-    }
+    if (!currentPlan) return;
+    isHydrating.current = true;
+    setWorkoutType(currentPlan.type ?? "push");
+    setSelectedExercises(hydrateExercises(currentPlan.exercises) ?? []);
   }, [currentPlan]);
 
   useEffect(() => {
-    if (isHydrating.current) {
-      isHydrating.current = false;
-    } else {
-      setWorkoutSaved(false);
-    }
+    if (!isHydrating.current) setWorkoutSaved(false);
+    isHydrating.current = false;
   }, [workoutType, selectedExercises]);
 
-  const sortedExercises = exercises.sort((a, b) => a.name.localeCompare(b.name));
+  const availableMuscles =
+    category === "all"
+      ? [...new Set(exercises.map(e => e.muscle))] 
+      : CATEGORIES[category];
 
-  const filteredExercises = sortedExercises
-    .filter((ex) => WORKOUT_TYPES[workoutType].includes(ex.muscle))
-    .filter((ex) => ex.name.toLowerCase().includes(search.toLowerCase()));
+  const muscleOptions = ["all", ...availableMuscles];
+
+  const sortedExercises = useMemo(
+    () => [...exercises].sort((a, b) => a.name.localeCompare(b.name)),
+    [exercises]
+  );
+
+  const filteredExercises = useMemo(() =>
+    sortedExercises.filter(ex => {
+      if (category !== "all" && !CATEGORIES[category].includes(ex.muscle)) return false;
+      if (muscle !== "all" && ex.muscle !== muscle) return false;
+      if (!ex.name.toLowerCase().includes(search.toLowerCase())) return false;
+      return true;
+    }),
+  [sortedExercises, category, muscle, search]);
 
   const handleAdd = (exercise) => {
     if (!selectedExercises.find((e) => e.id === exercise.id)) {
@@ -132,6 +147,27 @@ const WorkoutPlanner = () => {
         {showAddSection && (
           <div className="collapsible-content">
             <SearchInput value={search} onChange={setSearch} />
+
+            <div className="filters-row">
+              <select value={category} onChange={(e) => {
+                setCategory(e.target.value);
+                setMuscle("all"); // reset when category changes
+              }}>
+                {Object.keys(CATEGORIES).map(cat => (
+                  <option key={cat} value={cat}>
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </option>
+                ))}
+              </select>
+
+              <select value={muscle} onChange={(e) => setMuscle(e.target.value)}>
+                {muscleOptions.map(m => (
+                  <option key={m} value={m}>
+                    {m.charAt(0).toUpperCase() + m.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="exercise-list">
               {filteredExercises.length > 0 ? (
