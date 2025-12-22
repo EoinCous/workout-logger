@@ -567,5 +567,18 @@
       "Avoid letting your lower back round.",
       "Drive through your mid-foot and extend without locking your knees."
     ]
+  },
+  {
+    "id": "ez-bar-skullcrushers",
+    "name": "EZ Bar Skullcrushers",
+    "muscle": "triceps",
+    "equipment": "EZ Curl Bar",
+    "description": "An isolation tricep exercise that targets the long head by lowering an EZ bar toward the forehead or behind the head.",
+    "tips": [
+      "Lie flat on a bench and grip the EZ bar on the angled handles.",
+      "Keep upper arms steady and let elbows travel slightly back as you lower the bar.",
+      "Lower the bar to your forehead or just behind your head for a deeper stretch.",
+      "Extend your arms fully without locking out hard at the top."
+    ]
   }
 ]

@@ -15,7 +15,7 @@
 .filters-row select {
   background-color: #121212;
   color: var(--coloursecondary);
-  border: 1px solid var(--colouraccent);
+  border: 1px solid #ccc;
   border-radius: 6px;
   padding: 6px 10px;
   font-size: 16px;

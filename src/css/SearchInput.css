@@ -4,6 +4,6 @@
   border-radius: 6px;
   background-color: #121212;
   color: var(--coloursecondary);
-  border: 1px solid var(--colouraccent);
+  border: 1px solid #ccc;
   margin-bottom: 1rem;
 }
