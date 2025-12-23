@@ -12,17 +12,17 @@ export default defineConfig({
       manifest: {
         name: 'RepLog',
         short_name: 'RepLog',
-        theme_color: '#1e88e5',
+        theme_color: '#121212',
         icons: [
           {
-            src: 'icon-192.png',
-            sizes: '192x192',
-            type: 'image/png'
+            "src": "/images/replog-icon-1.png",
+            "sizes": "192x192",
+            "type": "image/png"
           },
           {
-            src: 'icon-512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            "src": "/images/replog-icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
           }
         ]
       }
