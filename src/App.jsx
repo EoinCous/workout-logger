@@ -15,18 +15,12 @@ import { useAuthentication } from './context/AuthenticationContext';
 import Authentication from './pages/Authentication';
 import Profile from './pages/Profile';
 import OneRepMax from './pages/OneRepMax';
+import LoadingScreen from './components/LoadingScreen';
 
 function App() {
   const { user, authenticationLoading } = useAuthentication();
 
-  if (authenticationLoading) {
-    return (
-      <div className="loading-screen">
-        <h2>RepLog</h2>
-        <p>Checking your session…</p>
-      </div>
-    );
-  }
+  if (authenticationLoading) return <LoadingScreen message="Checking your session" />;
 
   return user ? (
     <div className="app-container">

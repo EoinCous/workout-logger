@@ -52,7 +52,11 @@ const Authentication = () => {
     <div className="auth-wrapper">
       <div className="auth-card" aria-label="Authentication card">
         <div className="auth-brand">
-          <h1>RepLog</h1>
+          <img
+            src="/images/replog-icon-1.png"
+            alt="RepLog"
+            className="loading-logo"
+          />
           <div className="auth-subtitle">
             {mode === 'login' ? 'Welcome back, log your workout.' : 'Create your account to start logging.'}
           </div>
@@ -90,7 +94,7 @@ const Authentication = () => {
         <div className="switch-mode">
           {mode === 'login' ? (
             <>
-              <span>Need an account? </span>
+              <span>New to RepLog? </span>
               <button type="button" onClick={() => setMode('signup')}>
                 Sign up
               </button>
