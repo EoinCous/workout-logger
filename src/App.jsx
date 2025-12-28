@@ -19,7 +19,14 @@ import OneRepMax from './pages/OneRepMax';
 function App() {
   const { user, authenticationLoading } = useAuthentication();
 
-  if (authenticationLoading) return <p>Loading...</p>;
+  if (true) {
+    return (
+      <div className="loading-screen">
+        <h2>RepLog</h2>
+        <p>Checking your session…</p>
+      </div>
+    );
+  }
 
   return user ? (
     <div className="app-container">
