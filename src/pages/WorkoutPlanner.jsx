@@ -15,12 +15,15 @@ import "../css/WorkoutPlanner.css";
 
 const CATEGORIES = {
   all: [
-    "chest","shoulders","triceps","back","biceps","quads","hamstrings","glutes","calves","core"
+    "chest","shoulders","triceps",
+    "back","biceps","forearms","traps","rear_delts","lats",
+    "quads","hamstrings","glutes","calves","adductors",
+    "core", "obliques"
   ],
   push: ["chest", "shoulders", "triceps"],
-  pull: ["back", "biceps"],
-  legs: ["quads", "hamstrings", "glutes", "calves"],
-  core: ["core"]
+  pull: ["back", "biceps", "forearms", "traps", "rear_delts", "lats"],
+  legs: ["quads", "hamstrings", "glutes", "calves", "adductors"],
+  core: ["core", "obliques"]
 };
 
 const WorkoutPlanner = () => {

@@ -3,6 +3,8 @@
     "id": "bench-press",
     "name": "Barbell Bench Press",
     "muscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulders"],
+    "trackingType": "reps",
     "equipment": "Barbell",
     "description": "A compound chest exercise targeting the pectorals, triceps, and front deltoids.",
     "tips": [
@@ -14,7 +16,9 @@
   {
     "id": "lat-pulldown",
     "name": "Lat Pulldown",
-    "muscle": "back",
+    "muscle": "lats",
+    "secondaryMuscles": ["biceps", "forearms", "back"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "Targets the lats and upper back.",
     "tips": [
@@ -27,6 +31,8 @@
     "id": "seated-cable-row",
     "name": "Seated Cable Row",
     "muscle": "back",
+    "secondaryMuscles": ["lats", "biceps", "forearms"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "A horizontal pulling exercise that targets the middle back and lats.",
     "tips": [
@@ -38,7 +44,9 @@
   {
     "id": "single-arm-dumbbell-row",
     "name": "Single Arm Dumbbell Row",
-    "muscle": "back",
+    "muscle": "lats",
+    "secondaryMuscles": ["biceps", "forearms", "back"],
+    "trackingType": "reps",
     "equipment": "Dumbbell",
     "description": "Targets the lats and rhomboids with an emphasis on unilateral strength.",
     "tips": [
@@ -50,7 +58,9 @@
   {
     "id": "face-pulls",
     "name": "Face Pulls",
-    "muscle": "back",
+    "muscle": "rear_delts",
+    "secondaryMuscles": ["traps", "shoulders", "back"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "A shoulder and upper back exercise focused on the rear deltoids and traps.",
     "tips": [
@@ -63,6 +73,8 @@
     "id": "dumbbell-bicep-curls",
     "name": "Dumbbell Bicep Curls",
     "muscle": "biceps",
+    "secondaryMuscles": ["forearms"],
+    "trackingType": "reps",
     "equipment": "Dumbbells",
     "description": "An isolation exercise targeting the biceps.",
     "tips": [
@@ -75,6 +87,8 @@
     "id": "cable-rope-hammer-curls",
     "name": "Cable Rope Hammer Curls",
     "muscle": "biceps",
+    "secondaryMuscles": ["forearms"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "Targets the biceps and brachialis using a neutral grip.",
     "tips": [
@@ -87,6 +101,8 @@
     "id": "dumbbell-bench-press",
     "name": "Dumbbell Bench Press",
     "muscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulders"],
+    "trackingType": "reps",
     "equipment": "Dumbbells",
     "description": "A compound chest exercise that also targets shoulders and triceps.",
     "tips": [
@@ -99,6 +115,8 @@
     "id": "machine-incline-chest-press",
     "name": "Machine Incline Chest Press",
     "muscle": "chest",
+    "secondaryMuscles": ["shoulders", "triceps"],
+    "trackingType": "reps",
     "equipment": "Machine",
     "description": "Focuses on the upper chest and anterior deltoids.",
     "tips": [
@@ -111,6 +129,8 @@
     "id": "seated-dumbbell-shoulder-press",
     "name": "Seated Dumbbell Shoulder Press",
     "muscle": "shoulders",
+    "secondaryMuscles": ["triceps", "chest"],
+    "trackingType": "reps",
     "equipment": "Dumbbells",
     "description": "Targets the front and side deltoids while stabilizing the core.",
     "tips": [
@@ -123,6 +143,8 @@
     "id": "cable-lateral-raises",
     "name": "Cable Lateral Raises",
     "muscle": "shoulders",
+    "secondaryMuscles": ["traps"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "An isolation exercise for the lateral deltoids.",
     "tips": [
@@ -135,6 +157,8 @@
     "id": "tricep-pushdowns",
     "name": "Tricep Pushdowns",
     "muscle": "triceps",
+    "secondaryMuscles": ["shoulders"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "An isolation movement for the triceps using a rope or straight bar.",
     "tips": [
@@ -147,6 +171,8 @@
     "id": "dumbbell-skullcrushers",
     "name": "Dumbbell Skullcrushers",
     "muscle": "triceps",
+    "secondaryMuscles": ["shoulders"],
+    "trackingType": "reps",
     "equipment": "Dumbbells",
     "description": "Targets the long head of the triceps during elbow extension.",
     "tips": [
@@ -159,6 +185,8 @@
     "id": "dumbbell-goblet-squats",
     "name": "Dumbbell Goblet Squats",
     "muscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "core"],
+    "trackingType": "reps",
     "equipment": "Dumbbell",
     "description": "A front-loaded squat variation targeting the quads, glutes, and core.",
     "tips": [
@@ -171,6 +199,8 @@
     "id": "dumbbell-rdls",
     "name": "Dumbbell Romanian Deadlifts",
     "muscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back", "forearms"],
+    "trackingType": "reps",
     "equipment": "Dumbbells",
     "description": "A hip-hinge movement that targets hamstrings and glutes.",
     "tips": [
@@ -183,6 +213,8 @@
     "id": "dumbbell-bulgarian-split-squats",
     "name": "Dumbbell Bulgarian Split Squats",
     "muscle": "glutes",
+    "secondaryMuscles": ["quads", "hamstrings", "adductors"],
+    "trackingType": "reps",
     "equipment": "Dumbbells",
     "description": "Unilateral lower body exercise that targets glutes, quads, and hamstrings.",
     "tips": [
@@ -195,6 +227,8 @@
     "id": "leg-curl-machine",
     "name": "Leg Curl Machine",
     "muscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "calves"],
+    "trackingType": "reps",
     "equipment": "Machine",
     "description": "An isolation exercise focusing on the hamstrings.",
     "tips": [
@@ -207,6 +241,8 @@
     "id": "leg-extension-machine",
     "name": "Leg Extension Machine",
     "muscle": "quads",
+    "secondaryMuscles": [],
+    "trackingType": "reps",
     "equipment": "Machine",
     "description": "Isolates the quadriceps through knee extension.",
     "tips": [
@@ -219,6 +255,8 @@
     "id": "cable-glute-kickbacks",
     "name": "Cable Glute Kickbacks",
     "muscle": "glutes",
+    "secondaryMuscles": ["hamstrings"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "Targets the gluteus maximus in a hip extension movement.",
     "tips": [
@@ -231,6 +269,8 @@
     "id": "calf-raises",
     "name": "Calf Raises",
     "muscle": "calves",
+    "secondaryMuscles": [],
+    "trackingType": "reps",
     "equipment": "Bodyweight / Dumbbell",
     "description": "Targets the gastrocnemius and soleus muscles of the calves.",
     "tips": [
@@ -243,6 +283,8 @@
     "id": "v-ups",
     "name": "V Ups",
     "muscle": "core",
+    "secondaryMuscles": ["obliques"],
+    "trackingType": "reps",
     "equipment": "Bodyweight",
     "description": "Targets the core.",
     "tips": [
@@ -254,7 +296,9 @@
   {
     "id": "russian-twists",
     "name": "Russian Twists",
-    "muscle": "core",
+    "muscle": "obliques",
+    "secondaryMuscles": ["core"],
+    "trackingType": "reps",
     "equipment": "Bodyweight / Kettlebell",
     "description": "Targets the core.",
     "tips": [
@@ -266,150 +310,176 @@
     "id": "cable-crossovers",
     "name": "Cable Crossovers",
     "muscle": "chest",
+    "secondaryMuscles": ["shoulders"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "An isolation chest exercise targeting the inner pectorals.",
     "tips": [
-        "Start with cables high and arms outstretched.",
-        "Bring hands together in front of you with a slight bend in elbows.",
-        "Squeeze the chest at the peak."
+      "Start with cables high and arms outstretched.",
+      "Bring hands together in front of you with a slight bend in elbows.",
+      "Squeeze the chest at the peak."
     ]
   },
   {
     "id": "chin-up",
     "name": "Chin Up",
-    "muscle": "back",
+    "muscle": "lats",
+    "secondaryMuscles": ["biceps", "forearms", "back"],
+    "trackingType": "reps",
     "equipment": "Bodyweight",
     "description": "A bodyweight pulling exercise emphasizing the lats and biceps.",
     "tips": [
-        "Use an underhand grip.",
-        "Pull your chest to the bar.",
-        "Control the descent."
+      "Use an underhand grip.",
+      "Pull your chest to the bar.",
+      "Control the descent."
     ]
   },
   {
     "id": "deadlift",
     "name": "Deadlift",
     "muscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back", "forearms", "quads", "traps"],
+    "trackingType": "reps",
     "equipment": "Barbell",
     "description": "A compound lift that targets the posterior chain.",
     "tips": [
-        "Keep your back flat and bar close to your body.",
-        "Drive through your heels.",
-        "Lock out at the top by squeezing glutes."
+      "Keep your back flat and bar close to your body.",
+      "Drive through your heels.",
+      "Lock out at the top by squeezing glutes."
     ]
   },
   {
     "id": "hanging-leg-raises",
     "name": "Hanging Leg Raises",
     "muscle": "core",
+    "secondaryMuscles": ["forearms"],
+    "trackingType": "reps",
     "equipment": "Bodyweight",
     "description": "Targets the lower abdominals and hip flexors.",
     "tips": [
-        "Hang from a pull-up bar with straight arms.",
-        "Raise legs to at least 90 degrees.",
-        "Avoid swinging."
+      "Hang from a pull-up bar with straight arms.",
+      "Raise legs to at least 90 degrees.",
+      "Avoid swinging."
     ]
   },
   {
     "id": "hip-thrusts",
     "name": "Hip Thrusts",
     "muscle": "glutes",
+    "secondaryMuscles": ["hamstrings"],
+    "trackingType": "reps",
     "equipment": "Barbell",
     "description": "Targets the glutes with emphasis on hip extension.",
     "tips": [
-        "Place upper back on a bench and feet flat on the ground.",
-        "Drive through your heels and squeeze at the top.",
-        "Avoid hyperextending your lower back."
+      "Place upper back on a bench and feet flat on the ground.",
+      "Drive through your heels and squeeze at the top.",
+      "Avoid hyperextending your lower back."
     ]
   },
   {
     "id": "lunges",
     "name": "Lunges",
     "muscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "calves"],
+    "trackingType": "reps",
     "equipment": "Bodyweight / Dumbbell",
     "description": "A unilateral lower body movement targeting glutes, quads, and hamstrings.",
     "tips": [
-        "Keep torso upright.",
-        "Step forward and lower until both knees are at 90 degrees.",
-        "Push through the front heel to return."
+      "Keep torso upright.",
+      "Step forward and lower until both knees are at 90 degrees.",
+      "Push through the front heel to return."
     ]
   },
   {
     "id": "plank",
     "name": "Plank",
     "muscle": "core",
+    "secondaryMuscles": ["shoulders"],
+    "trackingType": "time",
     "equipment": "Bodyweight",
     "description": "An isometric exercise targeting the core.",
     "tips": [
-        "Maintain a straight line from head to heels.",
-        "Keep your core tight.",
-        "Don’t let hips sag or pike."
+      "Maintain a straight line from head to heels.",
+      "Keep your core tight.",
+      "Don’t let hips sag or pike."
     ]
   },
   {
     "id": "preacher-curls",
     "name": "Preacher Curls",
     "muscle": "biceps",
+    "secondaryMuscles": ["forearms"],
+    "trackingType": "reps",
     "equipment": "EZ Bar / Machine",
     "description": "Isolation movement targeting the biceps with arm support.",
     "tips": [
-        "Keep upper arms fixed against the pad.",
-        "Lower the bar slowly.",
-        "Squeeze at the top."
+      "Keep upper arms fixed against the pad.",
+      "Lower the bar slowly.",
+      "Squeeze at the top."
     ]
   },
   {
     "id": "pull-ups",
     "name": "Pull Up",
-    "muscle": "back",
+    "muscle": "lats",
+    "secondaryMuscles": ["biceps", "back", "forearms"],
+    "trackingType": "reps",
     "equipment": "Bodyweight",
     "description": "A compound pulling movement targeting the back and arms.",
     "tips": [
-        "Use a shoulder-width overhand grip.",
-        "Pull your chin above the bar.",
-        "Control the descent."
+      "Use a shoulder-width overhand grip.",
+      "Pull your chin above the bar.",
+      "Control the descent."
     ]
   },
   {
     "id": "push-ups",
     "name": "Push Ups",
     "muscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulders", "core"],
+    "trackingType": "reps",
     "equipment": "Bodyweight",
     "description": "A bodyweight pressing movement targeting the chest, shoulders, and triceps.",
     "tips": [
-        "Keep your body in a straight line.",
-        "Lower chest to the ground.",
-        "Push through palms to return."
+      "Keep your body in a straight line.",
+      "Lower chest to the ground.",
+      "Push through palms to return."
     ]
   },
   {
     "id": "reverse-curls",
     "name": "Reverse Curls",
-    "muscle": "biceps",
+    "muscle": "forearms",
+    "secondaryMuscles": ["biceps"],
+    "trackingType": "reps",
     "equipment": "Barbell / EZ Bar",
     "description": "Targets the brachialis and forearms using a pronated grip.",
     "tips": [
-        "Use an overhand grip.",
-        "Keep elbows at your sides.",
-        "Curl without swinging."
+      "Use an overhand grip.",
+      "Keep elbows at your sides.",
+      "Curl without swinging."
     ]
   },
   {
     "id": "standing-cable-curls",
     "name": "Standing Cable Curls",
     "muscle": "biceps",
+    "secondaryMuscles": ["forearms"],
+    "trackingType": "reps",
     "equipment": "Cable Machine",
     "description": "An isolation exercise for biceps with constant tension.",
     "tips": [
-        "Keep elbows stationary.",
-        "Curl with control.",
-        "Squeeze at the top of the movement."
+      "Keep elbows stationary.",
+      "Curl with control.",
+      "Squeeze at the top of the movement."
     ]
   },
   {
     "id": "front-dumbbell-squat",
     "name": "Front Dumbbell Squat",
     "muscle": "quads",
+    "secondaryMuscles": ["core", "glutes", "hamstrings"],
+    "trackingType": "reps",
     "equipment": "Dumbbell",
     "description": "A lower body exercise that targets the quads, glutes, and core by holding dumbbells at shoulder height.",
     "tips": [
@@ -422,6 +492,8 @@
     "id": "dumbbell-incline-press",
     "name": "Dumbbell Incline Press",
     "muscle": "chest",
+    "secondaryMuscles": ["shoulders", "triceps"],
+    "trackingType": "reps",
     "equipment": "Dumbbell / Bench",
     "description": "A compound pressing movement performed on an incline bench to target the upper chest and shoulders.",
     "tips": [
@@ -434,6 +506,8 @@
     "id": "front-raises",
     "name": "Front Raises",
     "muscle": "shoulders",
+    "secondaryMuscles": ["traps"],
+    "trackingType": "reps",
     "equipment": "Dumbbell / Plate / Cable",
     "description": "An isolation exercise that targets the front deltoids by lifting the weights in front of the body.",
     "tips": [
@@ -446,6 +520,8 @@
     "id": "overhead-tricep-extensions",
     "name": "Overhead Tricep Extensions",
     "muscle": "triceps",
+    "secondaryMuscles": ["shoulders"],
+    "trackingType": "reps",
     "equipment": "Dumbbell / Cable / EZ Bar",
     "description": "An isolation movement focusing on the long head of the triceps by extending the arms overhead.",
     "tips": [
@@ -458,6 +534,8 @@
     "id": "dumbbell-lateral-raise",
     "name": "Dumbbell Lateral Raise",
     "muscle": "shoulders",
+    "secondaryMuscles": ["traps"],
+    "trackingType": "reps",
     "equipment": "Dumbbell",
     "description": "An isolation exercise that targets the lateral deltoids to build wider, stronger shoulders.",
     "tips": [
@@ -469,7 +547,9 @@
   {
     "id": "bent-over-dumbbell-reverse-fly",
     "name": "Bent-Over Dumbbell Reverse Fly",
-    "muscle": "back",
+    "muscle": "rear_delts",
+    "secondaryMuscles": ["back", "traps"],
+    "trackingType": "reps",
     "equipment": "Dumbbell",
     "description": "An isolation exercise that targets the rear deltoids and upper back by moving the arms outward in a bent-over position.",
     "tips": [
@@ -481,7 +561,9 @@
   {
     "id": "dumbbell-shrug",
     "name": "Dumbbell Shrug",
-    "muscle": "back",
+    "muscle": "traps",
+    "secondaryMuscles": ["forearms"],
+    "trackingType": "reps",
     "equipment": "Dumbbell",
     "description": "A simple but effective exercise that strengthens and builds the trapezius muscles by elevating the shoulders.",
     "tips": [
@@ -494,6 +576,8 @@
     "id": "barbell-rows",
     "name": "Barbell Rows",
     "muscle": "back",
+    "secondaryMuscles": ["biceps", "forearms", "lats", "traps"],
+    "trackingType": "reps",
     "equipment": "Barbell",
     "description": "A compound pulling exercise that targets the lats, upper back, and lower back while also engaging the biceps.",
     "tips": [
@@ -507,6 +591,8 @@
     "id": "barbell-shoulder-press",
     "name": "Barbell Shoulder Press",
     "muscle": "shoulders",
+    "secondaryMuscles": ["triceps", "chest"],
+    "trackingType": "reps",
     "equipment": "Barbell",
     "description": "A compound pressing exercise targeting the front and side delts while also engaging the triceps and upper chest.",
     "tips": [
@@ -520,6 +606,8 @@
     "id": "decline-sit-ups",
     "name": "Decline Sit-Ups",
     "muscle": "core",
+    "secondaryMuscles": [],
+    "trackingType": "reps",
     "equipment": "Decline Bench",
     "description": "An abdominal exercise that increases resistance by positioning the torso below hip height.",
     "tips": [
@@ -533,6 +621,8 @@
     "id": "barbell-rdls",
     "name": "Barbell Romanian Deadlifts",
     "muscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back", "forearms"],
+    "trackingType": "reps",
     "equipment": "Barbell",
     "description": "A hip-hinge exercise that targets the hamstrings and glutes while strengthening the lower back.",
     "tips": [
@@ -546,6 +636,8 @@
     "id": "barbell-back-squat",
     "name": "Barbell Back Squat",
     "muscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "core", "adductors"],
+    "trackingType": "reps",
     "equipment": "Barbell",
     "description": "A compound lower-body exercise targeting the quads, glutes, and hamstrings while developing overall leg strength.",
     "tips": [
@@ -559,6 +651,8 @@
     "id": "leg-press",
     "name": "Leg Press",
     "muscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings"],
+    "trackingType": "reps",
     "equipment": "Leg Press Machine",
     "description": "A machine-based compound exercise that targets the quadriceps with support for the lower back and hips.",
     "tips": [
@@ -572,6 +666,8 @@
     "id": "ez-bar-skullcrushers",
     "name": "EZ Bar Skullcrushers",
     "muscle": "triceps",
+    "secondaryMuscles": ["shoulders"],
+    "trackingType": "reps",
     "equipment": "EZ Curl Bar",
     "description": "An isolation tricep exercise that targets the long head by lowering an EZ bar toward the forehead or behind the head.",
     "tips": [

@@ -65,7 +65,8 @@ const ExerciseDetail = () => {
       <BackButton previousPage={previousPage} />
       <h1 className='page-title'>{exercise.name}</h1>
       <p><strong>Description:</strong> {exercise.description}</p>
-      <p><strong>Muscle Group:</strong> {exercise.muscle}</p>
+      <p><strong>Primary Muscle:</strong> {exercise.muscle}</p>
+      <p><strong>Secondary Muscles:</strong> {exercise.secondaryMuscles}</p>
       <p><strong>Equipment:</strong> {exercise.equipment}</p>
 
       <h3>Tips:</h3>
