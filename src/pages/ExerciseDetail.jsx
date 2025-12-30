@@ -77,6 +77,18 @@ const ExerciseDetail = () => {
     };
   }, [workouts, id, exercise]);
 
+  const recentHistory = useMemo(() => {
+    return workouts
+      .filter(workout => workout.exercises.some(ex => ex.id === id)) // Only workouts with this exercise
+      .sort((a, b) => new Date(b.date) - new Date(a.date)) // Most recent first
+      .slice(0, 3) // Top 3
+      .map(workout => ({
+        date: workout.date,
+        // Find the specific exercise instance within that workout
+        sets: workout.exercises.find(ex => ex.id === id).sets 
+      }));
+  }, [workouts, id]);
+
   if (!exercise) return <div className="error-state">Exercise not found.</div>;
 
   return (
@@ -203,6 +215,35 @@ const ExerciseDetail = () => {
         <div className="description-box">
             <h4>Description</h4>
             <p>{exercise.description}</p>
+        </div>
+
+        <div className="history-section">
+          <h3>Recent History</h3>
+          {recentHistory.length > 0 ? (
+            <div className="history-list">
+              {recentHistory.map((workout, index) => (
+                <div key={index} className="history-card">
+                  <div className="history-date">
+                    {new Date(workout.date).toLocaleDateString(undefined, { 
+                      weekday: 'short', month: 'short', day: 'numeric' 
+                    })}
+                  </div>
+                  <div className="history-sets">
+                    {workout.sets.map((set, i) => (
+                      <div key={i} className="history-set-row">
+                        <span className="set-number">Set {i + 1}</span>
+                        <span className="set-details">
+                          {set.weight}kg x {set.reps}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="empty-text">No workout history yet.</p>
+          )}
         </div>
       </div>
     </div>

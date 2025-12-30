@@ -6,11 +6,6 @@
   color: #fff; /* Assuming dark mode */
 }
 
-/* Header & Chips */
-.page-title {
-  font-size: 24px;
-  margin: 10px 0;
-}
 .chip-container {
   display: flex;
   flex-wrap: wrap;
@@ -116,4 +111,47 @@
 .description-box p {
   line-height: 1.6;
   color: #aaa;
+}
+
+.history-section {
+  margin-top: 30px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-card {
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #333;
+}
+
+.history-date {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--colouraccent);
+  margin-bottom: 10px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+}
+
+.history-set-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.set-number {
+  color: #888;
+  font-size: 13px;
+}
+
+.set-details {
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
 }
