@@ -14,13 +14,7 @@ import {
 import { upsertWeeklyGoal } from '../supabase/supabaseWorkoutService';
 import { useAuthentication } from '../context/AuthenticationContext';
 import exercisesData from "../data/exercises.json";
-
-const MUSCLE_CATEGORIES = {
-  Push: ["chest", "shoulders", "triceps"],
-  Pull: ["back", "biceps", "forearms", "traps", "rear_delts", "lats"],
-  Legs: ["quads", "hamstrings", "glutes", "calves", "adductors"],
-  Core: ["core", "obliques"]
-};
+import { getMuscleCategory } from '../utils/muscleGroups';
 
 const WeeklyProgress = () => {
   const { workouts, weeklyGoal, setWeeklyGoal } = useWorkout();
@@ -107,13 +101,7 @@ const WeeklyProgress = () => {
         total: new Set([...data.primary, ...data.secondary]).size
       };
 
-      let bucket = "Other";
-      for (const [cat, muscles] of Object.entries(MUSCLE_CATEGORIES)) {
-        if (muscles.includes(name)) {
-          bucket = cat;
-          break;
-        }
-      }
+      const bucket = getMuscleCategory(name);
 
       grouped[bucket].push(entry);
     });
@@ -249,7 +237,7 @@ const WeeklyProgress = () => {
             {Object.entries(stats.grouped).map(([cat, muscles]) =>
               muscles.length ? (
                 <div key={cat} className="category-table-wrapper">
-                  <h4 className={`cat-header ${cat.toLowerCase()}`}>{cat}</h4>
+                  <h4 className={`cat-header`}>{cat}</h4>
                   <table className="muscle-table">
                     <thead>
                       <tr>

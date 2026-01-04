@@ -12,19 +12,7 @@ import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { hydrateExercises } from "../utils/exerciseUtils";
 import SearchInput from "../components/SearchInput";
 import "../css/WorkoutPlanner.css";
-
-const CATEGORIES = {
-  all: [
-    "chest","shoulders","triceps",
-    "back","biceps","forearms","traps","rear_delts","lats",
-    "quads","hamstrings","glutes","calves","adductors",
-    "core", "obliques"
-  ],
-  push: ["chest", "shoulders", "triceps"],
-  pull: ["back", "biceps", "forearms", "traps", "rear_delts", "lats"],
-  legs: ["quads", "hamstrings", "glutes", "calves", "adductors"],
-  core: ["core", "obliques"]
-};
+import { MUSCLE_CATEGORIES, ALL_MUSCLES } from "../utils/muscleGroups";
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
@@ -51,10 +39,10 @@ const WorkoutPlanner = () => {
     isHydrating.current = false;
   }, [workoutType, selectedExercises]);
 
-  const availableMuscles =
-    category === "all"
-      ? [...new Set(exercises.map(e => e.muscle))] 
-      : CATEGORIES[category];
+  const availableMuscles = useMemo(() => {
+    if (category === "all") return ALL_MUSCLES;
+    return MUSCLE_CATEGORIES[category] || [];
+  }, [category]);
 
   const muscleOptions = ["all", ...availableMuscles];
 
@@ -65,9 +53,15 @@ const WorkoutPlanner = () => {
 
   const filteredExercises = useMemo(() =>
     sortedExercises.filter(ex => {
-      if (category !== "all" && !CATEGORIES[category].includes(ex.muscle)) return false;
+      // If a category is selected (Push/Pull/etc), check if exercise muscle is in that list
+      if (category !== "all") {
+        const categoryMuscles = MUSCLE_CATEGORIES[category] || [];
+        if (!categoryMuscles.includes(ex.muscle)) return false;
+      }
+      
       if (muscle !== "all" && ex.muscle !== muscle) return false;
       if (!ex.name.toLowerCase().includes(search.toLowerCase())) return false;
+      
       return true;
     }),
   [sortedExercises, category, muscle, search]);
@@ -152,13 +146,17 @@ const WorkoutPlanner = () => {
             <SearchInput value={search} onChange={setSearch} />
 
             <div className="filters-row">
-              <select value={category} onChange={(e) => {
-                setCategory(e.target.value);
-                setMuscle("all"); // reset when category changes
-              }}>
-                {Object.keys(CATEGORIES).map(cat => (
-                  <option key={cat} value={cat}>
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              <select 
+                value={category} 
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  setMuscle("all"); 
+                }}
+              >
+                <option value="all">All Categories</option>
+                {Object.keys(MUSCLE_CATEGORIES).map(category => (
+                  <option key={category} value={category}>
+                    {category}
                   </option>
                 ))}
               </select>
