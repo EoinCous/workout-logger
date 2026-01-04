@@ -1,57 +1,109 @@
 import '../css/Exercises.css';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import exercisesData from '../data/exercises.json';
 import ExerciseCard from '../components/ExerciseCard';
 import SearchInput from '../components/SearchInput';
+import { MUSCLE_CATEGORIES } from '../utils/muscleGroups'; // Import your utility
 
 const Exercises = () => {
   const [search, setSearch] = useState('');
-  const [selectedMuscle, setSelectedMuscle] = useState('All Muscles');
+  const [activeCategory, setActiveCategory] = useState('All');
 
-  const muscles = ['All Muscles', ...new Set(exercisesData.map(ex => ex.muscle))];
+  // Flatten logic for "All" view + add the specific categories
+  const categories = ['All', 'Push', 'Pull', 'Legs', 'Core'];
 
-  const filteredExercises = exercisesData.filter(ex => {
-    const matchesMuscle = selectedMuscle === 'All Muscles' || ex.muscle === selectedMuscle;
-    const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
-    return matchesMuscle && matchesSearch;
-  })
-  .sort((a, b) => a.name.localeCompare(b.name));
+  // 1. Filter Data
+  const filteredData = useMemo(() => {
+    let data = exercisesData;
+
+    // Filter by Category (Push/Pull/etc)
+    if (activeCategory !== 'All') {
+      const allowedMuscles = MUSCLE_CATEGORIES[activeCategory] || [];
+      data = data.filter(ex => allowedMuscles.includes(ex.muscle));
+    }
+
+    // Filter by Search
+    if (search) {
+      data = data.filter(ex => 
+        ex.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    return data;
+  }, [search, activeCategory]);
+
+  // 2. Group Data by Muscle (e.g., { Chest: [...], Shoulders: [...] })
+  const groupedExercises = useMemo(() => {
+    const groups = {};
+    
+    filteredData.forEach(ex => {
+      if (!groups[ex.muscle]) {
+        groups[ex.muscle] = [];
+      }
+      groups[ex.muscle].push(ex);
+    });
+
+    // Sort exercises alphabetically within their group
+    Object.keys(groups).forEach(muscle => {
+      groups[muscle].sort((a, b) => a.name.localeCompare(b.name));
+    });
+
+    return groups;
+  }, [filteredData]);
+
+  // Get sorted muscle names for rendering order
+  const sortedMuscleGroups = Object.keys(groupedExercises).sort();
 
   return (
-    <div className="exercises-page">
-      <h1 className="page-title">📋 Exercises</h1>
+    <div className="exercises-page fade-in">
+      <h1 className="page-title">📋 Exercise Library</h1>
 
-      <div className="filters">
+      <div className="controls-section">
         <SearchInput
           value={search}
           onChange={setSearch}
+          placeholder="Search exercises..."
         />
 
-        <select
-          value={selectedMuscle}
-          onChange={(e) => setSelectedMuscle(e.target.value)}
-          className="muscle-select"
-        >
-          {muscles.map((muscle) => (
-            <option key={muscle} value={muscle}>
-              {muscle.charAt(0).toUpperCase() + muscle.slice(1)}
-            </option>
+        {/* Pill Filters */}
+        <div className="category-pills">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              className={`pill-btn ${activeCategory === cat ? 'active' : ''}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
-      <div className="exercise-list">
-        {filteredExercises.length > 0 ? (
-          filteredExercises.map((exercise) => (
-            <ExerciseCard key={exercise.id} exercise={exercise} />
+      <div className="exercise-list-container">
+        {sortedMuscleGroups.length > 0 ? (
+          sortedMuscleGroups.map(muscle => (
+            <div key={muscle} className="muscle-group-section">
+              {/* Sticky Header */}
+              <div className="muscle-sticky-header">
+                <span className="header-title">{muscle.replace('_', ' ')}</span>
+                <span className="header-count">{groupedExercises[muscle].length}</span>
+              </div>
+              
+              {/* Cards Grid */}
+              <div className="cards-grid">
+                {groupedExercises[muscle].map(exercise => (
+                  <ExerciseCard key={exercise.id} exercise={exercise} />
+                ))}
+              </div>
+            </div>
           ))
         ) : (
-          <p className="no-results">
-            No exercises found. 
-            Try search in "all muscles". 
-            If it's not there, 
-            you can request the addition of your exercise through the suggestions form in the Home page.
-          </p>
+          <div className="no-results">
+            <p>No exercises found for "{search}" in {activeCategory}.</p>
+            <p className="sub-text">
+               Don't see your exercise? You can request it via the Suggestions form on the Home page.
+            </p>
+          </div>
         )}
       </div>
     </div>
