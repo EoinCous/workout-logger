@@ -21,7 +21,7 @@ const WorkoutPlanner = () => {
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
   const [search, setSearch] = useState("");
-  const [showAddSection, setShowAddSection] = useState(true);
+  const [showAddSection, setShowAddSection] = useState(false);
   const [category, setCategory] = useState("all");
   const [muscle, setMuscle] = useState("all");
   const isHydrating = useRef(true);
