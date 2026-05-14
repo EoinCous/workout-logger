@@ -36,11 +36,12 @@ const WorkoutLog = () => {
     
   }, [currentLog, currentPlan, setCurrentLog, status]);
 
-  const availableExercises = currentLog
+  const availableExercises = (currentLog
     ? exerciseList.filter(
         ex => !currentLog.exercises.some(logEx => logEx.id === ex.id)
       )
-    : exerciseList;
+    : exerciseList
+  ).sort((a, b) => a.name.localeCompare(b.name));
 
   const handleInputChange = useCallback((id, field, value) => {
     setCurrentLog(prevLog => ({
@@ -145,24 +146,26 @@ const WorkoutLog = () => {
       completedAt: new Date().toISOString(),
       notes: currentLog.notes
     };
+
     const personalBests = newPersonalBests(workouts, completedWorkout);
     completedWorkout.personalBests = personalBests;
-    navigate(`/workout-summary`, { state: { workout: completedWorkout } });
-    
+
     try {
       await insertWorkout(user?.id, completedWorkout);
 
+      await clearCurrentPlan(user?.id);
+
       const fetchedWorkouts = await fetchWorkouts(user?.id);
       setWorkouts(fetchedWorkouts);
-
-      await clearCurrentPlan(user?.id);
       setCurrentPlan(null);
       setStatus("complete");
       setCurrentLog(null);
+
+      navigate(`/workout-summary`, { state: { workout: completedWorkout } });
     } catch (error) {
       handleSupabaseAuthError(error, logout);
-      console.error(error);
-      navigate('/workout-log');
+      console.error("Failed to complete workout:", error);
+      alert("Check your internet connection. Workout couldn't be saved.");
     }
   };
 

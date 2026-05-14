@@ -676,5 +676,19 @@
       "Lower the bar to your forehead or just behind your head for a deeper stretch.",
       "Extend your arms fully without locking out hard at the top."
     ]
-  }
+  },
+  {
+    "id": "ab-crunch-machine",
+    "name": "Ab Crunch Machine",
+    "muscle": "abs",
+    "secondaryMuscles": ["obliques"],
+    "trackingType": "reps",
+    "equipment": "Machine",
+    "description": "An isolation exercise performed on a weighted machine that allows for controlled resistance during spinal flexion to target the rectus abdominis.",
+    "tips": [
+      "Select a weight that allows for a full range of motion without using momentum.",
+      "Focus on 'curling' your torso toward your knees rather than just pushing down with your arms or legs.",
+      "Exhale as you crunch down and pause briefly at the peak of the contraction for maximum engagement."
+    ]
+}
 ]
