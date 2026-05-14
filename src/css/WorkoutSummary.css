@@ -216,3 +216,120 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* --- Save Template Section --- */
+
+.template-save-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px dashed #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.save-template-trigger-btn {
+  background-color: transparent;
+  color: var(--colouraccent, #3b82f6);
+  border: 2px solid var(--colouraccent, #3b82f6);
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 300px;
+}
+
+.save-template-trigger-btn:hover {
+  background-color: var(--colouraccent, #3b82f6);
+  color: white;
+}
+
+/* Input Container */
+.template-input-container {
+  width: 100%;
+  max-width: 400px;
+  background: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid #333;
+  animation: slideUp 0.3s ease-out;
+}
+
+.template-input-container input {
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+.template-input-container input:focus {
+  border-color: var(--colouraccent, #3b82f6);
+}
+
+/* Action Buttons */
+.template-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-template-btn {
+  flex: 2;
+  background-color: var(--colouraccent, #3b82f6);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.confirm-template-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-template-btn {
+  flex: 1;
+  background-color: #333;
+  color: #ccc;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Feedback Messages */
+.template-feedback-msg {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.template-feedback-msg.success {
+  color: #4ade80; /* Green */
+}
+
+.template-feedback-msg.error {
+  color: #f87171; /* Red */
+}
+
+/* Animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

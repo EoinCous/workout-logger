@@ -17,6 +17,8 @@ import { MUSCLE_CATEGORIES, ALL_MUSCLES } from "../utils/muscleGroups";
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
   const { user, logout } = useAuthentication();
+  const navigate = useNavigate();
+
   const [workoutType, setWorkoutType] = useState("full");
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
@@ -25,7 +27,6 @@ const WorkoutPlanner = () => {
   const [category, setCategory] = useState("all");
   const [muscle, setMuscle] = useState("all");
   const isHydrating = useRef(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentPlan) return;

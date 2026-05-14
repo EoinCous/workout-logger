@@ -121,3 +121,56 @@ export const upsertWeeklyGoal = async (userId, goal) => {
 const formatExercises = (exercises) => {
   return exercises.map(exercise => ({ id: exercise.id, sets: exercise.sets }));
 }
+
+export const fetchTemplates = async (userId) => {
+  const { data, error } = await supabase
+    .from('templates')
+    .select('id, name, exercises, type, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
+};
+
+export const insertTemplate = async (userId, template) => {
+  const { count, error: countError } = await supabase
+    .from('templates')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId);
+
+  if (countError) throw countError;
+
+  // 2. Enforce the 5-template limit
+  if (count >= 5) {
+    const limitError = new Error("Template limit reached");
+    limitError.code = "LIMIT_REACHED"; // Custom code for your UI to catch
+    throw limitError;
+  }
+
+  const cleanedExercises = formatExercises(template.exercises);
+
+  const { data, error } = await supabase
+    .from('templates')
+    .insert({
+      user_id: userId,
+      name: template.name,
+      exercises: cleanedExercises,
+      type: template.type
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+export const deleteTemplate = async (userId, templateId) => {
+  const { error } = await supabase
+    .from('templates')
+    .delete()
+    .eq('user_id', userId)
+    .eq('id', templateId);
+
+  if (error) throw error;
+};

@@ -2,13 +2,21 @@ import { useLocation } from 'react-router-dom';
 import '../css/WorkoutSummary.css';
 import BackButton from '../components/BackButton';
 import { hydrateExercises } from '../utils/exerciseUtils';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useAuthentication } from '../context/AuthenticationContext';
+import { insertTemplate } from '../supabase/supabaseWorkoutService';
 
 const WorkoutSummary = () => {
   const location = useLocation();
   const workout = location.state?.workout;
+  
+  const { user } = useAuthentication(); 
 
-  // Hooks and logic
+  const [showTemplateInput, setShowTemplateInput] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [isSavingTemplate, setIsSavingTemplate] = useState(false);
+  const [templateFeedback, setTemplateFeedback] = useState({ type: '', message: '' });
+
   const hydratedExercises = useMemo(() => {
     return workout ? hydrateExercises(workout.exercises) : [];
   }, [workout]);
@@ -33,6 +41,39 @@ const WorkoutSummary = () => {
 
     return { volume: totalVolume, sets: totalSets, duration: durationMins };
   }, [workout, hydratedExercises]);
+
+  const handleSaveTemplate = async () => {
+    if (!templateName.trim()) return;
+    
+    setIsSavingTemplate(true);
+    setTemplateFeedback({ type: '', message: '' });
+
+    try {
+      const templateExercises = workout.exercises.map(ex => ({
+        id: ex.id,
+      }));
+      const templateType = workout.type;
+
+      const newTemplate = {
+        name: templateName.trim(),
+        exercises: templateExercises,
+        type: templateType
+      };
+
+      await insertTemplate(user?.id, newTemplate);
+
+      setTemplateFeedback({ type: 'success', message: 'Template saved successfully!' });
+      setShowTemplateInput(false);
+    } catch (error) {
+      console.error(error);
+      setTemplateFeedback({ 
+        type: 'error', 
+        message: 'Failed to save. You may have reached the 5 template limit.' 
+      });
+    } finally {
+      setIsSavingTemplate(false);
+    }
+  };
 
   if (!workout) {
     return (
@@ -75,7 +116,7 @@ const WorkoutSummary = () => {
           </div>
         </div>
 
-        {/* Personal Bests Section - Highlighted if exists */}
+        {/* Personal Bests Section */}
         {workout.personalBests && Object.keys(workout.personalBests).length > 0 && (
           <div className="new-pbs">
             <h3>🏆 Personal Best</h3>
@@ -117,12 +158,61 @@ const WorkoutSummary = () => {
           ))}
         </div>
 
+        {/* Notes Section */}
         {workout.notes && (
           <div className="workout-notes-summary">
             <h3>📝 Notes</h3>
             <p>{workout.notes}</p>
           </div>
         )}
+
+        {/* Template Section */}
+        <div className="template-save-section">
+          {!showTemplateInput && templateFeedback.type !== 'success' && (
+            <button 
+              className="save-template-trigger-btn"
+              onClick={() => setShowTemplateInput(true)}
+            >
+              💾 Save Workout as Template
+            </button>
+          )}
+
+          {showTemplateInput && (
+            <div className="template-input-container">
+              <input
+                type="text"
+                placeholder="Name this template (e.g., Heavy Legs)"
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                maxLength={30}
+                autoFocus
+              />
+              <div className="template-actions">
+                <button 
+                  className="confirm-template-btn"
+                  onClick={handleSaveTemplate}
+                  disabled={isSavingTemplate || !templateName.trim()}
+                >
+                  {isSavingTemplate ? "Saving..." : "Save"}
+                </button>
+                <button 
+                  className="cancel-template-btn"
+                  onClick={() => setShowTemplateInput(false)}
+                  disabled={isSavingTemplate}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {templateFeedback.message && (
+            <p className={`template-feedback-msg ${templateFeedback.type}`}>
+              {templateFeedback.message}
+            </p>
+          )}
+        </div>
+
       </div>
     </div>
   );
