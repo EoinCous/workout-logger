@@ -44,6 +44,14 @@ export const WorkoutProvider = ({ children }) => {
     return workouts.slice(0, 3);
   };
 
+  const resetWorkoutData = () => {
+    setStatus("idle");
+    setCurrentPlan(null);
+    setCurrentLog(null);
+    setWeeklyGoal(null);
+    setWorkouts([]);
+  };
+
   return (
     <WorkoutContext.Provider value={{
       status,
@@ -57,7 +65,8 @@ export const WorkoutProvider = ({ children }) => {
       getLatestWorkout,
       getLatestWorkouts,
       weeklyGoal,
-      setWeeklyGoal
+      setWeeklyGoal,
+      resetWorkoutData
     }}>
       {children}
     </WorkoutContext.Provider>

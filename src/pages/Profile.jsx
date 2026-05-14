@@ -4,7 +4,20 @@ import '../css/Profile.css';
 
 const Profile = () => {
   const { user, logout } = useAuthentication();
-  const { workouts, weeklyGoal } = useWorkout();
+  const { workouts, weeklyGoal, resetWorkoutData } = useWorkout();
+
+  const handleLogout = async () => {
+    try {
+      resetWorkoutData();
+
+      await logout();
+
+      // 3. Optional: Clear localStorage if you use it for persistence
+      // localStorage.removeItem('your_storage_key');
+    } catch (error) {
+      console.error("Error during logout process:", error);
+    }
+  };
 
   const totalWorkouts = workouts.length;
   const lastWorkout = totalWorkouts
@@ -20,7 +33,8 @@ const Profile = () => {
         <p><strong>Weekly Goal:</strong> {weeklyGoal || "Not set"}</p>
         <p><strong>Last Workout:</strong> {lastWorkout}</p>
       </div>
-      <button className="logout-btn" onClick={logout}>
+      
+      <button className="logout-btn" onClick={handleLogout}>
         Logout
       </button>
     </div>

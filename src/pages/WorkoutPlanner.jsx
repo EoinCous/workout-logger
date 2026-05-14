@@ -107,7 +107,7 @@ const WorkoutPlanner = () => {
     } catch (err) {
       handleSupabaseAuthError(err, logout);
       console.error("Failed to start workout:", err);
-      navigate('workout-planner')
+      navigate('/workout-planner')
     }
   };
 

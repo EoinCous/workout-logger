@@ -78,6 +78,25 @@ const WorkoutLog = () => {
     return !isNaN(num) && num >= 0;
   };
 
+  const copyLastSet = useCallback((exerciseId) => {
+    setCurrentLog(prevLog => ({
+      ...prevLog,
+      exercises: prevLog.exercises.map(exercise => {
+        if (exercise.id !== exerciseId || exercise.sets.length === 0) return exercise;
+
+        // Get the last set in the array
+        const lastSet = exercise.sets[exercise.sets.length - 1];
+
+        // Update the input fields with the last set's values
+        return {
+          ...exercise,
+          newReps: lastSet.reps,
+          newWeight: lastSet.weight,
+        };
+      })
+    }));
+  }, [setCurrentLog]);
+
   const removeSet = useCallback((exerciseId, setIndex) => {
     setCurrentLog(prevLog => ({
       ...prevLog,
@@ -199,6 +218,16 @@ const WorkoutLog = () => {
               </li>
             ))}
           </ul>
+
+          {sets.length > 0 && (
+            <button 
+              type="button" 
+              className="copy-set-btn" 
+              onClick={() => copyLastSet(id)}
+            >
+              🔄 Copy Last Set
+            </button>
+          )}
 
           <form
             className="add-set-form"
