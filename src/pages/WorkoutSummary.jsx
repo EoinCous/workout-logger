@@ -4,13 +4,15 @@ import BackButton from '../components/BackButton';
 import { hydrateExercises } from '../utils/exerciseUtils';
 import { useMemo, useState } from 'react';
 import { useAuthentication } from '../context/AuthenticationContext';
-import { insertTemplate } from '../supabase/supabaseWorkoutService';
+import { fetchTemplates, insertTemplate } from '../supabase/supabaseWorkoutService';
+import { useWorkout } from '../context/WorkoutContext';
 
 const WorkoutSummary = () => {
   const location = useLocation();
   const workout = location.state?.workout;
   
   const { user } = useAuthentication(); 
+  const { setTemplates } = useWorkout();
 
   const [showTemplateInput, setShowTemplateInput] = useState(false);
   const [templateName, setTemplateName] = useState("");
@@ -61,6 +63,9 @@ const WorkoutSummary = () => {
       };
 
       await insertTemplate(user?.id, newTemplate);
+
+      const fetchedTemplates = await fetchTemplates(user?.id);
+      setTemplates(fetchedTemplates);
 
       setTemplateFeedback({ type: 'success', message: 'Template saved successfully!' });
       setShowTemplateInput(false);

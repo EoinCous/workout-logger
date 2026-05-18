@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useAuthentication } from '../context/AuthenticationContext';
-import { fetchCurrentPlan, fetchWeeklyGoal, fetchWorkouts } from '../supabase/supabaseWorkoutService';
+import { fetchCurrentPlan, fetchWeeklyGoal, fetchWorkouts, fetchTemplates } from '../supabase/supabaseWorkoutService';
 import { useWorkout } from '../context/WorkoutContext';
 import '../css/Authentication.css';
 import { useNavigate } from 'react-router-dom';
 
 const Authentication = () => {
   const { signUp, login } = useAuthentication();
-  const { setCurrentPlan, setWorkouts, setWeeklyGoal } = useWorkout();
+  const { setCurrentPlan, setWorkouts, setWeeklyGoal, setTemplates } = useWorkout();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('login');
@@ -30,15 +30,17 @@ const Authentication = () => {
 
         navigate('/');
 
-        const [workoutsData, currentPlanData, weeklyGoalData] = await Promise.all([
+        const [workoutsData, currentPlanData, weeklyGoalData, templatesData] = await Promise.all([
           fetchWorkouts(userId),
           fetchCurrentPlan(userId),
           fetchWeeklyGoal(userId),
+          fetchTemplates(userId)
         ]);
 
         setWorkouts(workoutsData || []);
         setCurrentPlan(currentPlanData || null);
         setWeeklyGoal(weeklyGoalData || null);
+        setTemplates(templatesData || []);
       } else {
         await signUp(email, password);
         alert(`We’ve sent a verification link to ${email}. Please open your inbox and click the link to confirm your email.`)

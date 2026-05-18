@@ -28,13 +28,19 @@ export const WorkoutProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : null;
   });
 
+  const [templates, setTemplates] = useState(() => {
+    const saved = localStorage.getItem("templates");
+    return saved ? JSON.parse(saved) : [];
+  })
+
   useEffect(() => {
     localStorage.setItem("workoutStatus", status);
     localStorage.setItem("currentPlan", JSON.stringify(currentPlan));
     localStorage.setItem("currentLog", JSON.stringify(currentLog));
     localStorage.setItem("workouts", JSON.stringify(workouts));
     localStorage.setItem("weeklyGoal", JSON.stringify(weeklyGoal));
-  }, [status, currentPlan, currentLog, workouts, weeklyGoal]);
+    localStorage.setItem("templates", JSON.stringify(templates));
+  }, [status, currentPlan, currentLog, workouts, weeklyGoal, templates]);
 
   const getLatestWorkout = () => {
     return workouts.length > 0 ? workouts[0] : null;
@@ -50,6 +56,7 @@ export const WorkoutProvider = ({ children }) => {
     setCurrentLog(null);
     setWeeklyGoal(null);
     setWorkouts([]);
+    setTemplates([]);
   };
 
   return (
@@ -66,6 +73,8 @@ export const WorkoutProvider = ({ children }) => {
       getLatestWorkouts,
       weeklyGoal,
       setWeeklyGoal,
+      templates,
+      setTemplates,
       resetWorkoutData
     }}>
       {children}

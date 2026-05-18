@@ -11,9 +11,6 @@ const Profile = () => {
       resetWorkoutData();
 
       await logout();
-
-      // 3. Optional: Clear localStorage if you use it for persistence
-      // localStorage.removeItem('your_storage_key');
     } catch (error) {
       console.error("Error during logout process:", error);
     }
