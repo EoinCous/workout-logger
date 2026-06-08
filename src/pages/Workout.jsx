@@ -26,6 +26,7 @@ const Workout = () => {
 
   const handlePlanWorkout = () => {
     setStatus(WORKOUT_STATUS.PLANNING);
+    setCurrentPlan([]);
     navigate("/workout-planner");
   };
 

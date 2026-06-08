@@ -266,17 +266,31 @@
     ]
   },
   {
-    "id": "calf-raises",
-    "name": "Calf Raises",
+    "id": "seated-calf-raises",
+    "name": "Seated Calf Raises",
     "muscle": "calves",
     "secondaryMuscles": [],
     "trackingType": "reps",
-    "equipment": "Bodyweight / Dumbbell",
-    "description": "Targets the gastrocnemius and soleus muscles of the calves.",
+    "equipment": "Machine",
+    "description": "Isolates the calves, prioritizing the soleus muscle due to the flexed knee position.",
     "tips": [
-      "Perform full range of motion.",
-      "Pause at the top for a stronger contraction.",
-      "Keep knees slightly bent if needed."
+      "Lower your heels fully down for a deep stretch at the bottom.",
+      "Push through the balls of your feet to reach full extension.",
+      "Hold the contraction at the top for a second before lowering slowly."
+    ]
+  },
+  {
+    "id": "standing-calf-raises",
+    "name": "Standing Calf Raises",
+    "muscle": "calves",
+    "secondaryMuscles": [],
+    "trackingType": "reps",
+    "equipment": "Bodyweight / Dumbbell / Machine",
+    "description": "Targets the entire calf complex, with a major emphasis on the larger gastrocnemius muscle.",
+    "tips": [
+      "Keep your legs straight but avoid locking out your knees.",
+      "Control the negative to prevent using momentum or Achilles bounce.",
+      "Pause at the peak height of the raise to maximize tension."
     ]
   },
   {
@@ -680,7 +694,7 @@
   {
     "id": "ab-crunch-machine",
     "name": "Ab Crunch Machine",
-    "muscle": "abs",
+    "muscle": "core",
     "secondaryMuscles": ["obliques"],
     "trackingType": "reps",
     "equipment": "Machine",
@@ -690,5 +704,19 @@
       "Focus on 'curling' your torso toward your knees rather than just pushing down with your arms or legs.",
       "Exhale as you crunch down and pause briefly at the peak of the contraction for maximum engagement."
     ]
-}
+  },
+  {
+    "id": "decline-bench-press",
+    "name": "Decline Bench Press",
+    "muscle": "chest",
+    "secondaryMuscles": ["triceps", "front-delts"],
+    "trackingType": "reps",
+    "equipment": "Barbell",
+    "description": "A variation of the bench press that targets the lower portion of the pectoral muscles.",
+    "tips": [
+      "Secure your ankles firmly under the roller pads before lying down.",
+      "Unrack the bar carefully and lower it smoothly to your lower chest.",
+      "Keep your elbows tucked at roughly a 45-degree angle to protect your shoulders."
+    ]
+  }
 ]
