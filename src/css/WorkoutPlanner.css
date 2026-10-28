@@ -43,3 +43,8 @@
 .collapsible-content {
   margin-top: 0.5rem;
 }
+
+.exercise-list { 
+  max-height: 50vh; 
+  overflow-y: auto; 
+}

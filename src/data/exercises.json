@@ -718,5 +718,19 @@
       "Unrack the bar carefully and lower it smoothly to your lower chest.",
       "Keep your elbows tucked at roughly a 45-degree angle to protect your shoulders."
     ]
+  },
+  {
+    "id": "farmer-carries",
+    "name": "Farmer Carries",
+    "muscle": "forearms",
+    "secondaryMuscles": ["traps", "core"],
+    "trackingType": "reps",
+    "equipment": "Dumbbells / Kettlebells",
+    "description": "A powerful compound carry exercise designed to build total-body strength, grip endurance, upper back stability, and core integrity.",
+    "tips": [
+      "Select heavy dumbbells or kettlebells that challenge your grip without compromising your posture.",
+      "Stand tall with your chest up, shoulders pulled back and down, and core tightly braced.",
+      "Take controlled, deliberate steps forward while keeping your torso upright and preventing swaying."
+    ]
   }
 ]

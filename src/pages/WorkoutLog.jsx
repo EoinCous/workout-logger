@@ -306,7 +306,6 @@ const WorkoutLog = () => {
         />
       )}
 
-      {/* Balanced Strategic Execution CTAs */}
       <div className="action-footer">
         <button className="cancel-workout-btn" onClick={cancelWorkout}>
           Cancel Session

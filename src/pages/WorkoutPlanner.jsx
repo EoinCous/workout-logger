@@ -139,7 +139,7 @@ const WorkoutPlanner = () => {
           className="collapsible-header" 
           onClick={() => setShowAddSection(!showAddSection)}
         >
-          Add Exercises {showAddSection ? "▾" : "▸"}
+          Add Exercises {showAddSection ? "▾" : "▸"} ({selectedExercises.length} selected)
         </h3>
 
         {showAddSection && (
