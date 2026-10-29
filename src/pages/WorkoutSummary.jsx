@@ -137,7 +137,7 @@ const WorkoutSummary = () => {
         )}
 
         {/* Exercise List */}
-        <div className="exercise-list">
+        <div className="summary-exercise-list">
           {hydratedExercises.map((ex, i) => (
             <div key={ex.id || i} className="exercise-summary-card">
               <div className="ex-header">

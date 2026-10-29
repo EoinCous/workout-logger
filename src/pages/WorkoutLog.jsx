@@ -1,5 +1,5 @@
 import '../css/WorkoutLog.css';
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef, memo } from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import { clearCurrentPlan, fetchWorkouts, insertWorkout } from '../supabase/supabaseWorkoutService';
@@ -9,7 +9,6 @@ import { handleSupabaseAuthError } from '../utils/authErrorHandler';
 import { getCurrentPBs } from '../utils/pbUtils';
 import exerciseList from '../data/exercises.json';
 
-// Hoisted helper function to keep component renders lightweight
 const calculateNewPersonalBests = (previousWorkouts, completedWorkout) => {
   const previousPBs = getCurrentPBs(previousWorkouts);
   const updatedPBs = getCurrentPBs([...previousWorkouts, completedWorkout]);
@@ -28,6 +27,89 @@ const calculateNewPersonalBests = (previousWorkouts, completedWorkout) => {
   return newPBs;
 };
 
+// Isolated Exercise Card Component to prevent full-page re-renders
+const ExerciseCard = memo(({ exercise, onInputChange, onAddSet, onCopyLastSet, onRemoveSet }) => {
+  const { id, name, sets, newReps, newWeight } = exercise;
+
+  return (
+    <div className="exercise-log-card">
+      <div className="card-header">
+        <h3>
+          <Link to={`/exercise/${id}`} state={{ from: '/workout' }} className="exercise-link">
+            {name} <span className="info-icon">ℹ️</span>
+          </Link>
+        </h3>
+        {sets.length > 0 && (
+          <button 
+            type="button" 
+            className="copy-set-btn" 
+            onClick={() => onCopyLastSet(id)}
+            title="Instant copy last set"
+          >
+            🔄 Copy Last Set
+          </button>
+        )}
+      </div>
+
+      {sets.length > 0 && (
+        <div className="sets-container">
+          <div className="set-row-header">
+            <span>Set</span>
+            <span>Weight</span>
+            <span>Reps</span>
+            <span>Action</span>
+          </div>
+          {sets.map((set, index) => (
+            <div key={index} className="set-row-item">
+              <span className="set-index-label">{index + 1}</span>
+              <span>{set.weight} kg</span>
+              <span>{set.reps} reps</span>
+              <button
+                type="button"
+                className="remove-set-btn"
+                onClick={() => onRemoveSet(id, index)}
+                aria-label="Remove set"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form
+        className="add-set-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onAddSet(id);
+        }}
+      >
+        <div className="input-group">
+          <input
+            type="number"
+            step="any"
+            inputMode="decimal"
+            placeholder="Weight (kg)"
+            value={newWeight}
+            onChange={(e) => onInputChange(id, "newWeight", e.target.value)}
+          />
+          <input
+            type="number"
+            inputMode="numeric"
+            placeholder="Reps"
+            value={newReps}
+            required={newWeight !== ""}
+            onChange={(e) => onInputChange(id, "newReps", e.target.value)}
+          />
+        </div>
+        <button type="submit" className="submit-set-btn" disabled={!newReps}>
+          + Add Set
+        </button>
+      </form>
+    </div>
+  );
+});
+
 const WorkoutLog = () => {
   const { 
     status, setStatus, 
@@ -37,6 +119,10 @@ const WorkoutLog = () => {
   } = useWorkout();
   const { user, logout } = useAuthentication();
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Synchronous lock to prevent duplicate clicks instantly before re-render
+  const isSubmittingRef = useRef(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -101,10 +187,10 @@ const WorkoutLog = () => {
       exercises: prevLog.exercises.map(exercise => {
         if (exercise.id !== exerciseId || exercise.sets.length === 0) return exercise;
         const lastSet = exercise.sets[exercise.sets.length - 1];
+        
         return {
           ...exercise,
-          newReps: lastSet.reps,
-          newWeight: lastSet.weight,
+          sets: [...exercise.sets, { reps: lastSet.reps, weight: lastSet.weight }]
         };
       })
     }));
@@ -141,7 +227,6 @@ const WorkoutLog = () => {
   };
 
   const cancelWorkout = () => {
-    // High Value Safety Guard
     const confirmCancel = window.confirm("Are you sure you want to cancel this workout? All current progress will be lost.");
     if (!confirmCancel) return;
 
@@ -151,30 +236,45 @@ const WorkoutLog = () => {
   };
 
   const completeWorkout = async () => {
-    const completedWorkout = {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+
+    const rawCompletedWorkout = {
       ...currentPlan,
       exercises: currentLog.exercises.filter(ex => ex.sets.length > 0),
       completedAt: new Date().toISOString(),
       notes: currentLog.notes
     };
 
-    completedWorkout.personalBests = calculateNewPersonalBests(workouts, completedWorkout);
+    rawCompletedWorkout.personalBests = calculateNewPersonalBests(workouts, rawCompletedWorkout);
 
     try {
-      await insertWorkout(user?.id, completedWorkout);
+      // 1. Insert and make sure Supabase returns the fully created row (including its database-generated ID)
+      const savedWorkout = await insertWorkout(user?.id, rawCompletedWorkout);
+      
+      // Fallback if your insert service doesn't return the row directly: 
+      // fetch the latest workouts list immediately to get the real IDs
+      const fetchedWorkouts = await fetchWorkouts(user?.id);
+      
       await clearCurrentPlan(user?.id);
 
-      const fetchedWorkouts = await fetchWorkouts(user?.id);
       setWorkouts(fetchedWorkouts);
       setCurrentPlan(null);
       setStatus("complete");
       setCurrentLog(null);
 
-      navigate(`/workout-summary`, { state: { workout: completedWorkout } });
+      // Pass the fully populated server record (with its valid ID) to the summary
+      const finalWorkoutToPass = fetchedWorkouts[0] || savedWorkout || rawCompletedWorkout;
+
+      navigate(`/workout-summary`, { state: { workout: finalWorkoutToPass } });
     } catch (error) {
       handleSupabaseAuthError(error, logout);
       console.error("Failed to complete workout:", error);
       alert("Check your internet connection. Workout couldn't be saved.");
+      
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -191,83 +291,15 @@ const WorkoutLog = () => {
         </div>
       </header>
 
-      {currentLog.exercises.map(({ id, name, sets, newReps, newWeight }) => (
-        <div key={id} className="exercise-log-card">
-          <div className="card-header">
-            <h3>
-              <Link to={`/exercise/${id}`} state={{ from: '/workout' }} className="exercise-link">
-                {name} <span className="info-icon">ℹ️</span>
-              </Link>
-            </h3>
-            {sets.length > 0 && (
-              <button 
-                type="button" 
-                className="copy-set-btn" 
-                onClick={() => copyLastSet(id)}
-                title="Copy values from your last set"
-              >
-                🔄 Copy Last Set
-              </button>
-            )}
-          </div>
-
-          {/* Structured Set List Container */}
-          {sets.length > 0 && (
-            <div className="sets-container">
-              <div className="set-row-header">
-                <span>Set</span>
-                <span>Weight</span>
-                <span>Reps</span>
-                <span>Action</span>
-              </div>
-              {sets.map((set, index) => (
-                <div key={index} className="set-row-item">
-                  <span className="set-index-label">{index + 1}</span>
-                  <span>{set.weight} kg</span>
-                  <span>{set.reps} reps</span>
-                  <button
-                    type="button"
-                    className="remove-set-btn"
-                    onClick={() => removeSet(id, index)}
-                    aria-label="Remove set"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <form
-            className="add-set-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              addSet(id);
-            }}
-          >
-            <div className="input-group">
-              <input
-                type="number"
-                step="any"
-                inputMode="decimal"
-                placeholder="Weight (kg)"
-                value={newWeight}
-                onChange={(e) => handleInputChange(id, "newWeight", e.target.value)}
-              />
-              <input
-                type="number"
-                inputMode="numeric"
-                placeholder="Reps"
-                value={newReps}
-                required={newWeight !== ""}
-                onChange={(e) => handleInputChange(id, "newReps", e.target.value)}
-              />
-            </div>
-            <button type="submit" className="submit-set-btn" disabled={!newReps}>
-              + Add Set
-            </button>
-          </form>
-        </div>
+      {currentLog.exercises.map((exercise) => (
+        <ExerciseCard
+          key={exercise.id}
+          exercise={exercise}
+          onInputChange={handleInputChange}
+          onAddSet={addSet}
+          onCopyLastSet={copyLastSet}
+          onRemoveSet={removeSet}
+        />
       ))}
 
       <div className="add-exercise-section">
@@ -295,7 +327,7 @@ const WorkoutLog = () => {
       {hasAnySets && (
         <textarea
           className="workout-notes"
-          placeholder="Write custom notes about your session here (energy levels, active goals)..."
+          placeholder="Write custom notes about your session here..."
           value={currentLog.notes}
           maxLength={500}
           onChange={(e) => 
@@ -311,8 +343,12 @@ const WorkoutLog = () => {
           Cancel Session
         </button>
         {hasAnySets && (
-          <button className="complete-workout-btn" onClick={completeWorkout}>
-            Complete Workout
+          <button 
+            className="complete-workout-btn" 
+            onClick={completeWorkout}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving Session..." : "Complete Workout"}
           </button>
         )}
       </div>

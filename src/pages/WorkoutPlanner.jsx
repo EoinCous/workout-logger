@@ -23,13 +23,14 @@ const WorkoutPlanner = () => {
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [workoutSaved, setWorkoutSaved] = useState(false);
   const [search, setSearch] = useState("");
-  const [showAddSection, setShowAddSection] = useState(false);
+  const [showAddSection, setShowAddSection] = useState(selectedExercises.length === 0);
   const [category, setCategory] = useState("all");
   const [muscle, setMuscle] = useState("all");
   const isHydrating = useRef(true);
 
   useEffect(() => {
     if (!currentPlan) return;
+    setShowAddSection(false);
     isHydrating.current = true;
     setWorkoutType(currentPlan.type ?? "push");
     setSelectedExercises(hydrateExercises(currentPlan.exercises) ?? []);
@@ -74,7 +75,11 @@ const WorkoutPlanner = () => {
   };
 
   const handleRemove = (id) => {
-    setSelectedExercises(selectedExercises.filter((e) => e.id !== id));
+    const updated = selectedExercises.filter((e) => e.id !== id);
+    setSelectedExercises(updated);
+    if (updated.length === 0) {
+      setShowAddSection(true);
+    }
   };
 
   const handleMove = (fromIndex, toIndex) => {
