@@ -11,17 +11,15 @@ const History = () => {
   const { user } = useAuthentication();
   const navigate = useNavigate();
 
-  // 1. Group Workouts by Month (e.g., "January 2026")
   const groupedWorkouts = useMemo(() => {
     const groups = {};
-    
-    // Sort descending (newest first)
+
     const sorted = [...workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    sorted.forEach(workout => {
+    sorted.forEach((workout) => {
       const date = parseISO(workout.date);
       const monthYear = format(date, 'MMMM yyyy');
-      
+
       if (!groups[monthYear]) {
         groups[monthYear] = [];
       }
@@ -31,7 +29,6 @@ const History = () => {
     return groups;
   }, [workouts]);
 
-  // 2. Calculate Duration Helper
   const getDuration = (workout) => {
     if (!workout.completedAt || !workout.date) return null;
     const start = new Date(workout.date);
@@ -40,11 +37,10 @@ const History = () => {
     return `${minutes} min`;
   };
 
-  // 3. Calculate Total Volume Helper
   const getVolume = (workout) => {
     let volume = 0;
-    workout.exercises.forEach(ex => {
-      ex.sets.forEach(set => {
+    workout.exercises.forEach((exercise) => {
+      exercise.sets.forEach((set) => {
         volume += (set.weight || 0) * (set.reps || 0);
       });
     });
@@ -56,11 +52,10 @@ const History = () => {
   };
 
   const handleDeleteWorkout = async (e, workoutId) => {
-    e.stopPropagation(); // Prevent triggering the card click
-    
+    e.stopPropagation();
+
     if (!window.confirm("Are you sure you want to delete this workout?")) return;
 
-    // OPTIMISTIC UPDATE: Remove from UI immediately
     const originalWorkouts = [...workouts];
     setWorkouts(prev => prev.filter(w => w.id !== workoutId));
 
@@ -68,7 +63,6 @@ const History = () => {
       await deleteWorkout(user?.id, workoutId);
     } catch (error) {
       console.error("Failed to delete:", error);
-      // Revert if API fails
       setWorkouts(originalWorkouts);
       alert("Failed to delete workout.");
     }
@@ -77,58 +71,76 @@ const History = () => {
   return (
     <div className="history-page fade-in">
       <header className="history-header">
-        <h1 className='page-title'>📅 History</h1>
-        <span className="history-stats">
-          {workouts.length} Sessions Completed
-        </span>
+        <div className="history-heading">
+          <p className="history-eyebrow">Training journal</p>
+          <h1 className="history-title">Workout History</h1>
+        </div>
+        <div className="history-count" aria-label={`${workouts.length} completed sessions`}>
+          <strong>{workouts.length}</strong>
+          <span>{workouts.length === 1 ? "Session" : "Sessions"}</span>
+        </div>
       </header>
 
       {Object.keys(groupedWorkouts).length === 0 ? (
-        <div className="empty-state">
-          <p>No workouts logged yet.</p>
-          <button onClick={() => navigate('/workout')}>Start Your First Workout</button>
+        <div className="history-empty">
+          <div className="empty-icon" aria-hidden="true">🏋️</div>
+          <h2>Your progress starts here</h2>
+          <p>Completed workouts will show up here so you can look back on your training.</p>
+          <button onClick={() => navigate('/workout')}>Start your first workout</button>
         </div>
       ) : (
-        Object.keys(groupedWorkouts).map(month => (
+        Object.entries(groupedWorkouts).map(([month, monthWorkouts]) => (
           <div key={month} className="month-section">
-            <h3 className="month-header">{month}</h3>
-            
+            <div className="month-heading-row">
+              <h2 className="month-header">{month}</h2>
+              <span className="month-count">
+                {monthWorkouts.length} {monthWorkouts.length === 1 ? "workout" : "workouts"}
+              </span>
+            </div>
+
             <div className="workout-list">
-              {groupedWorkouts[month].map((workout) => (
-                <div 
-                  key={workout.id} 
-                  className="workout-card"
-                  onClick={() => viewWorkout(workout)}
-                >
-                  {/* Left: Date Badge */}
-                  <div className="date-badge">
-                    <span className="day-name">{format(parseISO(workout.date), 'EEE')}</span>
-                    <span className="day-num">{format(parseISO(workout.date), 'd')}</span>
-                  </div>
+              {monthWorkouts.map((workout) => {
+                const workoutDate = parseISO(workout.date);
+                const duration = getDuration(workout);
 
-                  {/* Middle: Info */}
-                  <div className="workout-info">
-                    <h4 className="workout-title">{workout.type}</h4>
-                    <div className="workout-meta">
-                      <span>{workout.exercises.length} Exercises</span>
-                      {getDuration(workout) && <span>• {getDuration(workout)}</span>}
-                      <span>• {getVolume(workout)} Vol</span>
-                    </div>
-                  </div>
+                return (
+                  <article key={workout.id} className="workout-card">
+                    <button
+                      type="button"
+                      className="workout-card-main"
+                      onClick={() => viewWorkout(workout)}
+                      aria-label={`View ${workout.type} workout from ${format(workoutDate, 'MMMM d, yyyy')}`}
+                    >
+                      <span className="date-badge" aria-hidden="true">
+                        <span className="day-name">{format(workoutDate, 'EEE')}</span>
+                        <span className="day-num">{format(workoutDate, 'd')}</span>
+                      </span>
 
-                  {/* Right: Actions */}
-                  <div className="card-actions">
-                    <button 
+                      <span className="workout-info">
+                        <span className="workout-title">{workout.type}</span>
+                        <span className="workout-meta">
+                          <span className="workout-metric">
+                            {workout.exercises.length} {workout.exercises.length === 1 ? "exercise" : "exercises"}
+                          </span>
+                          {duration && <span className="workout-metric">{duration}</span>}
+                          <span className="workout-metric">{getVolume(workout)} volume</span>
+                        </span>
+                      </span>
+
+                      <span className="workout-chevron" aria-hidden="true">›</span>
+                    </button>
+                    <button
+                      type="button"
                       className="icon-btn delete-btn"
-                      onClick={(e) => handleDeleteWorkout(e, workout.id)}
-                      title="Delete"
+                      onClick={(event) => handleDeleteWorkout(event, workout.id)}
+                      title="Delete workout"
+                      aria-label={`Delete ${workout.type} workout from ${format(workoutDate, 'MMMM d, yyyy')}`}
                     >
                       🗑️
                     </button>
-                    <span className="chevron">›</span>
-                  </div>
-                </div>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           </div>
         ))
