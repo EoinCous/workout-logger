@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react';
 import exercisesData from '../data/exercises.json';
 import ExerciseCard from '../components/ExerciseCard';
 import SearchInput from '../components/SearchInput';
-import { MUSCLE_CATEGORIES } from '../utils/muscleGroups'; // Import your utility
+import { MUSCLE_CATEGORIES } from '../utils/muscleGroups';
 
 const Exercises = () => {
   const [search, setSearch] = useState('');
@@ -56,7 +56,12 @@ const Exercises = () => {
 
   return (
     <div className="exercises-page fade-in">
-      <h1 className="page-title">📋 Exercise Library</h1>
+      <div className="exercise-page-heading">
+        <h1 className="page-title">Exercise Library</h1>
+        <p className="exercise-result-count" aria-live="polite">
+          {filteredData.length} {filteredData.length === 1 ? 'exercise' : 'exercises'}
+        </p>
+      </div>
 
       <div className="controls-section">
         <SearchInput
@@ -65,12 +70,12 @@ const Exercises = () => {
           placeholder="Search exercises..."
         />
 
-        {/* Pill Filters */}
-        <div className="category-pills">
+        <div className="category-pills" role="group" aria-label="Filter by workout category">
           {categories.map(cat => (
             <button
               key={cat}
               className={`pill-btn ${activeCategory === cat ? 'active' : ''}`}
+              aria-pressed={activeCategory === cat}
               onClick={() => setActiveCategory(cat)}
             >
               {cat}
@@ -82,26 +87,39 @@ const Exercises = () => {
       <div className="exercise-list-container">
         {sortedMuscleGroups.length > 0 ? (
           sortedMuscleGroups.map(muscle => (
-            <div key={muscle} className="muscle-group-section">
-              {/* Sticky Header */}
-              <div className="muscle-sticky-header">
-                <span className="header-title">{muscle.replace('_', ' ')}</span>
-                <span className="header-count">{groupedExercises[muscle].length}</span>
+            <section key={muscle} className="muscle-group-section">
+              <div className="muscle-group-heading">
+                <h2 className="header-title">{muscle.replace('_', ' ')}</h2>
+                <span className="header-count">
+                  {groupedExercises[muscle].length} {groupedExercises[muscle].length === 1 ? 'exercise' : 'exercises'}
+                </span>
               </div>
-              
-              {/* Cards Grid */}
+
               <div className="cards-grid">
                 {groupedExercises[muscle].map(exercise => (
                   <ExerciseCard key={exercise.id} exercise={exercise} />
                 ))}
               </div>
-            </div>
+            </section>
           ))
         ) : (
           <div className="no-results">
-            <p>No exercises found for "{search}" in {activeCategory}.</p>
+            <p>
+              {search
+                ? `No exercises found for "${search}" in ${activeCategory}.`
+                : `No exercises found in ${activeCategory}.`}
+            </p>
+            <button
+              className="clear-filters-btn"
+              onClick={() => {
+                setSearch('');
+                setActiveCategory('All');
+              }}
+            >
+              Clear filters
+            </button>
             <p className="sub-text">
-               Don't see your exercise? You can request it via the Suggestions form on the Home page.
+              Don't see your exercise? You can request it via the Suggestions form on the Home page.
             </p>
           </div>
         )}
