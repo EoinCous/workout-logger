@@ -25,39 +25,87 @@ const PersonalBests = () => {
   const toggleGroup = (muscle) => {
     setOpenGroups((prev) => ({
       ...prev,
-      [muscle]: !prev[muscle],
+      [muscle]: !(prev[muscle] ?? true),
     }));
   };
 
+  const sortedGroups = Object.entries(groupedPBs).sort(([first], [second]) =>
+    first.localeCompare(second)
+  );
+  const totalBests = Object.keys(personalBests).length;
+
   return (
     <div className="pb-container">
-      <h2 className="page-title">🏆 Personal Bests</h2>
-
-      {Object.entries(groupedPBs).map(([muscle, pbs]) => (
-        <div key={muscle} className="pb-muscle-group">
-          <h3 
-            className="pb-muscle-title" 
-            onClick={() => toggleGroup(muscle)}
-          >
-            {muscle.charAt(0).toUpperCase() + muscle.slice(1)}
-            {openGroups[muscle] ? " ▼" : " ►"}
-          </h3>
-
-          {openGroups[muscle] && (
-            <div className="pb-group-list">
-              {pbs.map((pb) => (
-                <div key={pb.exerciseId} className="pb-card">
-                  <h4 className="pb-exercise">{pb.name}</h4>
-                  <p className="pb-value">{pb.weight}kg × {pb.reps} reps</p>
-                  <small className="pb-date">
-                    on {new Date(pb.date).toLocaleDateString()}
-                  </small>
-                </div>
-              ))}
-            </div>
-          )}
+      <header className="pb-page-heading">
+        <div>
+          <p className="pb-eyebrow">Training milestones</p>
+          <h1 className="pb-page-title">Personal Bests</h1>
         </div>
-      ))}
+        <div className="pb-overview" aria-live="polite">
+          <strong>{totalBests}</strong>
+          <span>{totalBests === 1 ? "personal best" : "personal bests"}</span>
+          <span className="pb-overview-divider" aria-hidden="true">/</span>
+          <strong>{sortedGroups.length}</strong>
+          <span>{sortedGroups.length === 1 ? "muscle group" : "muscle groups"}</span>
+        </div>
+      </header>
+
+      {sortedGroups.length > 0 ? (
+        <div className="pb-groups">
+          {sortedGroups.map(([muscle, pbs], index) => {
+            const isOpen = openGroups[muscle] ?? true;
+            const panelId = `pb-group-panel-${index}`;
+
+            return (
+              <section key={muscle} className="pb-muscle-group">
+                <h2 className="pb-group-heading">
+                  <button
+                    className="pb-muscle-title"
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    onClick={() => toggleGroup(muscle)}
+                  >
+                    <span>{muscle.replace(/_/g, " ")}</span>
+                    <span className="pb-group-meta">
+                      <span className="pb-group-count">{pbs.length}</span>
+                      <span className={`pb-chevron${isOpen ? " is-open" : ""}`} aria-hidden="true" />
+                    </span>
+                  </button>
+                </h2>
+
+                {isOpen && (
+                  <div className="pb-group-list" id={panelId}>
+                    {pbs.map((pb) => (
+                      <article key={pb.exerciseId} className="pb-card">
+                        <div className="pb-card-main">
+                          <h3 className="pb-exercise">{pb.name}</h3>
+                          <p className="pb-date">
+                            Set on {new Date(pb.date).toLocaleDateString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </p>
+                        </div>
+                        <p className="pb-value">
+                          <strong>{pb.weight}</strong>
+                          <span>kg × {pb.reps} reps</span>
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="pb-empty-state">
+          <h2>No personal bests yet</h2>
+          <p>Log a workout with a completed set to start building your records.</p>
+        </div>
+      )}
     </div>
   );
 };
