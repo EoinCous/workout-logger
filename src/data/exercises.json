@@ -732,5 +732,20 @@
       "Stand tall with your chest up, shoulders pulled back and down, and core tightly braced.",
       "Take controlled, deliberate steps forward while keeping your torso upright and preventing swaying."
     ]
+  },
+  {
+    "id": "copenhagen-plank",
+    "name": "Copenhagen Plank",
+    "muscle": "adductors",
+    "secondaryMuscles": ["core", "obliques", "glutes"],
+    "trackingType": "time",
+    "equipment": "Bench / Bodyweight",
+    "description": "An advanced isometric bodyweight exercise that intensely targets the adductors (inner thighs) while building powerful core and pelvic stability.",
+    "tips": [
+      "Place your top foot or ankle firmly on top of a flat bench, with your bottom leg resting underneath or tucked.",
+      "Lift your hips until your body forms a straight line from your shoulders to your feet.",
+      "Engage your inner thigh and core strongly to keep your body stable and prevent your hips from sagging.",
+      "Breathe steadily throughout the duration of the hold."
+    ]
   }
 ]
