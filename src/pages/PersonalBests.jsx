@@ -95,7 +95,9 @@ const PersonalBests = () => {
                           {pb.trackingType === "time" ? (
                             <>
                               <strong>{formatDuration(pb.seconds)}</strong>
-                              <span>best time</span>
+                              <span>
+                                best time{pb.weight > 0 ? ` + ${pb.weight} kg` : ""}
+                              </span>
                             </>
                           ) : (
                             <>

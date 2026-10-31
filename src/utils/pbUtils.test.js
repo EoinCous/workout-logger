@@ -99,6 +99,39 @@ describe("getCurrentPBs", () => {
     });
   });
 
+  it("uses weight to break ties between equally long timed sets", () => {
+    const result = getCurrentPBs([
+      {
+        date: "2026-10-28",
+        exercises: [{
+          id: "farmer-carries",
+          sets: [{ weight: "15", seconds: 30 }],
+        }],
+      },
+      {
+        date: "2026-10-30",
+        exercises: [{
+          id: "farmer-carries",
+          sets: [
+            { weight: "20", seconds: 30 },
+            { weight: "18", seconds: 30 },
+            { weight: "30", seconds: 25 },
+          ],
+        }],
+      },
+    ]);
+
+    expect(result["farmer-carries"]).toEqual({
+      exerciseId: "farmer-carries",
+      name: "Farmer Carries",
+      muscle: "forearms",
+      trackingType: "time",
+      seconds: 30,
+      weight: 20,
+      date: "2026-10-30",
+    });
+  });
+
   it("ignores invalid and zero-duration timed sets", () => {
     const result = getCurrentPBs([{
       date: "2026-10-31",

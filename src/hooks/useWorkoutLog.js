@@ -16,7 +16,11 @@ const calculateNewPersonalBests = (previousWorkouts, completedWorkout) => {
   for (const [id, updated] of Object.entries(updatedPBs)) {
     const previous = previousPBs[id];
     const isNewTimedPB = updated.trackingType === "time" &&
-      (!previous || updated.seconds > previous.seconds);
+      (
+        !previous ||
+        updated.seconds > previous.seconds ||
+        (updated.seconds === previous.seconds && (updated.weight || 0) > (previous.weight || 0))
+      );
     const isNewRepPB = updated.trackingType !== "time" && (
       !previous ||
       updated.weight > previous.weight ||

@@ -134,13 +134,13 @@ const Workout = () => {
 
                   {expanded[workout.id] && (
                     <div className="workout-details fade-in-fast">
-                      {hydrateExercises(workout.exercises).map((ex) => (
-                        <div key={ex.id} className="exercise-summary">
-                          <h4>{ex.name}</h4>
+                      {hydrateExercises(workout.exercises).map((exercise) => (
+                        <div key={exercise.id} className="exercise-summary">
+                          <h4>{exercise.name}</h4>
                           <div className="set-pill-container">
-                            {ex.sets.map((set, index) => (
+                            {exercise.sets.map((set, index) => (
                               <span key={index} className="set-pill">
-                                {ex.trackingType === 'time'
+                                {exercise.trackingType === 'time'
                                   ? formatDuration(set.seconds)
                                   : `${set.weight}kg x ${set.reps}`}
                               </span>

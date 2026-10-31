@@ -747,5 +747,19 @@
       "Engage your inner thigh and core strongly to keep your body stable and prevent your hips from sagging.",
       "Breathe steadily throughout the duration of the hold."
     ]
+  },
+  {
+    "id": "dead-hang",
+    "name": "Dead Hang",
+    "muscle": "forearms",
+    "secondaryMuscles": ["lats", "shoulders", "core"],
+    "trackingType": "time",
+    "equipment": "Pull-up Bar",
+    "description": "A grip-endurance exercise performed by hanging from a bar with straight arms.",
+    "tips": [
+      "Grip the bar securely with your hands about shoulder-width apart.",
+      "Keep your arms straight and shoulders engaged rather than fully shrugging into the joints.",
+      "Breathe steadily and stop if you feel pain in your shoulders or hands."
+    ]
   }
 ]

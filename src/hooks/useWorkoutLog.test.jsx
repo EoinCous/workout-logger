@@ -368,13 +368,20 @@ describe("useWorkoutLog", () => {
     });
   });
 
-  it("records a timed personal best when completing a workout", async () => {
+  it("records a timed personal best when equal duration is achieved with more weight", async () => {
+    initialWorkoutState.workouts = [{
+      date: "2026-10-30",
+      exercises: [{
+        id: "farmer-carries",
+        sets: [{ weight: "15", seconds: 30 }],
+      }],
+    }];
     initialWorkoutState.currentLog = {
       exercises: [{
-        id: "plank",
-        name: "Plank",
+        id: "farmer-carries",
+        name: "Farmer Carries",
         trackingType: "time",
-        sets: [{ weight: "0", seconds: 90 }],
+        sets: [{ weight: "20", seconds: 30 }],
       }],
       notes: "",
     };
@@ -385,10 +392,11 @@ describe("useWorkoutLog", () => {
       await result.current.completeWorkout();
     });
 
-    expect(insertWorkout.mock.calls[0][1].personalBests.plank).toMatchObject({
-      exerciseId: "plank",
+    expect(insertWorkout.mock.calls[0][1].personalBests["farmer-carries"]).toMatchObject({
+      exerciseId: "farmer-carries",
       trackingType: "time",
-      seconds: 90,
+      seconds: 30,
+      weight: 20,
     });
   });
 

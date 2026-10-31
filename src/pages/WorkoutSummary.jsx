@@ -134,7 +134,7 @@ const WorkoutSummary = () => {
                   <span className="pb-exercise">{pb.name}</span>
                   <span className="pb-value">
                     {pb.trackingType === 'time'
-                      ? `${formatDuration(pb.seconds)} best time`
+                      ? `${formatDuration(pb.seconds)} best time${pb.weight > 0 ? ` · ${pb.weight} kg` : ''}`
                       : `${pb.weight}kg × ${pb.reps}`}
                   </span>
                 </div>

@@ -21,14 +21,21 @@ export function getCurrentPBs(workouts) {
           const seconds = Number(set.seconds);
           if (!Number.isInteger(seconds) || seconds <= 0) return;
 
+          const parsedWeight = parseFloat(set.weight);
+          const weight = Number.isFinite(parsedWeight) && parsedWeight > 0 ? parsedWeight : undefined;
           const existing = pbs[exercise.id];
-          if (!existing || seconds > existing.seconds) {
+          if (
+            !existing ||
+            seconds > existing.seconds ||
+            (seconds === existing.seconds && (weight || 0) > (existing.weight || 0))
+          ) {
             pbs[exercise.id] = {
               exerciseId: exercise.id,
               name,
               muscle,
               trackingType: 'time',
               seconds,
+              ...(weight !== undefined && { weight }),
               date: workout.date,
             };
           }

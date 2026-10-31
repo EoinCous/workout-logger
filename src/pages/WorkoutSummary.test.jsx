@@ -34,14 +34,15 @@ describe('WorkoutSummary', () => {
       completedAt: '2026-10-31T11:00:00.000Z',
       type: 'full',
       personalBests: {
-        plank: {
-          name: 'Plank',
+        'farmer-carries': {
+          name: 'Farmer Carries',
           trackingType: 'time',
           seconds: 90,
+          weight: 20,
         },
       },
       exercises: [
-        { id: 'plank', sets: [{ weight: '0', seconds: 90 }] },
+        { id: 'farmer-carries', sets: [{ weight: '20', seconds: 90 }] },
         { id: 'bench-press', sets: [{ weight: '80', reps: '8' }] },
       ],
     });
@@ -50,6 +51,6 @@ describe('WorkoutSummary', () => {
     expect(screen.getByText('1:30')).toBeTruthy();
     expect(screen.getAllByText('Reps')).toHaveLength(1);
     expect(screen.getByText('8')).toBeTruthy();
-    expect(screen.getByText('1:30 best time')).toBeTruthy();
+    expect(screen.getByText('1:30 best time · 20 kg')).toBeTruthy();
   });
 });
