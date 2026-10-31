@@ -72,6 +72,19 @@ export const AuthenticationProvider = ({ children }) => {
     return data;
   }, []);
 
+  const resetPassword = useCallback(async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+    if (error) throw error;
+  }, []);
+
+  const updatePassword = useCallback(async (password) => {
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    return data;
+  }, []);
+
   const logout = useCallback(async () => {
     const { error } = await supabase.auth.signOut({ scope: 'local' });
     if (error?.name === 'AuthSessionMissingError') {
@@ -82,8 +95,8 @@ export const AuthenticationProvider = ({ children }) => {
   }, []);
 
   const value = useMemo(
-    () => ({ user, authenticationLoading, signUp, login, logout }),
-    [user, authenticationLoading, signUp, login, logout]
+    () => ({ user, authenticationLoading, signUp, login, resetPassword, updatePassword, logout }),
+    [user, authenticationLoading, signUp, login, resetPassword, updatePassword, logout]
   );
 
   return (

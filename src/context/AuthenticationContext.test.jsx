@@ -9,6 +9,8 @@ vi.mock("../supabase/supabaseClient", () => ({
       signOut: vi.fn(),
       signUp: vi.fn(),
       signInWithPassword: vi.fn(),
+      resetPasswordForEmail: vi.fn(),
+      updateUser: vi.fn(),
     },
   },
 }));
@@ -45,6 +47,8 @@ describe("AuthenticationContext", () => {
       data: { session: "session-data" },
       error: null,
     });
+    supabase.auth.resetPasswordForEmail.mockResolvedValue({ error: null });
+    supabase.auth.updateUser.mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
   });
 
   it("restores the user from a valid session", async () => {
@@ -162,6 +166,27 @@ describe("AuthenticationContext", () => {
     await expect(result.current.logout()).rejects.toBe(error);
     expect(supabase.auth.signOut).toHaveBeenCalledWith({ scope: "local" });
     expect(logError).not.toHaveBeenCalled();
+  });
+
+  it("requests password reset with the update-password redirect", async () => {
+    const { result } = renderHook(() => useAuthentication(), { wrapper });
+
+    await expect(result.current.resetPassword("user@example.com")).resolves.toBeUndefined();
+    expect(supabase.auth.resetPasswordForEmail).toHaveBeenCalledWith("user@example.com", {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+  });
+
+  it("updates the password and propagates Supabase errors", async () => {
+    const { result } = renderHook(() => useAuthentication(), { wrapper });
+
+    await expect(result.current.updatePassword("new-password"))
+      .resolves.toEqual({ user: { id: "user-1" } });
+    expect(supabase.auth.updateUser).toHaveBeenCalledWith({ password: "new-password" });
+
+    const error = new Error("Update failed");
+    supabase.auth.updateUser.mockResolvedValue({ data: null, error });
+    await expect(result.current.updatePassword("new-password")).rejects.toBe(error);
   });
 
   it("treats a missing session during logout as already signed out", async () => {

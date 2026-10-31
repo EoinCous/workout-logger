@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Workout from './pages/Workout';
 import Exercises from './pages/Exercises';
@@ -16,11 +16,16 @@ import Authentication from './pages/Authentication';
 import Profile from './pages/Profile';
 import OneRepMax from './pages/OneRepMax';
 import LoadingScreen from './components/LoadingScreen';
+import UpdatePassword from './pages/UpdatePassword';
 
 function App() {
   const { user, authenticationLoading } = useAuthentication();
+  const location = useLocation();
 
   if (authenticationLoading) return <LoadingScreen message="Checking your session" />;
+  if (location.pathname.replace(/\/+$/, '') === '/update-password') {
+    return <UpdatePassword />;
+  }
 
   return user ? (
     <div className="app-container">

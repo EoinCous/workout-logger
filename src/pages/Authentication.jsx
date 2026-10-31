@@ -1,117 +1,191 @@
 import { useState } from 'react';
-import { useAuthentication } from '../context/AuthenticationContext';
-import { fetchCurrentPlan, fetchWeeklyGoal, fetchWorkouts, fetchTemplates } from '../supabase/supabaseWorkoutService';
-import { useWorkout } from '../context/WorkoutContext';
-import '../css/Authentication.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuthentication } from '../context/AuthenticationContext';
+import { useWorkout } from '../context/WorkoutContext';
+import {
+  fetchCurrentPlan,
+  fetchTemplates,
+  fetchWeeklyGoal,
+  fetchWorkouts,
+} from '../supabase/supabaseWorkoutService';
+import '../css/Authentication.css';
+
+const getErrorMessage = (error, mode) => {
+  const message = error?.message?.toLowerCase();
+
+  if (message?.includes('invalid login credentials')) {
+    return 'Email or password is incorrect. Please try again.';
+  }
+  if (message?.includes('user already registered')) {
+    return 'An account with this email already exists. Try logging in instead.';
+  }
+  if (message?.includes('email not confirmed')) {
+    return 'Please confirm your email before logging in.';
+  }
+
+  return error?.message || (mode === 'login'
+    ? 'Unable to log in. Please try again.'
+    : 'Unable to create your account. Please try again.');
+};
 
 const Authentication = () => {
-  const { signUp, login } = useAuthentication();
+  const { signUp, login, resetPassword } = useAuthentication();
   const { setCurrentPlan, setWorkouts, setWeeklyGoal, setTemplates } = useWorkout();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('login');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const switchMode = (nextMode) => {
+    setMode(nextMode);
+    setPassword('');
     setError('');
-    if (!email || !password) {
-      setError('Email and password are required.');
-      return;
-    }
+    setSuccess('');
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+    setSuccess('');
+    setIsSubmitting(true);
+
     try {
-      if (mode === 'login') {
-        const result = await login(email, password);
+      if (mode === 'forgotPassword') {
+        await resetPassword(email.trim());
+        setSuccess(
+          "If an account exists for this email, we'll send a password reset link. Check your inbox."
+        );
+      } else if (mode === 'login') {
+        const result = await login(email.trim(), password);
+        const userId = result?.user?.id;
+        if (!userId) throw new Error('Unable to verify your account. Please try again.');
 
-        const userId = result.user.id;
-        if (!userId) throw new Error("Failed to get user after login");
-
-        navigate('/');
-
-        const [workoutsData, currentPlanData, weeklyGoalData, templatesData] = await Promise.all([
+        const [workouts, currentPlan, weeklyGoal, templates] = await Promise.all([
           fetchWorkouts(userId),
           fetchCurrentPlan(userId),
           fetchWeeklyGoal(userId),
-          fetchTemplates(userId)
+          fetchTemplates(userId),
         ]);
 
-        setWorkouts(workoutsData || []);
-        setCurrentPlan(currentPlanData || null);
-        setWeeklyGoal(weeklyGoalData || null);
-        setTemplates(templatesData || []);
+        setWorkouts(workouts || []);
+        setCurrentPlan(currentPlan || null);
+        setWeeklyGoal(weeklyGoal || null);
+        setTemplates(templates || []);
+        navigate('/');
       } else {
-        await signUp(email, password);
-        alert(`We’ve sent a verification link to ${email}. Please open your inbox and click the link to confirm your email.`)
+        await signUp(email.trim(), password);
+        setSuccess(
+          "If an account can be created with this email, a confirmation link will arrive in your inbox. If you already have an account, log in instead."
+        );
       }
-    } catch (err) {
-      console.error(err || 'Something went wrong.');
+    } catch (submitError) {
+      setError(getErrorMessage(submitError, mode));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const isLogin = mode === 'login';
+  const isForgotPassword = mode === 'forgotPassword';
+
   return (
-    <div className="auth-wrapper">
-      <div className="auth-card" aria-label="Authentication card">
+    <main className="auth-wrapper">
+      <section className="auth-card" aria-labelledby="auth-heading">
         <div className="auth-brand">
           <img
             src="/images/replog-icon-1.png"
-            alt="RepLog"
-            className="loading-logo"
+            alt=""
+            className="auth-logo"
           />
-          <div className="auth-subtitle">
-            {mode === 'login' ? 'Welcome back, log your workout.' : 'Create your account to start logging.'}
-          </div>
+          <p className="auth-eyebrow">YOUR TRAINING, TRACKED</p>
+          <h1 id="auth-heading">
+            {isForgotPassword ? 'Reset your password' : isLogin ? 'Welcome back' : 'Get started'}
+          </h1>
+          <p className="auth-subtitle">
+            {isForgotPassword
+              ? "Enter your account email and we'll send a reset link if an account exists."
+              : isLogin
+              ? 'Log in to pick up where your training left off.'
+              : 'Create an account to start tracking your progress.'}
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} aria-label="Authentication form">
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <label htmlFor="auth-email">Email address</label>
           <input
-            aria-label="Email"
+            id="auth-email"
             type="email"
-            placeholder="Email"
+            name="email"
+            placeholder="you@example.com"
+            autoComplete="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
             required
+            disabled={isSubmitting}
           />
-          <input
-            aria-label="Password"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">
-            {mode === 'login' ? 'Login' : 'Sign Up'}
+
+          {!isForgotPassword && (
+            <>
+              <label htmlFor="auth-password">Password</label>
+              <input
+                id="auth-password"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                autoComplete={isLogin ? 'current-password' : 'new-password'}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                disabled={isSubmitting}
+              />
+            </>
+          )}
+
+          {isLogin && (
+            <button
+              className="auth-text-button forgot-password"
+              type="button"
+              onClick={() => switchMode('forgotPassword')}
+              disabled={isSubmitting}
+            >
+              Forgot password?
+            </button>
+          )}
+
+          {error && <p className="auth-message auth-error" role="alert">{error}</p>}
+          {success && <p className="auth-message auth-success" role="status">{success}</p>}
+
+          <button className="auth-submit" type="submit" disabled={isSubmitting}>
+            {isSubmitting
+              ? (isForgotPassword ? 'Sending reset link…' : isLogin ? 'Logging in…' : 'Creating account…')
+              : (isForgotPassword ? 'Send reset link' : isLogin ? 'Log in' : 'Create account')}
           </button>
         </form>
 
-        {error && (
-          <div className="error-box" role="alert">
-            <div className="small">⚠️</div>
-            <div>{error}</div>
-          </div>
+        {!isForgotPassword ? (
+          <p className="switch-mode">
+            {isLogin ? 'New to RepLog?' : 'Already have an account?'}
+            <button
+              type="button"
+              onClick={() => switchMode(isLogin ? 'signup' : 'login')}
+              disabled={isSubmitting}
+            >
+              {isLogin ? 'Create an account' : 'Log in'}
+            </button>
+          </p>
+        ) : (
+          <p className="switch-mode">
+            Remember your password?
+            <button type="button" onClick={() => switchMode('login')} disabled={isSubmitting}>
+              Back to log in
+            </button>
+          </p>
         )}
-
-        <div className="switch-mode">
-          {mode === 'login' ? (
-            <>
-              <span>New to RepLog? </span>
-              <button type="button" onClick={() => setMode('signup')}>
-                Sign up
-              </button>
-            </>
-          ) : (
-            <>
-              <span>Already have an account? </span>
-              <button type="button" onClick={() => setMode('login')}>
-                Log in
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 
