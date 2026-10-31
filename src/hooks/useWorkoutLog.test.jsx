@@ -95,20 +95,91 @@ describe("useWorkoutLog", () => {
     clearCurrentPlan.mockResolvedValue(undefined);
   });
 
+  it("converts timed set minutes and seconds to total seconds", () => {
+    initialWorkoutState.currentLog = makeLog([{
+      id: "plank",
+      name: "Plank",
+      trackingType: "time",
+      sets: [],
+    }]);
+    const { result } = renderHook(() => useWorkoutLog());
+
+    act(() => {
+      result.current.handleInputChange("plank", "newMinutes", "1");
+      result.current.handleInputChange("plank", "newSeconds", "30");
+      result.current.handleInputChange("plank", "newWeight", "invalid");
+    });
+    act(() => {
+      result.current.addSet("plank");
+    });
+
+    expect(result.current.currentLog.exercises[0]).toMatchObject({
+      sets: [{ weight: "0", seconds: 90 }],
+      newMinutes: "",
+      newSeconds: "",
+      newWeight: "",
+    });
+  });
+
+  it("does not add timed sets with invalid or zero duration", () => {
+    initialWorkoutState.currentLog = makeLog([{
+      id: "plank",
+      name: "Plank",
+      trackingType: "time",
+      sets: [],
+    }]);
+    const { result } = renderHook(() => useWorkoutLog());
+
+    for (const [minutes, seconds] of [
+      ["", ""],
+      ["0", "0"],
+      ["-1", "10"],
+      ["1.5", "0"],
+      ["invalid", "10"],
+    ]) {
+      act(() => {
+        result.current.handleInputChange("plank", "newMinutes", minutes);
+        result.current.handleInputChange("plank", "newSeconds", seconds);
+      });
+      act(() => {
+        result.current.addSet("plank");
+      });
+      expect(result.current.currentLog.exercises[0].sets).toEqual([]);
+    }
+  });
+
   it("initializes a log from the active plan when one does not exist", async () => {
     initialWorkoutState.currentLog = null;
 
     const { result } = renderHook(() => useWorkoutLog());
 
     await waitFor(() => {
-      expect(result.current.currentLog).toEqual({
+      expect(result.current.currentLog).toMatchObject({
         exercises: [{
           ...benchPress,
           sets: [],
           newReps: "",
+          newMinutes: "",
+          newSeconds: "",
           newWeight: "",
         }],
         notes: "",
+      });
+    });
+  });
+
+  it("hydrates restored plans with exercise tracking types", async () => {
+    initialWorkoutState.currentPlan.exercises = [{ id: "plank", sets: [] }];
+    initialWorkoutState.currentLog = null;
+
+    const { result } = renderHook(() => useWorkoutLog());
+
+    await waitFor(() => {
+      expect(result.current.currentLog.exercises[0]).toMatchObject({
+        id: "plank",
+        trackingType: "time",
+        newMinutes: "",
+        newSeconds: "",
       });
     });
   });
@@ -148,6 +219,8 @@ describe("useWorkoutLog", () => {
     expect(result.current.currentLog.exercises[0]).toMatchObject({
       sets: [{ reps: "8", weight: "0" }],
       newReps: "",
+      newMinutes: "",
+      newSeconds: "",
       newWeight: "",
     });
     expect(result.current.hasAnySets).toBe(true);
@@ -175,6 +248,25 @@ describe("useWorkoutLog", () => {
     expect(result.current.currentLog.exercises[0].sets).toEqual([
       { reps: "8", weight: "80" },
       { reps: "6", weight: "85" },
+    ]);
+  });
+
+  it("copies time set data without converting it to reps", () => {
+    initialWorkoutState.currentLog = makeLog([{
+      id: "plank",
+      name: "Plank",
+      trackingType: "time",
+      sets: [{ seconds: 90, weight: "0" }],
+    }]);
+    const { result } = renderHook(() => useWorkoutLog());
+
+    act(() => {
+      result.current.copyLastSet("plank");
+    });
+
+    expect(result.current.currentLog.exercises[0].sets).toEqual([
+      { seconds: 90, weight: "0" },
+      { seconds: 90, weight: "0" },
     ]);
   });
 
@@ -273,6 +365,30 @@ describe("useWorkoutLog", () => {
     expect(result.current.isSubmitting).toBe(true);
     expect(mocks.navigate).toHaveBeenCalledWith("/workout-summary", {
       state: { workout: fetchedWorkouts[0] },
+    });
+  });
+
+  it("records a timed personal best when completing a workout", async () => {
+    initialWorkoutState.currentLog = {
+      exercises: [{
+        id: "plank",
+        name: "Plank",
+        trackingType: "time",
+        sets: [{ weight: "0", seconds: 90 }],
+      }],
+      notes: "",
+    };
+
+    const { result } = renderHook(() => useWorkoutLog());
+
+    await act(async () => {
+      await result.current.completeWorkout();
+    });
+
+    expect(insertWorkout.mock.calls[0][1].personalBests.plank).toMatchObject({
+      exerciseId: "plank",
+      trackingType: "time",
+      seconds: 90,
     });
   });
 

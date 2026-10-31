@@ -7,6 +7,9 @@ import { useAuthentication } from '../context/AuthenticationContext';
 import { fetchTemplates, insertTemplate } from '../supabase/supabaseWorkoutService';
 import { useWorkout } from '../context/WorkoutContext';
 
+const formatDuration = (seconds) =>
+  `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+
 const WorkoutSummary = () => {
   const location = useLocation();
   const workout = location.state?.workout;
@@ -32,8 +35,8 @@ const WorkoutSummary = () => {
     let totalVolume = 0;
     let totalSets = 0;
 
-    hydratedExercises.forEach(ex => {
-      ex.sets.forEach(set => {
+    hydratedExercises.forEach(exercise => {
+      exercise.sets.forEach(set => {
         totalSets++;
         if (set.weight && set.reps) {
           totalVolume += parseFloat(set.weight) * parseFloat(set.reps);
@@ -129,7 +132,11 @@ const WorkoutSummary = () => {
               {Object.values(workout.personalBests).map(pb => (
                 <div key={pb.name} className="pb-card">
                   <span className="pb-exercise">{pb.name}</span>
-                  <span className="pb-value">{pb.weight}kg × {pb.reps}</span>
+                  <span className="pb-value">
+                    {pb.trackingType === 'time'
+                      ? `${formatDuration(pb.seconds)} best time`
+                      : `${pb.weight}kg × ${pb.reps}`}
+                  </span>
                 </div>
               ))}
             </div>
@@ -138,24 +145,28 @@ const WorkoutSummary = () => {
 
         {/* Exercise List */}
         <div className="summary-exercise-list">
-          {hydratedExercises.map((ex, i) => (
-            <div key={ex.id || i} className="exercise-summary-card">
+          {hydratedExercises.map((exercise, i) => (
+            <div key={exercise.id || i} className="exercise-summary-card">
               <div className="ex-header">
                 <span className="ex-number">{i + 1}</span>
-                <h3 className='exercise-name'>{ex.name}</h3>
+                <h3 className='exercise-name'>{exercise.name}</h3>
               </div>
 
               <div className="sets-table">
                 <div className="sets-header">
                   <span>Set</span>
                   <span>kg</span>
-                  <span>Reps</span>
+                  <span>{exercise.trackingType === 'time' ? 'Duration' : 'Reps'}</span>
                 </div>
-                {ex.sets.map((set, setIndex) => (
+                {exercise.sets.map((set, setIndex) => (
                   <div key={setIndex} className="set-row">
                     <span className="set-num">{setIndex + 1}</span>
                     <span className="set-weight">{set.weight || '-'}</span>
-                    <span className="set-reps">{set.reps}</span>
+                    <span className="set-reps">
+                      {exercise.trackingType === 'time'
+                        ? `${Math.floor(set.seconds / 60)}:${String(set.seconds % 60).padStart(2, '0')}`
+                        : set.reps}
+                    </span>
                   </div>
                 ))}
               </div>

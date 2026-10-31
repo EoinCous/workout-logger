@@ -6,6 +6,7 @@ import exerciseList from "../data/exercises.json";
 import { clearCurrentPlan, fetchWorkouts, insertWorkout } from "../supabase/supabaseWorkoutService";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { getCurrentPBs } from "../utils/pbUtils";
+import { hydrateExercises } from "../utils/exerciseUtils";
 
 const calculateNewPersonalBests = (previousWorkouts, completedWorkout) => {
   const previousPBs = getCurrentPBs(previousWorkouts);
@@ -14,11 +15,14 @@ const calculateNewPersonalBests = (previousWorkouts, completedWorkout) => {
   const newPBs = {};
   for (const [id, updated] of Object.entries(updatedPBs)) {
     const previous = previousPBs[id];
-    if (
+    const isNewTimedPB = updated.trackingType === "time" &&
+      (!previous || updated.seconds > previous.seconds);
+    const isNewRepPB = updated.trackingType !== "time" && (
       !previous ||
       updated.weight > previous.weight ||
       (updated.weight === previous.weight && updated.reps > previous.reps)
-    ) {
+    );
+    if (isNewTimedPB || isNewRepPB) {
       newPBs[id] = updated;
     }
   }
@@ -51,10 +55,12 @@ const useWorkoutLog = () => {
   useEffect(() => {
     if (!currentLog && currentPlan?.exercises && status === "inProgress") {
       const initialisedLog = {
-        exercises: currentPlan.exercises.map((exercise) => ({
+        exercises: hydrateExercises(currentPlan.exercises).map((exercise) => ({
           ...exercise,
           sets: [],
           newReps: "",
+          newMinutes: "",
+          newSeconds: "",
           newWeight: "",
         })),
         notes: "",
@@ -83,14 +89,28 @@ const useWorkoutLog = () => {
       exercises: previousLog.exercises.map((exercise) => {
         if (exercise.id !== id) return exercise;
 
-        const { newReps, newWeight, sets } = exercise;
-        if (!isValidInput(newReps)) return exercise;
+        const { newReps, newMinutes, newSeconds, newWeight, sets } = exercise;
+        const isTimedExercise = exercise.trackingType === "time";
+        const minuteInput = newMinutes ?? "";
+        const secondInput = newSeconds ?? "";
+        const minutes = minuteInput === "" ? 0 : Number(minuteInput);
+        const seconds = secondInput === "" ? 0 : Number(secondInput);
+        const isValidDurationInput =
+          [minuteInput, secondInput].some((value) => value !== "") &&
+          [minutes, seconds].every((value) => Number.isInteger(value) && value >= 0) &&
+          minutes * 60 + seconds > 0;
+        if (isTimedExercise ? !isValidDurationInput : !isValidInput(newReps)) return exercise;
         const validWeight = isValidInput(newWeight) ? newWeight : "0";
+        const set = isTimedExercise
+          ? { weight: validWeight, seconds: minutes * 60 + seconds }
+          : { reps: newReps, weight: validWeight };
 
         return {
           ...exercise,
-          sets: [...sets, { reps: newReps, weight: validWeight }],
+          sets: [...sets, set],
           newReps: "",
+          newMinutes: "",
+          newSeconds: "",
           newWeight: "",
         };
       }),
@@ -106,7 +126,7 @@ const useWorkoutLog = () => {
 
         return {
           ...exercise,
-          sets: [...exercise.sets, { reps: lastSet.reps, weight: lastSet.weight }],
+          sets: [...exercise.sets, { ...lastSet }],
         };
       }),
     }));
@@ -135,6 +155,8 @@ const useWorkoutLog = () => {
           ...exerciseToAdd,
           sets: [],
           newReps: "",
+          newMinutes: "",
+          newSeconds: "",
           newWeight: "",
         },
       ],

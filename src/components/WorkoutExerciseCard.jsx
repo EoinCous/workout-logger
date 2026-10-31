@@ -2,7 +2,8 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 
 const WorkoutExerciseCard = memo(({ exercise, onInputChange, onAddSet, onCopyLastSet, onRemoveSet }) => {
-  const { id, name, sets, newReps, newWeight } = exercise;
+  const { id, name, sets, newReps, newMinutes, newSeconds, newWeight, trackingType } = exercise;
+  const isTimedExercise = trackingType === "time";
 
   return (
     <div className="exercise-log-card">
@@ -29,14 +30,18 @@ const WorkoutExerciseCard = memo(({ exercise, onInputChange, onAddSet, onCopyLas
           <div className="set-row-header">
             <span>Set</span>
             <span>Weight</span>
-            <span>Reps</span>
+            <span>{isTimedExercise ? "Duration" : "Reps"}</span>
             <span>Action</span>
           </div>
           {sets.map((set, index) => (
             <div key={index} className="set-row-item">
               <span className="set-index-label">{index + 1}</span>
               <span>{set.weight} kg</span>
-              <span>{set.reps} reps</span>
+              <span>
+                {isTimedExercise
+                  ? `${Math.floor(set.seconds / 60)}:${String(set.seconds % 60).padStart(2, "0")}`
+                  : `${set.reps} reps`}
+              </span>
               <button
                 type="button"
                 className="remove-set-btn"
@@ -66,16 +71,48 @@ const WorkoutExerciseCard = memo(({ exercise, onInputChange, onAddSet, onCopyLas
             value={newWeight}
             onChange={(event) => onInputChange(id, "newWeight", event.target.value)}
           />
-          <input
-            type="number"
-            inputMode="numeric"
-            placeholder="Reps"
-            value={newReps}
-            required={newWeight !== ""}
-            onChange={(event) => onInputChange(id, "newReps", event.target.value)}
-          />
+          {isTimedExercise ? (
+            <>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                placeholder="Minutes"
+                aria-label="Minutes"
+                value={newMinutes ?? ""}
+                onChange={(event) => onInputChange(id, "newMinutes", event.target.value)}
+              />
+              <input
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                placeholder="Seconds"
+                aria-label="Seconds"
+                value={newSeconds ?? ""}
+                onChange={(event) => onInputChange(id, "newSeconds", event.target.value)}
+              />
+            </>
+          ) : (
+            <input
+              type="number"
+              min="0"
+              step="1"
+              inputMode="numeric"
+              placeholder="Reps"
+              aria-label="Reps"
+              value={newReps}
+              required={newWeight !== ""}
+              onChange={(event) => onInputChange(id, "newReps", event.target.value)}
+            />
+          )}
         </div>
-        <button type="submit" className="submit-set-btn" disabled={!newReps}>
+        <button
+          type="submit"
+          className="submit-set-btn"
+          disabled={isTimedExercise ? !newMinutes && !newSeconds : !newReps}
+        >
           + Add Set
         </button>
       </form>

@@ -68,6 +68,54 @@ describe("getCurrentPBs", () => {
     });
   });
 
+  it("uses the longest valid duration as the personal best for timed exercises", () => {
+    const result = getCurrentPBs([
+      {
+        date: "2026-10-28",
+        exercises: [{
+          id: "plank",
+          sets: [
+            { weight: "0", seconds: 45 },
+            { weight: "0", seconds: 90 },
+          ],
+        }],
+      },
+      {
+        date: "2026-10-30",
+        exercises: [{
+          id: "plank",
+          sets: [{ weight: "0", seconds: 60 }],
+        }],
+      },
+    ]);
+
+    expect(result.plank).toEqual({
+      exerciseId: "plank",
+      name: "Plank",
+      muscle: "core",
+      trackingType: "time",
+      seconds: 90,
+      date: "2026-10-28",
+    });
+  });
+
+  it("ignores invalid and zero-duration timed sets", () => {
+    const result = getCurrentPBs([{
+      date: "2026-10-31",
+      exercises: [{
+        id: "plank",
+        sets: [
+          { seconds: 0 },
+          { seconds: -1 },
+          { seconds: "not seconds" },
+          { reps: "10", weight: "0" },
+        ],
+      }],
+    }]);
+
+    expect(result).toEqual({});
+  });
+
   it("uses the exercise id when it is missing from the master list", () => {
     const result = getCurrentPBs([{
       date: "2026-10-31",

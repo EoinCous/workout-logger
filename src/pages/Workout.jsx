@@ -7,6 +7,11 @@ import { hydrateExercises } from '../utils/exerciseUtils';
 import { deleteTemplate } from '../supabase/supabaseWorkoutService';
 import { useAuthentication } from '../context/AuthenticationContext';
 
+const formatDuration = (seconds) => {
+  const duration = Number(seconds) || 0;
+  return `${Math.floor(duration / 60)}:${String(duration % 60).padStart(2, '0')}`;
+};
+
 const Workout = () => {
   const { status, setCurrentPlan, getLatestWorkouts, setStatus, templates, setTemplates } = useWorkout();
   const { user } = useAuthentication();
@@ -135,7 +140,9 @@ const Workout = () => {
                           <div className="set-pill-container">
                             {ex.sets.map((set, index) => (
                               <span key={index} className="set-pill">
-                                {set.weight}kg x {set.reps}
+                                {ex.trackingType === 'time'
+                                  ? formatDuration(set.seconds)
+                                  : `${set.weight}kg x ${set.reps}`}
                               </span>
                             ))}
                           </div>

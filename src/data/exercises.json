@@ -724,7 +724,7 @@
     "name": "Farmer Carries",
     "muscle": "forearms",
     "secondaryMuscles": ["traps", "core"],
-    "trackingType": "reps",
+    "trackingType": "time",
     "equipment": "Dumbbells / Kettlebells",
     "description": "A powerful compound carry exercise designed to build total-body strength, grip endurance, upper back stability, and core integrity.",
     "tips": [

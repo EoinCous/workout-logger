@@ -17,6 +17,24 @@ export function getCurrentPBs(workouts) {
       const muscle = master?.muscle;
 
       exercise.sets.forEach(set => {
+        if (master?.trackingType === 'time') {
+          const seconds = Number(set.seconds);
+          if (!Number.isInteger(seconds) || seconds <= 0) return;
+
+          const existing = pbs[exercise.id];
+          if (!existing || seconds > existing.seconds) {
+            pbs[exercise.id] = {
+              exerciseId: exercise.id,
+              name,
+              muscle,
+              trackingType: 'time',
+              seconds,
+              date: workout.date,
+            };
+          }
+          return;
+        }
+
         const weight = parseFloat(set.weight);
         const reps = parseInt(set.reps, 10);
         if (isNaN(weight) || isNaN(reps)) return;

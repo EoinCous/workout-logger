@@ -11,9 +11,15 @@ const ExerciseDetail = () => {
   const location = useLocation();
   const previousPage = location.state?.from || 'exercises';
   const { workouts } = useWorkout();
-  const [chartView, setChartView] = useState('strength'); // 'strength' or 'volume'
+  const [chartView, setChartView] = useState('strength');
 
   const exercise = exercisesData.find((ex) => ex.id === id);
+  const isTimedExercise = exercise?.trackingType === 'time';
+  const formatDuration = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+  };
 
   // Advanced Data Processing
   const { chartData, personalRecord, totalSetsAllTime } = useMemo(() => {
@@ -21,6 +27,7 @@ const ExerciseDetail = () => {
 
     const statsByDate = {};
     let globalMaxWeight = 0;
+    let globalMaxDuration = 0;
     let globalTotalSets = 0;
 
     // Sort workouts chronologically first to ensure graph line flows correctly
@@ -35,8 +42,21 @@ const ExerciseDetail = () => {
       
       let sessionVolume = 0;
       let sessionMax1RM = 0;
+      let sessionDuration = 0;
+      let sessionMaxDuration = 0;
 
       exerciseLog.sets.forEach(set => {
+        if (exercise.trackingType === 'time') {
+          const seconds = Number(set.seconds);
+          if (!Number.isInteger(seconds) || seconds <= 0) return;
+
+          globalTotalSets++;
+          sessionDuration += seconds;
+          sessionMaxDuration = Math.max(sessionMaxDuration, seconds);
+          globalMaxDuration = Math.max(globalMaxDuration, seconds);
+          return;
+        }
+
         const weight = parseFloat(set.weight) || 0;
         const reps = parseInt(set.reps, 10) || 0;
         
@@ -55,7 +75,18 @@ const ExerciseDetail = () => {
         }
       });
 
-      if (sessionVolume > 0) {
+      if (exercise.trackingType === 'time' && sessionDuration > 0) {
+        if (statsByDate[dateStr]) {
+          statsByDate[dateStr].duration += sessionDuration;
+          statsByDate[dateStr].bestDuration = Math.max(statsByDate[dateStr].bestDuration, sessionMaxDuration);
+        } else {
+          statsByDate[dateStr] = {
+            date: dateStr,
+            duration: sessionDuration,
+            bestDuration: sessionMaxDuration,
+          };
+        }
+      } else if (sessionVolume > 0) {
         // If multiple sessions in one day, merge them (rare but possible)
         if (statsByDate[dateStr]) {
             statsByDate[dateStr].volume += sessionVolume;
@@ -72,7 +103,7 @@ const ExerciseDetail = () => {
 
     return {
       chartData: Object.values(statsByDate),
-      personalRecord: globalMaxWeight,
+      personalRecord: exercise.trackingType === 'time' ? globalMaxDuration : globalMaxWeight,
       totalSetsAllTime: globalTotalSets
     };
   }, [workouts, id, exercise]);
@@ -105,8 +136,10 @@ const ExerciseDetail = () => {
       {/* 1. Quick Stats Row */}
       <div className="stats-grid">
         <div className="stat-card">
-          <span className="stat-label">Personal Record</span>
-          <span className="stat-value">{personalRecord} <span className="unit">kg</span></span>
+          <span className="stat-label">{isTimedExercise ? 'Best Duration' : 'Personal Record'}</span>
+          <span className="stat-value">
+            {isTimedExercise ? formatDuration(personalRecord) : <>{personalRecord} <span className="unit">kg</span></>}
+          </span>
         </div>
         <div className="stat-card">
           <span className="stat-label">Total Sets</span>
@@ -128,13 +161,13 @@ const ExerciseDetail = () => {
                     className={chartView === 'strength' ? 'active' : ''} 
                     onClick={() => setChartView('strength')}
                 >
-                    Strength (1RM)
+                    {isTimedExercise ? 'Best Duration' : 'Strength (1RM)'}
                 </button>
                 <button 
                     className={chartView === 'volume' ? 'active' : ''} 
                     onClick={() => setChartView('volume')}
                 >
-                    Volume
+                    {isTimedExercise ? 'Total Duration' : 'Volume'}
                 </button>
             </div>
           </div>
@@ -145,14 +178,20 @@ const ExerciseDetail = () => {
                  <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" />
                     <XAxis dataKey="date" tick={{fontSize: 12}} stroke="#888" />
-                    <YAxis domain={['auto', 'auto']} tick={{fontSize: 12}} stroke="#888" />
+                    <YAxis
+                      domain={['auto', 'auto']}
+                      tick={{fontSize: 12}}
+                      stroke="#888"
+                      tickFormatter={isTimedExercise ? formatDuration : undefined}
+                    />
                     <Tooltip 
                         contentStyle={{backgroundColor: '#222', border: 'none', borderRadius: '8px'}}
                         itemStyle={{color: '#fff'}}
+                        formatter={isTimedExercise ? formatDuration : undefined}
                     />
                     <Line 
                         type="monotone" 
-                        dataKey="strength" 
+                        dataKey={isTimedExercise ? 'bestDuration' : 'strength'}
                         stroke="#3b82f6" 
                         strokeWidth={3} 
                         dot={{r: 4, fill: '#3b82f6'}} 
@@ -169,14 +208,19 @@ const ExerciseDetail = () => {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" />
                     <XAxis dataKey="date" tick={{fontSize: 12}} stroke="#888" />
-                    <YAxis tick={{fontSize: 12}} stroke="#888" />
+                    <YAxis
+                      tick={{fontSize: 12}}
+                      stroke="#888"
+                      tickFormatter={isTimedExercise ? formatDuration : undefined}
+                    />
                     <Tooltip 
                         contentStyle={{backgroundColor: '#222', border: 'none', borderRadius: '8px'}}
                         itemStyle={{color: '#fff'}}
+                        formatter={isTimedExercise ? formatDuration : undefined}
                     />
                     <Area 
                         type="monotone" 
-                        dataKey="volume" 
+                        dataKey={isTimedExercise ? 'duration' : 'volume'}
                         stroke="#10b981" 
                         fillOpacity={1} 
                         fill="url(#colorVol)" 
@@ -233,7 +277,9 @@ const ExerciseDetail = () => {
                       <div key={i} className="history-set-row">
                         <span className="set-number">Set {i + 1}</span>
                         <span className="set-details">
-                          {set.weight}kg x {set.reps}
+                          {isTimedExercise
+                            ? formatDuration(Number(set.seconds) || 0)
+                            : `${set.weight}kg x ${set.reps}`}
                         </span>
                       </div>
                     ))}

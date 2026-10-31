@@ -3,6 +3,9 @@ import { useMemo, useState } from "react";
 import { getCurrentPBs } from "../utils/pbUtils";
 import "../css/PersonalBests.css";
 
+const formatDuration = (seconds) =>
+  `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+
 const PersonalBests = () => {
   const { workouts } = useWorkout();
   const personalBests = useMemo(() => getCurrentPBs(workouts), [workouts]);
@@ -89,8 +92,17 @@ const PersonalBests = () => {
                           </p>
                         </div>
                         <p className="pb-value">
-                          <strong>{pb.weight}</strong>
-                          <span>kg × {pb.reps} reps</span>
+                          {pb.trackingType === "time" ? (
+                            <>
+                              <strong>{formatDuration(pb.seconds)}</strong>
+                              <span>best time</span>
+                            </>
+                          ) : (
+                            <>
+                              <strong>{pb.weight}</strong>
+                              <span>kg × {pb.reps} reps</span>
+                            </>
+                          )}
                         </p>
                       </article>
                     ))}

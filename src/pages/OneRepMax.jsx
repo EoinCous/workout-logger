@@ -11,7 +11,9 @@ const calculate1RM = (weight, reps) => {
 const OneRepMax = () => {
   const { workouts } = useWorkout();
   const personalBests = useMemo(() => getCurrentPBs(workouts), [workouts]);
-  const sortedPersonalBests = Object.values(personalBests).sort((a, b) => a.name.localeCompare(b.name));
+  const sortedPersonalBests = Object.values(personalBests)
+    .filter((personalBest) => personalBest.trackingType !== "time")
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const [selectedExercise, setSelectedExercise] = useState("");
   const [weight, setWeight] = useState("");
