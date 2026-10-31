@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, Outlet } from 'react-router-dom';
 import Home from './pages/Home';
 import Workout from './pages/Workout';
 import Exercises from './pages/Exercises';
@@ -15,22 +15,29 @@ import { useAuthentication } from './context/AuthenticationContext';
 import Authentication from './pages/Authentication';
 import Profile from './pages/Profile';
 import OneRepMax from './pages/OneRepMax';
-import LoadingScreen from './components/LoadingScreen';
 import UpdatePassword from './pages/UpdatePassword';
+import LoadingScreen from './components/LoadingScreen';
+import NotFound from './pages/NotFound';
+
+const AuthenticatedLayout = () => (
+  <div className="app-container">
+    <div className="page-content">
+      <Outlet />
+    </div>
+    <BottomNav />
+  </div>
+);
 
 function App() {
   const { user, authenticationLoading } = useAuthentication();
-  const location = useLocation();
 
   if (authenticationLoading) return <LoadingScreen message="Checking your session" />;
-  if (location.pathname.replace(/\/+$/, '') === '/update-password') {
-    return <UpdatePassword />;
-  }
 
-  return user ? (
-    <div className="app-container">
-      <div className="page-content">
-        <Routes>
+  return (
+    <Routes>
+      <Route path="/update-password" element={<UpdatePassword />} />
+      {user ? (
+        <Route element={<AuthenticatedLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/workout" element={<Workout />} />
           <Route path="/workout-planner" element={<WorkoutPlanner />} />
@@ -44,12 +51,12 @@ function App() {
           <Route path="/weekly-progress" element={<WeeklyProgress />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/one-rep-max' element={<OneRepMax />} />
-        </Routes>
-      </div>
-      <BottomNav />
-    </div>
-  ) : (
-    <Authentication />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      ) : (
+        <Route path="*" element={<Authentication />} />
+      )}
+    </Routes>
   );
 }
 
