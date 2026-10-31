@@ -1,16 +1,17 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '../supabase/supabaseClient';
 
-const AuthenticationContext = createContext();
+const AuthenticationContext = createContext(null);
 
 export const AuthenticationProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authenticationLoading, setAuthenticationLoading] = useState(true);
+  const authEventVersion = useRef(0);
 
   useEffect(() => {
     let isMounted = true;
+    const initialAuthEventVersion = authEventVersion.current;
 
-    // initialize session
     const init = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
@@ -18,13 +19,14 @@ export const AuthenticationProvider = ({ children }) => {
 
         const session = data.session;
 
-        if (!isMounted) return;
+        if (!isMounted || authEventVersion.current !== initialAuthEventVersion) return;
 
         if (session) {
           const isExpired = session.expires_at * 1000 < Date.now();
           if (isExpired) {
-            console.warn("Session expired, clearing...");
-            await supabase.auth.signOut();
+            const { error: signOutError } = await supabase.auth.signOut({ scope: 'local' });
+            if (signOutError) throw signOutError;
+            if (!isMounted || authEventVersion.current !== initialAuthEventVersion) return;
             setUser(null);
           } else {
             setUser(session.user);
@@ -33,18 +35,19 @@ export const AuthenticationProvider = ({ children }) => {
           setUser(null);
         }
       } catch (e) {
-        console.error("Failed to get initial session:", e);
-        if (!isMounted) return;
-        setUser(null);
+        if (isMounted && authEventVersion.current === initialAuthEventVersion) {
+          console.error("Failed to get initial session:", e);
+          setUser(null);
+        }
       } finally {
-        if (!isMounted) return;
-        setAuthenticationLoading(false);
+        if (isMounted) setAuthenticationLoading(false);
       }
     };
 
     init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      authEventVersion.current += 1;
       if (event === 'SIGNED_OUT' || !session) {
         setUser(null);
       } else {
@@ -58,29 +61,43 @@ export const AuthenticationProvider = ({ children }) => {
     };
   }, []);
 
-  const signUp = async (email, password) => {
+  const signUp = useCallback(async (email, password) => {
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
-  };
+  }, []);
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      console.error("Login error:", error.message);
-      throw error;
-    }
+    if (error) throw error;
     return data;
-  };
+  }, []);
 
-  const logout = async () => {
-    await supabase.auth.signOut();
-  };
+  const logout = useCallback(async () => {
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
+    if (error?.name === 'AuthSessionMissingError') {
+      setUser(null);
+      return;
+    }
+    if (error) throw error;
+  }, []);
+
+  const value = useMemo(
+    () => ({ user, authenticationLoading, signUp, login, logout }),
+    [user, authenticationLoading, signUp, login, logout]
+  );
 
   return (
-    <AuthenticationContext.Provider value={{ user, authenticationLoading, signUp, login, logout }}>
+    <AuthenticationContext.Provider value={value}>
       {children}
     </AuthenticationContext.Provider>
   );
 };
 
-export const useAuthentication = () => useContext(AuthenticationContext);
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAuthentication = () => {
+  const context = useContext(AuthenticationContext);
+  if (!context) {
+    throw new Error('useAuthentication must be used within an AuthenticationProvider');
+  }
+  return context;
+};
