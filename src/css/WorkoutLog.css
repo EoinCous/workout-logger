@@ -13,6 +13,33 @@
   gap: 1rem;
 }
 
+.log-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.workout-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.workout-timer-label {
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.workout-timer-value {
+  color: var(--text-main, #f8fafc);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
 .workout-type-badge {
   font-size: 0.8rem;
   background-color: var(--accent, #3b82f6);
@@ -21,6 +48,19 @@
   border-radius: 9999px;
   font-weight: 700;
   letter-spacing: 0.5px;
+}
+
+@media (max-width: 480px) {
+  .log-header {
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .log-header-meta {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+  }
 }
 
 /* --- Card Architecture --- */

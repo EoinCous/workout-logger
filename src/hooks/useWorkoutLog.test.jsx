@@ -150,11 +150,13 @@ describe("useWorkoutLog", () => {
 
   it("initializes a log from the active plan when one does not exist", async () => {
     initialWorkoutState.currentLog = null;
+    initialWorkoutState.currentPlan.startedAt = "2026-11-02T20:00:00.000Z";
 
     const { result } = renderHook(() => useWorkoutLog());
 
     await waitFor(() => {
       expect(result.current.currentLog).toMatchObject({
+        startedAt: "2026-11-02T20:00:00.000Z",
         exercises: [{
           ...benchPress,
           sets: [],

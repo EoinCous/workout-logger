@@ -1,6 +1,17 @@
 import "../css/WorkoutLog.css";
+import { useEffect, useState } from "react";
 import WorkoutExerciseCard from "../components/WorkoutExerciseCard";
 import useWorkoutLog from "../hooks/useWorkoutLog";
+
+const formatElapsedTime = (seconds) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return [hours, minutes, remainingSeconds]
+    .map((part) => String(part).padStart(2, "0"))
+    .join(":");
+};
 
 const WorkoutLog = () => {
   const {
@@ -20,6 +31,12 @@ const WorkoutLog = () => {
     updateNotes,
     hasAnySets,
   } = useWorkoutLog();
+  const [now, setNow] = useState(Date.now);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   if (!currentLog) {
     return (
@@ -29,12 +46,30 @@ const WorkoutLog = () => {
     );
   }
 
+  const startTime = Date.parse(currentLog.startedAt);
+  const elapsedSeconds = Number.isFinite(startTime)
+    ? Math.max(0, Math.floor((now - startTime) / 1000))
+    : 0;
+
   return (
     <div className="workout-log fade-in">
       <header className="log-header">
         <h1 className="page-title">Log Workout</h1>
-        <div className="workout-type-badge">
-          {currentPlan?.type?.toUpperCase() ?? "ROUTINE"}
+        <div className="log-header-meta">
+          <div className="workout-timer">
+            <span className="workout-timer-label">Duration</span>
+            <time
+              className="workout-timer-value"
+              dateTime={`PT${elapsedSeconds}S`}
+              role="timer"
+              aria-label="Workout duration"
+            >
+              {formatElapsedTime(elapsedSeconds)}
+            </time>
+          </div>
+          <div className="workout-type-badge">
+            {currentPlan?.type?.toUpperCase() ?? "ROUTINE"}
+          </div>
         </div>
       </header>
 

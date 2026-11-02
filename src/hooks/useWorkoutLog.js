@@ -59,6 +59,7 @@ const useWorkoutLog = () => {
   useEffect(() => {
     if (!currentLog && currentPlan?.exercises && status === "inProgress") {
       const initialisedLog = {
+        startedAt: currentPlan.startedAt ?? new Date().toISOString(),
         exercises: hydrateExercises(currentPlan.exercises).map((exercise) => ({
           ...exercise,
           sets: [],
@@ -70,6 +71,10 @@ const useWorkoutLog = () => {
         notes: "",
       };
       setCurrentLog(initialisedLog);
+    } else if (currentLog && !currentLog.startedAt) {
+      setCurrentLog((previousLog) => previousLog
+        ? { ...previousLog, startedAt: currentPlan?.startedAt ?? new Date().toISOString() }
+        : previousLog);
     }
   }, [currentLog, currentPlan, setCurrentLog, status]);
 

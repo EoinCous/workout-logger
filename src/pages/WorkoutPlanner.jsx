@@ -104,7 +104,7 @@ const WorkoutPlanner = () => {
   };
 
   const handleStartWorkout = async () => {
-    const plan = buildPlan();
+    const plan = { ...buildPlan(), startedAt: new Date().toISOString() };
     setCurrentPlan(plan);
     try {
       await upsertCurrentPlan(user?.id, plan);
