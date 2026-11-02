@@ -50,7 +50,7 @@ const WorkoutPlanner = () => {
 
   const sortedExercises = useMemo(
     () => [...exercises].sort((a, b) => a.name.localeCompare(b.name)),
-    [exercises]
+    []
   );
 
   const filteredExercises = useMemo(() =>

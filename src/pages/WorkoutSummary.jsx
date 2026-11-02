@@ -85,10 +85,12 @@ const WorkoutSummary = () => {
 
   if (!workout) {
     return (
-      <div className="summary-page">
+      <>
         <BackButton previousPage={'/history'} />
-        <p className="not-found">Workout not found.</p>
-      </div>
+        <div className="summary-page">
+          <p className="not-found">Workout not found.</p>
+        </div>
+      </>
     );
   }
 
@@ -97,10 +99,10 @@ const WorkoutSummary = () => {
   });
 
   return (
-    <div className="summary-page fade-in">
+    <>
       <BackButton previousPage={'/history'} />
-      
-      <div className="summary-container">
+      <div className="summary-page fade-in">
+        <div className="summary-container">
         <header className="summary-header">
           <div className="header-top">
             <span className="workout-date">{formattedDate}</span>
@@ -229,8 +231,9 @@ const WorkoutSummary = () => {
           )}
         </div>
 
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

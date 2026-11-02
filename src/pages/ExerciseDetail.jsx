@@ -123,9 +123,10 @@ const ExerciseDetail = () => {
   if (!exercise) return <div className="error-state">Exercise not found.</div>;
 
   return (
-    <div className="exercise-detail fade-in">
+    <>
+      <BackButton previousPage={previousPage} />
+      <div className="exercise-detail fade-in">
       <div className="header-section">
-        <BackButton previousPage={previousPage} />
         <h1 className='page-title'>{exercise.name}</h1>
         <div className="chip-container">
           <span className="chip primary">{exercise.muscle}</span>
@@ -293,6 +294,7 @@ const ExerciseDetail = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
