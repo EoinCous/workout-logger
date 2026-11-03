@@ -12,7 +12,7 @@ import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { hydrateExercises } from "../utils/exerciseUtils";
 import SearchInput from "../components/SearchInput";
 import "../css/WorkoutPlanner.css";
-import { MUSCLE_CATEGORIES, ALL_MUSCLES } from "../utils/muscleGroups";
+import { MUSCLE_CATEGORIES, ALL_MUSCLES } from "../constants/muscleGroups";
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();

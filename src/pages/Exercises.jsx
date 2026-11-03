@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react';
 import exercisesData from '../data/exercises.json';
 import ExerciseCard from '../components/ExerciseCard';
 import SearchInput from '../components/SearchInput';
-import { MUSCLE_CATEGORIES } from '../utils/muscleGroups';
+import { MUSCLE_CATEGORIES } from '../constants/muscleGroups';
 
 const Exercises = () => {
   const [search, setSearch] = useState('');
