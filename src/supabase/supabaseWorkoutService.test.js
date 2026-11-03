@@ -179,7 +179,7 @@ describe("supabaseWorkoutService", () => {
       date: plan.date,
       exercises: [{ id: "bench-press", sets: plan.exercises[0].sets }],
       type: "full",
-    }, { onConflict: ["user_id"] }]);
+    }, { onConflict: "user_id" }]);
   });
 
   it("propagates current plan upsert errors", async () => {
@@ -229,7 +229,7 @@ describe("supabaseWorkoutService", () => {
     await expect(upsertWeeklyGoal("user-1", 4)).resolves.toBe(savedGoal);
     expect(calledWith("upsert", "weekly_goal").args).toEqual([
       { user_id: "user-1", weekly_goal: 4 },
-      { onConflict: ["user_id"] },
+      { onConflict: "user_id" },
     ]);
   });
 

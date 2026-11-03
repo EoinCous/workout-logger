@@ -1,6 +1,48 @@
+import type { Database } from './supabaseClient';
 import { supabase } from './supabaseClient';
 
-export const fetchWorkouts = async (userId) => {
+type WorkoutSet = {
+  reps?: string | number;
+  weight?: string | number;
+  seconds?: number;
+};
+
+type ExerciseInput = {
+  id: string;
+  sets?: WorkoutSet[];
+};
+
+type WorkoutInput = {
+  date: string;
+  type: string;
+  exercises: ExerciseInput[];
+  personalBests?: Database['public']['Tables']['workouts']['Insert']['personal_bests'];
+  completedAt?: string | null;
+  notes?: string | null;
+};
+
+type CurrentPlanInput = {
+  date: string;
+  type: string;
+  exercises: ExerciseInput[];
+};
+
+type TemplateInput = {
+  name: string;
+  type: string;
+  exercises: ExerciseInput[];
+};
+
+type WorkoutRow = Database['public']['Tables']['workouts']['Row'];
+type WorkoutResult = Omit<WorkoutRow, 'user_id' | 'personal_bests' | 'completed_at'> & {
+  personalBests: WorkoutRow['personal_bests'];
+  completedAt: WorkoutRow['completed_at'];
+};
+
+const formatExercises = (exercises: ExerciseInput[]) =>
+  exercises.map(({ id, sets }) => ({ id, sets }));
+
+export const fetchWorkouts = async (userId: string): Promise<WorkoutResult[]> => {
   const { data, error } = await supabase
     .from('workouts')
     .select('id, date, type, exercises, personal_bests, completed_at, notes')
@@ -18,23 +60,23 @@ export const fetchWorkouts = async (userId) => {
     exercises: workout.exercises,
     personalBests: workout.personal_bests,
     completedAt: workout.completed_at,
-    notes: workout.notes
+    notes: workout.notes,
   }));
 };
 
-export const insertWorkout = async (userId, workout) => {
+export const insertWorkout = async (userId: string, workout: WorkoutInput) => {
   const cleanedExercises = formatExercises(workout.exercises);
 
   const { data, error } = await supabase
     .from('workouts')
-    .insert({ 
+    .insert({
       user_id: userId,
       date: workout.date,
       type: workout.type,
       exercises: cleanedExercises,
       personal_bests: workout.personalBests,
       completed_at: workout.completedAt,
-      notes: workout.notes
+      notes: workout.notes,
     })
     .select()
     .single();
@@ -43,7 +85,7 @@ export const insertWorkout = async (userId, workout) => {
   return data;
 };
 
-export const deleteWorkout = async (userId, id) => {
+export const deleteWorkout = async (userId: string, id: string): Promise<void> => {
   const { error } = await supabase
     .from('workouts')
     .delete()
@@ -53,7 +95,7 @@ export const deleteWorkout = async (userId, id) => {
   if (error) throw error;
 };
 
-export const fetchCurrentPlan = async (userId) => {
+export const fetchCurrentPlan = async (userId: string) => {
   const { data, error } = await supabase
     .from('current_plan')
     .select('date, exercises, type')
@@ -64,17 +106,19 @@ export const fetchCurrentPlan = async (userId) => {
   return data;
 };
 
-export const upsertCurrentPlan = async (userId, currentPlan) => {
+export const upsertCurrentPlan = async (userId: string, currentPlan: CurrentPlanInput) => {
   const cleanedExercises = formatExercises(currentPlan.exercises);
 
   const { data, error } = await supabase
     .from('current_plan')
     .upsert(
-      { user_id: userId,
+      {
+        user_id: userId,
         date: currentPlan.date,
         exercises: cleanedExercises,
-        type: currentPlan.type }, 
-      { onConflict: ['user_id'] }
+        type: currentPlan.type,
+      },
+      { onConflict: 'user_id' },
     )
     .select()
     .single();
@@ -83,16 +127,16 @@ export const upsertCurrentPlan = async (userId, currentPlan) => {
   return data;
 };
 
-export const clearCurrentPlan = async (userId) => {
+export const clearCurrentPlan = async (userId: string): Promise<void> => {
   const { error } = await supabase
-      .from('current_plan')
-      .delete()
-      .eq('user_id', userId);
+    .from('current_plan')
+    .delete()
+    .eq('user_id', userId);
 
-    if (error) throw error;
-}
+  if (error) throw error;
+};
 
-export const fetchWeeklyGoal = async (userId) => {
+export const fetchWeeklyGoal = async (userId: string): Promise<number | undefined> => {
   const { data, error } = await supabase
     .from('weekly_goal')
     .select('weekly_goal')
@@ -100,16 +144,15 @@ export const fetchWeeklyGoal = async (userId) => {
     .maybeSingle();
 
   if (error) throw error;
-  const weeklyGoal = { weeklyGoal: data?.weekly_goal }
-  return weeklyGoal.weeklyGoal;
+  return data?.weekly_goal;
 };
 
-export const upsertWeeklyGoal = async (userId, goal) => {
+export const upsertWeeklyGoal = async (userId: string, goal: number) => {
   const { data, error } = await supabase
     .from('weekly_goal')
     .upsert(
-      { user_id: userId, weekly_goal: goal }, 
-      { onConflict: ['user_id'] }
+      { user_id: userId, weekly_goal: goal },
+      { onConflict: 'user_id' },
     )
     .select()
     .single();
@@ -118,11 +161,7 @@ export const upsertWeeklyGoal = async (userId, goal) => {
   return data;
 };
 
-const formatExercises = (exercises) => {
-  return exercises.map(exercise => ({ id: exercise.id, sets: exercise.sets }));
-}
-
-export const fetchTemplates = async (userId) => {
+export const fetchTemplates = async (userId: string) => {
   const { data, error } = await supabase
     .from('templates')
     .select('id, name, exercises, type, created_at')
@@ -133,7 +172,7 @@ export const fetchTemplates = async (userId) => {
   return data;
 };
 
-export const insertTemplate = async (userId, template) => {
+export const insertTemplate = async (userId: string, template: TemplateInput) => {
   const { count, error: countError } = await supabase
     .from('templates')
     .select('*', { count: 'exact', head: true })
@@ -141,11 +180,8 @@ export const insertTemplate = async (userId, template) => {
 
   if (countError) throw countError;
 
-  // 2. Enforce the 5-template limit
-  if (count >= 5) {
-    const limitError = new Error("Template limit reached");
-    limitError.code = "LIMIT_REACHED"; // Custom code for your UI to catch
-    throw limitError;
+  if (count !== null && count >= 5) {
+    throw Object.assign(new Error('Template limit reached'), { code: 'LIMIT_REACHED' });
   }
 
   const cleanedExercises = formatExercises(template.exercises);
@@ -156,7 +192,7 @@ export const insertTemplate = async (userId, template) => {
       user_id: userId,
       name: template.name,
       exercises: cleanedExercises,
-      type: template.type
+      type: template.type,
     })
     .select()
     .single();
@@ -165,7 +201,7 @@ export const insertTemplate = async (userId, template) => {
   return data;
 };
 
-export const deleteTemplate = async (userId, templateId) => {
+export const deleteTemplate = async (userId: string, templateId: string): Promise<void> => {
   const { error } = await supabase
     .from('templates')
     .delete()
