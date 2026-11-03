@@ -4,7 +4,10 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "strict": true,
+    "allowJs": true,
+    "checkJs": false,
     "skipLibCheck": true,
     "noEmit": true,
     "types": ["vite/client"]

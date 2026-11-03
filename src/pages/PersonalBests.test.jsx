@@ -32,7 +32,7 @@ describe('PersonalBests', () => {
     expect(screen.getByText('1:30')).toBeTruthy();
     expect(screen.getByText('best time')).toBeTruthy();
     expect(screen.getByText('0:30')).toBeTruthy();
-    expect(screen.getByText('best time · 20 kg')).toBeTruthy();
+    expect(screen.getByText('best time + 20 kg')).toBeTruthy();
     expect(screen.getByText('Barbell Bench Press')).toBeTruthy();
     expect(screen.getByText('80')).toBeTruthy();
     expect(screen.getByText('kg × 8 reps')).toBeTruthy();

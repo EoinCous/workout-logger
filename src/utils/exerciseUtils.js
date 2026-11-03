@@ -1,7 +1,7 @@
 import exercisesData from '../data/exercises.json';
 
-const exerciseById = exercisesData.reduce((acc, ex) => {
-  acc[ex.id] = ex;
+const exerciseById = exercisesData.reduce((acc, exercise) => {
+  acc[exercise.id] = exercise;
   return acc;
 }, {});
 

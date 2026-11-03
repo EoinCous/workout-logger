@@ -14,7 +14,7 @@ import {
 import { upsertWeeklyGoal } from '../supabase/supabaseWorkoutService';
 import { useAuthentication } from '../context/AuthenticationContext';
 import exercisesData from "../data/exercises.json";
-import { getMuscleCategory } from '../utils/muscleGroups';
+import { getMuscleCategory } from '../constants/muscleGroups';
 
 const WeeklyProgress = () => {
   const { workouts, weeklyGoal, setWeeklyGoal } = useWorkout();
