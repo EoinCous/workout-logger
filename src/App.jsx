@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import BottomNav from './components/BottomNav';
 import { useAuthentication } from './context/AuthenticationContext';
@@ -32,6 +32,14 @@ const AuthenticatedLayout = () => (
 
 function App() {
   const { user, authenticationLoading } = useAuthentication();
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => localStorage.getItem('theme') !== 'light',
+  );
+
+  useEffect(() => {
+    document.body.dataset.theme = isDarkMode ? 'dark' : 'light';
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
   if (authenticationLoading) return <LoadingScreen message="Checking your session" />;
 
@@ -52,7 +60,12 @@ function App() {
             <Route path="/personal-bests" element={<PersonalBests />} />
             <Route path="/suggestions" element={<Suggestions />} />
             <Route path="/weekly-progress" element={<WeeklyProgress />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route
+              path="/profile"
+              element={
+                <Profile isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+              }
+            />
             <Route path="/one-rep-max" element={<OneRepMax />} />
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -116,3 +116,159 @@ input:focus, select:focus, textarea:focus {
   font-size: 2rem;
   color: var(--coloursecondary);
 }
+
+body[data-theme="light"] {
+  color-scheme: light;
+  --colourprimary: #f5f7fa;
+  --coloursecondary: #1f2937;
+  --bg-main: #f5f7fa;
+  --bg-body: #f5f7fa;
+  --bg-page: #f5f7fa;
+  --bg-card: #ffffff;
+  --bg-hover: #e8edf3;
+  --bg-input: #ffffff;
+  --border-color: #d7dee8;
+  --text-main: #1f2937;
+  --text-muted: #64748b;
+  --text-dim: #64748b;
+  --pb-muted: #64748b;
+}
+
+body[data-theme="light"],
+body[data-theme="light"] .app-container {
+  background-color: var(--colourprimary);
+  color: var(--coloursecondary);
+}
+
+body[data-theme="light"] p {
+  color: #475569;
+}
+
+body[data-theme="light"] input,
+body[data-theme="light"] select,
+body[data-theme="light"] textarea,
+body[data-theme="light"] .search-input,
+body[data-theme="light"] .add-set-form input,
+body[data-theme="light"] .template-input-container input,
+body[data-theme="light"] .workout-notes {
+  background-color: var(--bg-input);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+body[data-theme="light"] .home-section,
+body[data-theme="light"] .hero-card,
+body[data-theme="light"] .bottom-nav,
+body[data-theme="light"] .exercise-card,
+body[data-theme="light"] .stat-card,
+body[data-theme="light"] .chart-section,
+body[data-theme="light"] .history-card,
+body[data-theme="light"] .workout-card,
+body[data-theme="light"] .workout-history-card,
+body[data-theme="light"] .template-card,
+body[data-theme="light"] .exercise-log-card,
+body[data-theme="light"] .section-card,
+body[data-theme="light"] .identity-card,
+body[data-theme="light"] .settings-card,
+body[data-theme="light"] .insight-box,
+body[data-theme="light"] .add-exercise-section,
+body[data-theme="light"] .selected-exercise,
+body[data-theme="light"] .pb-card,
+body[data-theme="light"] .exercise-summary-card,
+body[data-theme="light"] .template-input-container,
+body[data-theme="light"] .template-details,
+body[data-theme="light"] .workout-details,
+body[data-theme="light"] .ex-header,
+body[data-theme="light"] .workout-notes-summary,
+body[data-theme="light"] .category-pills,
+body[data-theme="light"] .toggle-pill,
+body[data-theme="light"] .sets-container,
+body[data-theme="light"] .empty-state,
+body[data-theme="light"] .history-empty,
+body[data-theme="light"] .auth-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+body[data-theme="light"] .auth-wrapper {
+  background:
+    radial-gradient(ellipse at 18% 18%, rgba(30, 136, 229, 0.1), transparent 36rem),
+    radial-gradient(ellipse at 85% 85%, rgba(54, 91, 128, 0.08), transparent 32rem),
+    var(--colourprimary);
+  color: var(--text-main);
+}
+
+body[data-theme="light"] .pb-container {
+  --pb-line: var(--border-color);
+  --pb-muted: var(--text-muted);
+}
+
+body[data-theme="light"] .workout-card,
+body[data-theme="light"] .hero-card {
+  background: var(--bg-card);
+}
+
+body[data-theme="light"] .date-badge,
+body[data-theme="light"] .workout-metric,
+body[data-theme="light"] .category-pills,
+body[data-theme="light"] .filters-row select,
+body[data-theme="light"] .toggle-pill,
+body[data-theme="light"] .toggle-pill button,
+body[data-theme="light"] .template-input-container input,
+body[data-theme="light"] .cancel-template-btn {
+  background-color: var(--bg-hover);
+}
+
+body[data-theme="light"] .home-section h3,
+body[data-theme="light"] .hero-content h2,
+body[data-theme="light"] .highlight-text,
+body[data-theme="light"] .tool-name,
+body[data-theme="light"] .exercise-detail,
+body[data-theme="light"] .stat-value,
+body[data-theme="light"] .stat-value-sm,
+body[data-theme="light"] .set-details,
+body[data-theme="light"] .exercise-summary h4,
+body[data-theme="light"] .workout-title,
+body[data-theme="light"] .workout-info,
+body[data-theme="light"] .template-exercise-item,
+body[data-theme="light"] .exercise-link,
+body[data-theme="light"] .set-weight,
+body[data-theme="light"] .summary-container,
+body[data-theme="light"] .pb-exercise,
+body[data-theme="light"] .workout-notes-summary h3,
+body[data-theme="light"] .workout-notes-summary p,
+body[data-theme="light"] .day-num,
+body[data-theme="light"] .exercise-info p,
+body[data-theme="light"] .selected-exercise p {
+  color: var(--text-main);
+}
+
+body[data-theme="light"] .greeting,
+body[data-theme="light"] .hero-content p,
+body[data-theme="light"] .progress-labels,
+body[data-theme="light"] .sub-text,
+body[data-theme="light"] .section-label,
+body[data-theme="light"] .nav-item,
+body[data-theme="light"] .stat-label,
+body[data-theme="light"] .stat-unit,
+body[data-theme="light"] .sets-header,
+body[data-theme="light"] .set-num,
+body[data-theme="light"] .set-reps,
+body[data-theme="light"] .workout-date,
+body[data-theme="light"] .workout-metric,
+body[data-theme="light"] .pill-btn,
+body[data-theme="light"] .header-count,
+body[data-theme="light"] .exercise-result-count,
+body[data-theme="light"] .no-results,
+body[data-theme="light"] .goal-display,
+body[data-theme="light"] .join-date,
+body[data-theme="light"] .insight-label,
+body[data-theme="light"] .insight-value small {
+  color: var(--text-muted);
+}
+
+body[data-theme="light"] .set-pill,
+body[data-theme="light"] .ex-count {
+  background-color: var(--bg-hover);
+  color: var(--text-muted);
+}

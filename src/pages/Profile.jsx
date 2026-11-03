@@ -1,23 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useAuthentication } from "../context/AuthenticationContext";
 import { useWorkout } from "../context/WorkoutContext";
 import '../css/Profile.css';
 
-const Profile = () => {
+const Profile = ({ isDarkMode, setIsDarkMode }) => {
   const { user, logout } = useAuthentication();
   const { workouts, weeklyGoal, resetWorkoutData } = useWorkout();
-
-  // --- Theme Toggle Logic ---
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check local storage or default to dark mode
-    return localStorage.getItem("theme") !== "light";
-  });
-
-  useEffect(() => {
-    // Apply theme class to the body so it affects the whole app
-    document.body.className = isDarkMode ? "dark-theme" : "light-theme";
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-  }, [isDarkMode]);
 
   const insights = useMemo(() => {
     let totalVolume = 0;
@@ -99,7 +87,8 @@ const Profile = () => {
               <input 
                 type="checkbox" 
                 checked={isDarkMode} 
-                onChange={() => setIsDarkMode(!isDarkMode)} 
+                onChange={(event) => setIsDarkMode(event.target.checked)}
+                aria-label="Dark Mode"
               />
               <span className="slider round"></span>
             </label>
