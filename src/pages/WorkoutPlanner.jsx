@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import WorkoutTypeSelector from "../components/WorkoutTypeSelector";
+import GenerateWorkout from "../components/GenerateWorkout";
 import ExerciseList from "../components/ExerciseList";
 import SelectedExerciseList from "../components/SelectedExerciseList";
 import PlannerControls from "../components/PlannerControls";
 import { useWorkout } from "../context/WorkoutContext";
 import { useNavigate } from "react-router-dom";
 import exercises from "../data/exercises.json";
-import { upsertCurrentPlan } from "../supabase/supabaseWorkoutService";
+import { clearCurrentPlan, upsertCurrentPlan } from "../supabase/supabaseWorkoutService";
 import { useAuthentication } from "../context/AuthenticationContext";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { hydrateExercises } from "../utils/exerciseUtils";
@@ -31,6 +32,7 @@ const WorkoutPlanner = () => {
   const [showAddSection, setShowAddSection] = useState(selectedExercises.length === 0);
   const [category, setCategory] = useState(ALL_MUSCLE_CATEGORY);
   const [muscle, setMuscle] = useState(ALL_MUSCLE_CATEGORY);
+  const [isGeneratingWorkout, setIsGeneratingWorkout] = useState(false);
   const isHydrating = useRef(true);
   const lastHydratedWorkoutType = useRef(null);
 
@@ -70,6 +72,30 @@ const WorkoutPlanner = () => {
     () => [...exercises].sort((a, b) => a.name.localeCompare(b.name)),
     []
   );
+
+  const handleGeneratedExercises = (generatedExercises) => {
+    setSelectedExercises((currentExercises) => {
+      const selectedIds = new Set(currentExercises.map((exercise) => exercise.id));
+      const newExercises = generatedExercises.filter((exercise) => !selectedIds.has(exercise.id));
+      return [...currentExercises, ...newExercises];
+    });
+    setShowAddSection(false);
+  };
+
+  const handleGenerateStart = async () => {
+    setSelectedExercises([]);
+    setShowAddSection(true);
+    setWorkoutSaved(false);
+    setCurrentPlan(null);
+
+    try {
+      if (user?.id) await clearCurrentPlan(user.id);
+    } catch (error) {
+      console.error("Failed to clear current plan before generating workout:", error);
+      handleSupabaseAuthError(error, logout);
+      throw error;
+    }
+  };
 
   const filteredExercises = useMemo(() =>
     sortedExercises.filter(ex => {
@@ -155,7 +181,18 @@ const WorkoutPlanner = () => {
   return (
     <div className="planner-container">
       <h1 className="page-title">Plan Workout</h1>
-      <WorkoutTypeSelector value={workoutType} onChange={handleWorkoutTypeChange} />
+      <WorkoutTypeSelector
+        value={workoutType}
+        onChange={handleWorkoutTypeChange}
+        disabled={isGeneratingWorkout}
+      />
+      <GenerateWorkout
+        workoutType={workoutType}
+        exercises={sortedExercises}
+        onExercisesGenerated={handleGeneratedExercises}
+        onGeneratingChange={setIsGeneratingWorkout}
+        onGenerateStart={handleGenerateStart}
+      />
       
       <div className="add-exercise-section">
         <h3 

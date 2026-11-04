@@ -9,7 +9,7 @@ const types = [
   { value: "full", label: "Full Body", description: "A complete workout" },
 ];
 
-const WorkoutTypeSelector = ({ value, onChange }) => {
+const WorkoutTypeSelector = ({ value, onChange, disabled = false }) => {
   return (
     <div className="workout-type-selector" role="group" aria-label="Workout type">
       <p className="workout-type-selector__label">Choose a workout focus</p>
@@ -20,6 +20,7 @@ const WorkoutTypeSelector = ({ value, onChange }) => {
             type="button"
             className={`workout-type-selector__option${value === type ? " active" : ""}`}
             aria-pressed={value === type}
+            disabled={disabled}
             onClick={() => onChange(type)}
           >
             <span className="workout-type-selector__option-label">{label}</span>

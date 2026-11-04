@@ -1,0 +1,52 @@
+.ai-workout-generator {
+  margin: -0.75rem 0 1.5rem;
+}
+
+.ai-workout-generator__button {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--colouraccent);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.ai-workout-generator__button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.ai-workout-generator__button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.ai-workout-generator__button:focus-visible {
+  outline: 3px solid var(--colouraccent);
+  outline-offset: 3px;
+}
+
+.ai-workout-generator__message,
+.ai-workout-generator__error {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+}
+
+.ai-workout-generator__message {
+  color: var(--text-muted, #a1a1aa);
+}
+
+.ai-workout-generator__error {
+  color: #ff8a80;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-workout-generator__button {
+    transition: none;
+  }
+}
