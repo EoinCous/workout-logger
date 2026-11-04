@@ -14,18 +14,25 @@ const WORKOUT_TYPE_LABELS = {
 const GenerateWorkout = ({
   workoutType,
   exercises,
+  selectedExercises,
   onExercisesGenerated,
   onGeneratingChange,
   onGenerateStart,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [message, setMessage] = useState("");
+  const [completedGeneration, setCompletedGeneration] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const selectedExerciseIds = selectedExercises.map((exercise) => exercise.id).sort();
+  const isCurrentWorkoutGenerated =
+    completedGeneration?.workoutType === workoutType &&
+    completedGeneration.exerciseIds.length === selectedExerciseIds.length &&
+    completedGeneration.exerciseIds.every((id, index) => id === selectedExerciseIds[index]);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
     onGeneratingChange(true);
-    setMessage("");
+    setCompletedGeneration(null);
     setErrorMessage("");
 
     try {
@@ -80,8 +87,13 @@ const GenerateWorkout = ({
         throw new Error("The generated workout did not include any exercises from the exercise library.");
       }
 
-      onExercisesGenerated([...generatedById.values()]);
-      setMessage("Your AI workout is ready. Review the selected exercises below.");
+      const generatedExercises = [...generatedById.values()];
+      onExercisesGenerated(generatedExercises);
+      setCompletedGeneration({
+        workoutType,
+        exerciseIds: generatedExercises.map((exercise) => exercise.id).sort(),
+        exerciseCount: generatedExercises.length,
+      });
     } catch (error) {
       console.error("Failed to generate workout:", error);
       setErrorMessage(error?.message || "Unable to generate a workout. Please try again.");
@@ -95,19 +107,18 @@ const GenerateWorkout = ({
     <div className="ai-workout-generator">
       <button
         type="button"
-        className="ai-workout-generator__button"
+        className={`ai-workout-generator__button${isCurrentWorkoutGenerated ? " ai-workout-generator__button--generated" : ""}`}
         onClick={handleGenerate}
-        disabled={isGenerating}
+        disabled={isGenerating || isCurrentWorkoutGenerated}
+        aria-live="polite"
+        aria-atomic="true"
       >
         {isGenerating
           ? "Generating workout..."
-          : `Generate ${WORKOUT_TYPE_LABELS[workoutType] ?? "selected"} workout with AI`}
+          : isCurrentWorkoutGenerated
+            ? `Workout generated — ${completedGeneration.exerciseCount} ${completedGeneration.exerciseCount === 1 ? "exercise" : "exercises"} added.`
+            : `Generate ${WORKOUT_TYPE_LABELS[workoutType] ?? "selected"} workout with AI`}
       </button>
-      {message && (
-        <p className="ai-workout-generator__message" role="status">
-          {message}
-        </p>
-      )}
       {errorMessage && (
         <p className="ai-workout-generator__error" role="alert">
           {errorMessage}

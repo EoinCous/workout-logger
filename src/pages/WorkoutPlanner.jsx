@@ -84,7 +84,6 @@ const WorkoutPlanner = () => {
 
   const handleGenerateStart = async () => {
     setSelectedExercises([]);
-    setShowAddSection(true);
     setWorkoutSaved(false);
     setCurrentPlan(null);
 
@@ -189,6 +188,7 @@ const WorkoutPlanner = () => {
       <GenerateWorkout
         workoutType={workoutType}
         exercises={sortedExercises}
+        selectedExercises={selectedExercises}
         onExercisesGenerated={handleGeneratedExercises}
         onGeneratingChange={setIsGeneratingWorkout}
         onGenerateStart={handleGenerateStart}
