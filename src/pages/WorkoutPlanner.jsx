@@ -12,7 +12,12 @@ import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { hydrateExercises } from "../utils/exerciseUtils";
 import SearchInput from "../components/SearchInput";
 import "../css/WorkoutPlanner.css";
-import { MUSCLE_CATEGORIES, ALL_MUSCLES } from "../constants/muscleGroups";
+import {
+  ALL_MUSCLE_CATEGORY,
+  ALL_MUSCLES,
+  getWorkoutMuscleCategory,
+  MUSCLE_CATEGORIES,
+} from "../constants/muscleGroups";
 
 const WorkoutPlanner = () => {
   const { setStatus, currentPlan, setCurrentPlan } = useWorkout();
@@ -24,15 +29,22 @@ const WorkoutPlanner = () => {
   const [workoutSaved, setWorkoutSaved] = useState(false);
   const [search, setSearch] = useState("");
   const [showAddSection, setShowAddSection] = useState(selectedExercises.length === 0);
-  const [category, setCategory] = useState("all");
-  const [muscle, setMuscle] = useState("all");
+  const [category, setCategory] = useState(ALL_MUSCLE_CATEGORY);
+  const [muscle, setMuscle] = useState(ALL_MUSCLE_CATEGORY);
   const isHydrating = useRef(true);
+  const lastHydratedWorkoutType = useRef(null);
 
   useEffect(() => {
     if (!currentPlan) return;
     setShowAddSection(false);
     isHydrating.current = true;
-    setWorkoutType(currentPlan.type ?? "push");
+    const planType = currentPlan.type ?? "push";
+    setWorkoutType(planType);
+    if (lastHydratedWorkoutType.current !== planType) {
+      setCategory(getWorkoutMuscleCategory(planType));
+      setMuscle(ALL_MUSCLE_CATEGORY);
+      lastHydratedWorkoutType.current = planType;
+    }
     setSelectedExercises(hydrateExercises(currentPlan.exercises) ?? []);
   }, [currentPlan]);
 
@@ -42,11 +54,17 @@ const WorkoutPlanner = () => {
   }, [workoutType, selectedExercises]);
 
   const availableMuscles = useMemo(() => {
-    if (category === "all") return ALL_MUSCLES;
+    if (category === ALL_MUSCLE_CATEGORY) return ALL_MUSCLES;
     return MUSCLE_CATEGORIES[category] || [];
   }, [category]);
 
-  const muscleOptions = ["all", ...availableMuscles];
+  const muscleOptions = [ALL_MUSCLE_CATEGORY, ...availableMuscles];
+
+  const handleWorkoutTypeChange = (type) => {
+    setWorkoutType(type);
+    setCategory(getWorkoutMuscleCategory(type));
+    setMuscle(ALL_MUSCLE_CATEGORY);
+  };
 
   const sortedExercises = useMemo(
     () => [...exercises].sort((a, b) => a.name.localeCompare(b.name)),
@@ -56,12 +74,12 @@ const WorkoutPlanner = () => {
   const filteredExercises = useMemo(() =>
     sortedExercises.filter(ex => {
       // If a category is selected (Push/Pull/etc), check if exercise muscle is in that list
-      if (category !== "all") {
+      if (category !== ALL_MUSCLE_CATEGORY) {
         const categoryMuscles = MUSCLE_CATEGORIES[category] || [];
         if (!categoryMuscles.includes(ex.muscle)) return false;
       }
       
-      if (muscle !== "all" && ex.muscle !== muscle) return false;
+      if (muscle !== ALL_MUSCLE_CATEGORY && ex.muscle !== muscle) return false;
       if (!ex.name.toLowerCase().includes(search.toLowerCase())) return false;
       
       return true;
@@ -137,7 +155,7 @@ const WorkoutPlanner = () => {
   return (
     <div className="planner-container">
       <h1 className="page-title">Plan Workout</h1>
-      <WorkoutTypeSelector value={workoutType} onChange={setWorkoutType} />
+      <WorkoutTypeSelector value={workoutType} onChange={handleWorkoutTypeChange} />
       
       <div className="add-exercise-section">
         <h3 
@@ -152,14 +170,14 @@ const WorkoutPlanner = () => {
             <SearchInput value={search} onChange={setSearch} />
 
             <div className="filters-row">
-              <select 
+              <select
                 value={category} 
                 onChange={(e) => {
                   setCategory(e.target.value);
-                  setMuscle("all"); 
+                  setMuscle(ALL_MUSCLE_CATEGORY);
                 }}
               >
-                <option value="all">All Categories</option>
+                <option value={ALL_MUSCLE_CATEGORY}>All Categories</option>
                 {Object.keys(MUSCLE_CATEGORIES).map(category => (
                   <option key={category} value={category}>
                     {category}

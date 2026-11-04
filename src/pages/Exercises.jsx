@@ -3,21 +3,22 @@ import { useState, useMemo } from 'react';
 import exercisesData from '../data/exercises.json';
 import ExerciseCard from '../components/ExerciseCard';
 import SearchInput from '../components/SearchInput';
-import { MUSCLE_CATEGORIES } from '../constants/muscleGroups';
+import {
+  ALL_MUSCLE_CATEGORY,
+  MUSCLE_CATEGORIES,
+  MUSCLE_CATEGORY_OPTIONS,
+} from '../constants/muscleGroups';
 
 const Exercises = () => {
   const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
-
-  // Flatten logic for "All" view + add the specific categories
-  const categories = ['All', 'Push', 'Pull', 'Legs', 'Core'];
+  const [activeCategory, setActiveCategory] = useState(ALL_MUSCLE_CATEGORY);
 
   // 1. Filter Data
   const filteredData = useMemo(() => {
     let data = exercisesData;
 
     // Filter by Category (Push/Pull/etc)
-    if (activeCategory !== 'All') {
+    if (activeCategory !== ALL_MUSCLE_CATEGORY) {
       const allowedMuscles = MUSCLE_CATEGORIES[activeCategory] || [];
       data = data.filter(ex => allowedMuscles.includes(ex.muscle));
     }
@@ -71,7 +72,7 @@ const Exercises = () => {
         />
 
         <div className="category-pills" role="group" aria-label="Filter by workout category">
-          {categories.map(cat => (
+          {MUSCLE_CATEGORY_OPTIONS.map(cat => (
             <button
               key={cat}
               className={`pill-btn ${activeCategory === cat ? 'active' : ''}`}
@@ -107,13 +108,13 @@ const Exercises = () => {
             <p>
               {search
                 ? `No exercises found for "${search}" in ${activeCategory}.`
-                : `No exercises found in ${activeCategory}.`}
+                : `No exercises found in ${activeCategory === ALL_MUSCLE_CATEGORY ? 'All' : activeCategory}.`}
             </p>
             <button
               className="clear-filters-btn"
               onClick={() => {
                 setSearch('');
-                setActiveCategory('All');
+                setActiveCategory(ALL_MUSCLE_CATEGORY);
               }}
             >
               Clear filters
