@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './css/index.css';
 import App from './App.jsx';
 import { AuthenticationProvider } from './context/AuthenticationContext';
-import { WorkoutProvider } from './context/WorkoutContext.jsx';
+import { WorkoutProvider } from './context/WorkoutContext';
 import { registerSW } from 'virtual:pwa-register';
 
 const updateSW = registerSW({

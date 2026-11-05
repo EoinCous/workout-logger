@@ -4,7 +4,7 @@ const types = [
   { value: "push", label: "Push", description: "Chest, shoulders, triceps" },
   { value: "pull", label: "Pull", description: "Back and biceps" },
   { value: "legs", label: "Legs", description: "Lower-body focus" },
-  { value: "upper", label: "Upper", description: "Push + pull" },
+  { value: "upper", label: "Upper Body", description: "Push + pull" },
   { value: "core", label: "Core", description: "Abs and stability" },
   { value: "full", label: "Full Body", description: "A complete workout" },
 ];

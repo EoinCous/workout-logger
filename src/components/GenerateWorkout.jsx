@@ -6,7 +6,7 @@ const WORKOUT_TYPE_LABELS = {
   push: "Push",
   pull: "Pull",
   legs: "Legs",
-  upper: "Upper",
+  upper: "Upper Body",
   core: "Core",
   full: "Full Body",
 };

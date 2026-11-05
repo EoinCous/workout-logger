@@ -1,10 +1,26 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import type { PropsWithChildren } from 'react';
+import type { User } from '@supabase/supabase-js';
 import { supabase } from '../supabase/supabaseClient';
 
-const AuthenticationContext = createContext(null);
+type AuthenticationContextValue = {
+  user: User | null;
+  authenticationLoading: boolean;
+  signUp: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<
+    Awaited<ReturnType<typeof supabase.auth.signInWithPassword>>['data']
+  >;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<
+    Awaited<ReturnType<typeof supabase.auth.updateUser>>['data']
+  >;
+  logout: () => Promise<void>;
+};
 
-export const AuthenticationProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+const AuthenticationContext = createContext<AuthenticationContextValue | null>(null);
+
+export const AuthenticationProvider = ({ children }: PropsWithChildren) => {
+  const [user, setUser] = useState<User | null>(null);
   const [authenticationLoading, setAuthenticationLoading] = useState(true);
   const authEventVersion = useRef(0);
 
@@ -22,7 +38,8 @@ export const AuthenticationProvider = ({ children }) => {
         if (!isMounted || authEventVersion.current !== initialAuthEventVersion) return;
 
         if (session) {
-          const isExpired = session.expires_at * 1000 < Date.now();
+          const isExpired = session.expires_at !== undefined &&
+            session.expires_at * 1000 < Date.now();
           if (isExpired) {
             const { error: signOutError } = await supabase.auth.signOut({ scope: 'local' });
             if (signOutError) throw signOutError;
@@ -61,25 +78,25 @@ export const AuthenticationProvider = ({ children }) => {
     };
   }, []);
 
-  const signUp = useCallback(async (email, password) => {
+  const signUp = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
   }, []);
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     return data;
   }, []);
 
-  const resetPassword = useCallback(async (email) => {
+  const resetPassword = useCallback(async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/update-password`,
     });
     if (error) throw error;
   }, []);
 
-  const updatePassword = useCallback(async (password) => {
+  const updatePassword = useCallback(async (password: string) => {
     const { data, error } = await supabase.auth.updateUser({ password });
     if (error) throw error;
     return data;
@@ -94,7 +111,7 @@ export const AuthenticationProvider = ({ children }) => {
     if (error) throw error;
   }, []);
 
-  const value = useMemo(
+  const value: AuthenticationContextValue = useMemo(
     () => ({ user, authenticationLoading, signUp, login, resetPassword, updatePassword, logout }),
     [user, authenticationLoading, signUp, login, resetPassword, updatePassword, logout]
   );
@@ -107,7 +124,7 @@ export const AuthenticationProvider = ({ children }) => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAuthentication = () => {
+export const useAuthentication = (): AuthenticationContextValue => {
   const context = useContext(AuthenticationContext);
   if (!context) {
     throw new Error('useAuthentication must be used within an AuthenticationProvider');
