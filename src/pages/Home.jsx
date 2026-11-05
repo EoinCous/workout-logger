@@ -124,6 +124,11 @@ const Home = () => {
           <span className="tool-name">Library</span>
         </div>
 
+        <div className="home-section tool-card" onClick={() => navigate('/weight-tracker')}>
+          <span className="tool-icon">⚖️</span>
+          <span className="tool-name">Weight Tracker</span>
+        </div>
+
         <div className="home-section tool-card" onClick={() => navigate('/suggestions')}>
           <span className="tool-icon">💡</span>
           <span className="tool-name">Suggest</span>

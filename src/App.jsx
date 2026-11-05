@@ -18,6 +18,7 @@ const WeeklyProgress = lazy(() => import('./pages/WeeklyProgress'));
 const Authentication = lazy(() => import('./pages/Authentication'));
 const Profile = lazy(() => import('./pages/Profile'));
 const OneRepMax = lazy(() => import('./pages/OneRepMax'));
+const WeightTracker = lazy(() => import('./pages/WeightTracker'));
 const UpdatePassword = lazy(() => import('./pages/UpdatePassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -67,6 +68,7 @@ function App() {
               }
             />
             <Route path="/one-rep-max" element={<OneRepMax />} />
+            <Route path="/weight-tracker" element={<WeightTracker />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         ) : (

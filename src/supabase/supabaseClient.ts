@@ -81,6 +81,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      body_weights: {
+        Row: {
+          user_id: string;
+          recorded_date: string;
+          weight: number;
+        };
+        Insert: {
+          user_id: string;
+          recorded_date: string;
+          weight: number;
+        };
+        Update: {
+          user_id?: string;
+          recorded_date?: string;
+          weight?: number;
+        };
+        Relationships: [];
+      };
       workouts: {
         Row: {
           id: string;
@@ -123,9 +141,9 @@ export type Database = {
 };
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const supabasePublishable = import.meta.env.VITE_SUPABASE_PUBLISHABLE;
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+export const supabase = createClient<Database>(supabaseUrl, supabasePublishable, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,

@@ -33,14 +33,28 @@ type TemplateInput = {
   exercises: ExerciseInput[];
 };
 
+export type BodyWeightInput = {
+  recordedDate: string;
+  weight: number;
+};
+
+export type BodyWeightResult = BodyWeightInput;
+
 type WorkoutRow = Database['public']['Tables']['workouts']['Row'];
 type WorkoutResult = Omit<WorkoutRow, 'user_id' | 'personal_bests' | 'completed_at'> & {
   personalBests: WorkoutRow['personal_bests'];
   completedAt: WorkoutRow['completed_at'];
 };
 
+type BodyWeightRow = Database['public']['Tables']['body_weights']['Row'];
+
 const formatExercises = (exercises: ExerciseInput[]) =>
   exercises.map(({ id, sets }) => ({ id, sets }));
+
+const formatBodyWeight = (bodyWeight: Pick<BodyWeightRow, 'recorded_date' | 'weight'>): BodyWeightResult => ({
+  recordedDate: bodyWeight.recorded_date,
+  weight: bodyWeight.weight,
+});
 
 export const fetchWorkouts = async (userId: string): Promise<WorkoutResult[]> => {
   const { data, error } = await supabase
@@ -159,6 +173,48 @@ export const upsertWeeklyGoal = async (userId: string, goal: number) => {
 
   if (error) throw error;
   return data;
+};
+
+export const fetchBodyWeights = async (userId: string): Promise<BodyWeightResult[]> => {
+  const { data, error } = await supabase
+    .from('body_weights')
+    .select('recorded_date, weight')
+    .eq('user_id', userId)
+    .order('recorded_date', { ascending: false });
+
+  if (error) throw error;
+  return data.map(formatBodyWeight);
+};
+
+export const upsertBodyWeight = async (
+  userId: string,
+  bodyWeight: BodyWeightInput,
+): Promise<BodyWeightResult> => {
+  const { data, error } = await supabase
+    .from('body_weights')
+    .upsert(
+      {
+        user_id: userId,
+        recorded_date: bodyWeight.recordedDate,
+        weight: bodyWeight.weight,
+      },
+      { onConflict: 'user_id,recorded_date' },
+    )
+    .select('recorded_date, weight')
+    .single();
+
+  if (error) throw error;
+  return formatBodyWeight(data);
+};
+
+export const deleteBodyWeight = async (userId: string, recordedDate: string): Promise<void> => {
+  const { error } = await supabase
+    .from('body_weights')
+    .delete()
+    .eq('user_id', userId)
+    .eq('recorded_date', recordedDate);
+
+  if (error) throw error;
 };
 
 export const fetchTemplates = async (userId: string) => {

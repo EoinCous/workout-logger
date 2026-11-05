@@ -9,8 +9,10 @@ vi.mock("./supabaseClient", () => ({
 import { supabase } from "./supabaseClient";
 import {
   clearCurrentPlan,
+  deleteBodyWeight,
   deleteTemplate,
   deleteWorkout,
+  fetchBodyWeights,
   fetchCurrentPlan,
   fetchTemplates,
   fetchWeeklyGoal,
@@ -18,6 +20,7 @@ import {
   insertTemplate,
   insertWorkout,
   upsertCurrentPlan,
+  upsertBodyWeight,
   upsertWeeklyGoal,
 } from "./supabaseWorkoutService";
 
@@ -238,6 +241,78 @@ describe("supabaseWorkoutService", () => {
     queryResults.push({ data: null, error });
 
     await expect(upsertWeeklyGoal("user-1", 4)).rejects.toBe(error);
+  });
+
+  it("fetches body weights in descending recorded date order", async () => {
+    queryResults.push({
+      data: [
+        { recorded_date: "2026-10-31", weight: 80.5 },
+        { recorded_date: "2026-10-30", weight: 80.8 },
+      ],
+      error: null,
+    });
+
+    await expect(fetchBodyWeights("user-1")).resolves.toEqual([
+      { recordedDate: "2026-10-31", weight: 80.5 },
+      { recordedDate: "2026-10-30", weight: 80.8 },
+    ]);
+    expect(supabase.from).toHaveBeenCalledWith("body_weights");
+    expect(calledWith("select", "body_weights").args[0]).toBe("recorded_date, weight");
+    expect(calledWith("eq", "body_weights").args).toEqual(["user_id", "user-1"]);
+    expect(calledWith("order", "body_weights").args)
+      .toEqual(["recorded_date", { ascending: false }]);
+  });
+
+  it("propagates body weight fetch errors", async () => {
+    const error = new Error("Body weight fetch failed");
+    queryResults.push({ data: null, error });
+
+    await expect(fetchBodyWeights("user-1")).rejects.toBe(error);
+  });
+
+  it("upserts a body weight using the user and recorded date conflict key", async () => {
+    queryResults.push({
+      data: { recorded_date: "2026-10-31", weight: 80.5 },
+      error: null,
+    });
+
+    await expect(upsertBodyWeight("user-1", {
+      recordedDate: "2026-10-31",
+      weight: 80.5,
+    })).resolves.toEqual({ recordedDate: "2026-10-31", weight: 80.5 });
+    expect(calledWith("upsert", "body_weights").args).toEqual([
+      { user_id: "user-1", recorded_date: "2026-10-31", weight: 80.5 },
+      { onConflict: "user_id,recorded_date" },
+    ]);
+    expect(calledWith("select", "body_weights").args[0]).toBe("recorded_date, weight");
+  });
+
+  it("propagates body weight upsert errors", async () => {
+    const error = new Error("Body weight upsert failed");
+    queryResults.push({ data: null, error });
+
+    await expect(upsertBodyWeight("user-1", {
+      recordedDate: "2026-10-31",
+      weight: 80.5,
+    })).rejects.toBe(error);
+  });
+
+  it("deletes a body weight for the matching user and recorded date", async () => {
+    queryResults.push({ error: null });
+
+    await expect(deleteBodyWeight("user-1", "2026-10-31")).resolves.toBeUndefined();
+    expect(supabase.from).toHaveBeenCalledWith("body_weights");
+    expect(queryCalls.filter((call) => call.table === "body_weights").map((call) => call.method))
+      .toEqual(["from", "delete", "eq", "eq"]);
+    expect(queryCalls.filter((call) => call.method === "eq").map((call) => call.args))
+      .toEqual([["user_id", "user-1"], ["recorded_date", "2026-10-31"]]);
+  });
+
+  it("propagates body weight delete errors", async () => {
+    const error = new Error("Body weight delete failed");
+    queryResults.push({ error });
+
+    await expect(deleteBodyWeight("user-1", "2026-10-31")).rejects.toBe(error);
   });
 
   it("fetches templates in descending creation order", async () => {
