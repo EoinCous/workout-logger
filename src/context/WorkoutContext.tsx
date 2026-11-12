@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
 import { WORKOUT_STATUS } from "../constants/workoutStatus";
+import type { PersonalBestRecord } from "../utils/pbUtils";
 
 type WorkoutSet = {
   reps?: string | number;
@@ -50,6 +51,8 @@ type WorkoutContextValue = {
   setCurrentLog: Dispatch<SetStateAction<WorkoutLog | null>>;
   workouts: WorkoutRecord[];
   setWorkouts: Dispatch<SetStateAction<WorkoutRecord[]>>;
+  personalBests: PersonalBestRecord;
+  setPersonalBests: Dispatch<SetStateAction<PersonalBestRecord>>;
   getLatestWorkout: () => WorkoutRecord | null;
   getLatestWorkouts: () => WorkoutRecord[];
   weeklyGoal: number | null;
@@ -81,6 +84,11 @@ export const WorkoutProvider = ({ children }: PropsWithChildren) => {
     return saved ? (JSON.parse(saved) as WorkoutRecord[]) : [];
   });
 
+  const [personalBests, setPersonalBests] = useState<PersonalBestRecord>(() => {
+    const saved = localStorage.getItem("personalBests");
+    return saved ? (JSON.parse(saved) as PersonalBestRecord) : {};
+  });
+
   const [weeklyGoal, setWeeklyGoal] = useState<number | null>(() => {
     const saved = localStorage.getItem("weeklyGoal");
     return saved ? (JSON.parse(saved) as number) : null;
@@ -96,9 +104,10 @@ export const WorkoutProvider = ({ children }: PropsWithChildren) => {
     localStorage.setItem("currentPlan", JSON.stringify(currentPlan));
     localStorage.setItem("currentLog", JSON.stringify(currentLog));
     localStorage.setItem("workouts", JSON.stringify(workouts));
+    localStorage.setItem("personalBests", JSON.stringify(personalBests));
     localStorage.setItem("weeklyGoal", JSON.stringify(weeklyGoal));
     localStorage.setItem("templates", JSON.stringify(templates));
-  }, [status, currentPlan, currentLog, workouts, weeklyGoal, templates]);
+  }, [status, currentPlan, currentLog, workouts, personalBests, weeklyGoal, templates]);
 
   const getLatestWorkout = (): WorkoutRecord | null => {
     return workouts.length > 0 ? workouts[0] : null;
@@ -114,6 +123,7 @@ export const WorkoutProvider = ({ children }: PropsWithChildren) => {
     setCurrentLog(null);
     setWeeklyGoal(null);
     setWorkouts([]);
+    setPersonalBests({});
     setTemplates([]);
   };
 
@@ -127,6 +137,8 @@ export const WorkoutProvider = ({ children }: PropsWithChildren) => {
       setCurrentLog,
       workouts,
       setWorkouts,
+      personalBests,
+      setPersonalBests,
       getLatestWorkout,
       getLatestWorkouts,
       weeklyGoal,

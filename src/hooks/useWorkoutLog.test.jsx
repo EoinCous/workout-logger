@@ -6,6 +6,7 @@ import { useWorkout } from "../context/WorkoutContext";
 import {
   clearCurrentPlan,
   fetchWorkouts,
+  fetchPersonalBests,
   insertWorkout,
 } from "../supabase/supabaseWorkoutService";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
@@ -30,6 +31,7 @@ vi.mock("../context/WorkoutContext", () => ({
 vi.mock("../supabase/supabaseWorkoutService", () => ({
   clearCurrentPlan: vi.fn(),
   fetchWorkouts: vi.fn(),
+  fetchPersonalBests: vi.fn(),
   insertWorkout: vi.fn(),
 }));
 
@@ -74,6 +76,7 @@ describe("useWorkoutLog", () => {
       const [currentPlan, setCurrentPlan] = useState(initialWorkoutState.currentPlan);
       const [currentLog, setCurrentLog] = useState(initialWorkoutState.currentLog);
       const [workouts, setWorkouts] = useState(initialWorkoutState.workouts);
+      const [personalBests, setPersonalBests] = useState(initialWorkoutState.personalBests || {});
 
       return {
         status,
@@ -84,6 +87,8 @@ describe("useWorkoutLog", () => {
         setCurrentLog,
         workouts,
         setWorkouts,
+        personalBests,
+        setPersonalBests,
       };
     });
     useAuthentication.mockReturnValue({
@@ -92,6 +97,7 @@ describe("useWorkoutLog", () => {
     });
     insertWorkout.mockResolvedValue({ id: "saved-workout" });
     fetchWorkouts.mockResolvedValue([]);
+    fetchPersonalBests.mockResolvedValue({});
     clearCurrentPlan.mockResolvedValue(undefined);
   });
 
@@ -400,6 +406,31 @@ describe("useWorkoutLog", () => {
       seconds: 30,
       weight: 20,
     });
+  });
+
+  it("does not record a completed set below the saved table personal best", async () => {
+    initialWorkoutState.personalBests = {
+      "bench-press": {
+        exerciseId: "bench-press",
+        name: "Barbell Bench Press",
+        muscle: "chest",
+        weight: 85,
+        reps: 5,
+        date: "2026-10-30",
+      },
+    };
+    initialWorkoutState.currentLog = {
+      exercises: [{ ...benchPress, sets: [{ reps: "10", weight: "80" }] }],
+      notes: "",
+    };
+
+    const { result } = renderHook(() => useWorkoutLog());
+
+    await act(async () => {
+      await result.current.completeWorkout();
+    });
+
+    expect(insertWorkout.mock.calls[0][1].personalBests).toEqual({});
   });
 
   it("reports save failures and resets the submitting state", async () => {

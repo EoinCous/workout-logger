@@ -7,7 +7,29 @@ vi.mock('../context/AuthenticationContext', () => ({
 }));
 
 vi.mock('../context/WorkoutContext', () => ({
-  useWorkout: () => ({ setTemplates: vi.fn() }),
+  useWorkout: () => ({
+    setTemplates: vi.fn(),
+    personalBests: {
+      'farmer-carries': {
+        exerciseId: 'farmer-carries',
+        name: 'Farmer Carries',
+        trackingType: 'time',
+        seconds: 90,
+        weight: 20,
+        date: '2026-10-31T10:00:00.000Z',
+        achievedInWorkoutId: 'workout-1',
+      },
+      'overhead-press': {
+        exerciseId: 'overhead-press',
+        name: 'Overhead Press',
+        muscle: 'shoulders',
+        weight: 50,
+        reps: 5,
+        date: '2026-10-30',
+        achievedInWorkoutId: 'another-workout',
+      },
+    },
+  }),
 }));
 
 vi.mock('../supabase/supabaseWorkoutService', () => ({
@@ -33,14 +55,7 @@ describe('WorkoutSummary', () => {
       date: '2026-10-31T10:00:00.000Z',
       completedAt: '2026-10-31T11:00:00.000Z',
       type: 'full',
-      personalBests: {
-        'farmer-carries': {
-          name: 'Farmer Carries',
-          trackingType: 'time',
-          seconds: 90,
-          weight: 20,
-        },
-      },
+      id: 'workout-1',
       exercises: [
         { id: 'farmer-carries', sets: [{ weight: '20', seconds: 90 }] },
         { id: 'bench-press', sets: [{ weight: '80', reps: '8' }] },
@@ -52,5 +67,6 @@ describe('WorkoutSummary', () => {
     expect(screen.getAllByText('Reps')).toHaveLength(1);
     expect(screen.getByText('8')).toBeTruthy();
     expect(screen.getByText('1:30 best time · 20 kg')).toBeTruthy();
+    expect(screen.queryByText('Overhead Press')).toBeNull();
   });
 });

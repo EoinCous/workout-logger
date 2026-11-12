@@ -1,5 +1,6 @@
 import type { Database } from './supabaseClient';
 import { supabase } from './supabaseClient';
+import type { PersonalBest, PersonalBestRecord } from '../utils/pbUtils';
 
 type WorkoutSet = {
   reps?: string | number;
@@ -16,7 +17,7 @@ type WorkoutInput = {
   date: string;
   type: string;
   exercises: ExerciseInput[];
-  personalBests?: Database['public']['Tables']['workouts']['Insert']['personal_bests'];
+  personalBests?: PersonalBestRecord;
   completedAt?: string | null;
   notes?: string | null;
 };
@@ -42,11 +43,11 @@ export type BodyWeightResult = BodyWeightInput;
 
 type WorkoutRow = Database['public']['Tables']['workouts']['Row'];
 type WorkoutResult = Omit<WorkoutRow, 'user_id' | 'personal_bests' | 'completed_at'> & {
-  personalBests: WorkoutRow['personal_bests'];
   completedAt: WorkoutRow['completed_at'];
 };
 
 type BodyWeightRow = Database['public']['Tables']['body_weights']['Row'];
+type PersonalBestRow = Database['public']['Tables']['personal_bests']['Row'];
 
 const formatExercises = (exercises: ExerciseInput[]) =>
   exercises.map(({ id, sets }) => ({ id, sets }));
@@ -56,10 +57,78 @@ const formatBodyWeight = (bodyWeight: Pick<BodyWeightRow, 'recorded_date' | 'wei
   weight: bodyWeight.weight,
 });
 
+const formatPersonalBest = (row: PersonalBestRow): PersonalBest => {
+  if (row.tracking_type === 'time' && row.seconds !== null) {
+    return {
+      exerciseId: row.exercise_id,
+      name: row.name,
+      muscle: row.muscle,
+      trackingType: 'time',
+      seconds: row.seconds,
+      ...(row.weight !== null && { weight: row.weight }),
+      date: row.achieved_at,
+      ...(row.achieved_in_workout_id && {
+        achievedInWorkoutId: row.achieved_in_workout_id,
+      }),
+    };
+  }
+
+  if (row.tracking_type !== 'time' && row.weight !== null && row.reps !== null) {
+    return {
+      exerciseId: row.exercise_id,
+      name: row.name,
+      muscle: row.muscle,
+      weight: row.weight,
+      reps: row.reps,
+      date: row.achieved_at,
+      ...(row.achieved_in_workout_id && {
+        achievedInWorkoutId: row.achieved_in_workout_id,
+      }),
+    };
+  }
+
+  throw new Error(`Invalid personal best record for exercise "${row.exercise_id}".`);
+};
+
+const toPersonalBestRow = (
+  userId: string,
+  workoutId: string | null,
+  personalBest: PersonalBest,
+): Database['public']['Tables']['personal_bests']['Insert'] => ({
+  user_id: userId,
+  exercise_id: personalBest.exerciseId,
+  tracking_type: personalBest.trackingType ?? 'reps',
+  name: personalBest.name,
+  muscle: personalBest.muscle ?? 'Other',
+  weight: personalBest.weight ?? null,
+  reps: personalBest.reps ?? null,
+  seconds: personalBest.seconds ?? null,
+  achieved_in_workout_id: workoutId,
+  achieved_at: personalBest.date,
+});
+
+export const fetchPersonalBests = async (userId: string): Promise<PersonalBestRecord> => {
+  const { data, error } = await supabase
+    .from('personal_bests')
+    .select('id, user_id, exercise_id, tracking_type, name, muscle, weight, reps, seconds, achieved_in_workout_id, achieved_at')
+    .eq('user_id', userId)
+    .order('achieved_at', { ascending: false });
+
+  if (error) throw error;
+
+  return data.reduce<PersonalBestRecord>((personalBests, row) => {
+    const formatted = formatPersonalBest(row);
+    if (!personalBests[formatted.exerciseId]) {
+      personalBests[formatted.exerciseId] = formatted;
+    }
+    return personalBests;
+  }, {});
+};
+
 export const fetchWorkouts = async (userId: string): Promise<WorkoutResult[]> => {
   const { data, error } = await supabase
     .from('workouts')
-    .select('id, date, type, exercises, personal_bests, completed_at, notes')
+    .select('id, date, type, exercises, completed_at, notes')
     .eq('user_id', userId)
     .order('date', { ascending: false });
 
@@ -72,7 +141,6 @@ export const fetchWorkouts = async (userId: string): Promise<WorkoutResult[]> =>
     date: workout.date,
     type: workout.type,
     exercises: workout.exercises,
-    personalBests: workout.personal_bests,
     completedAt: workout.completed_at,
     notes: workout.notes,
   }));
@@ -88,7 +156,6 @@ export const insertWorkout = async (userId: string, workout: WorkoutInput) => {
       date: workout.date,
       type: workout.type,
       exercises: cleanedExercises,
-      personal_bests: workout.personalBests,
       completed_at: workout.completedAt,
       notes: workout.notes,
     })
@@ -96,6 +163,26 @@ export const insertWorkout = async (userId: string, workout: WorkoutInput) => {
     .single();
 
   if (error) throw error;
+
+  for (const personalBest of Object.values(workout.personalBests ?? {})) {
+    const personalBestRow = toPersonalBestRow(userId, data.id, personalBest);
+    const { data: updatedRows, error: updateError } = await supabase
+      .from('personal_bests')
+      .update(personalBestRow)
+      .eq('user_id', userId)
+      .eq('exercise_id', personalBest.exerciseId)
+      .select('id');
+
+    if (updateError) throw updateError;
+
+    if (!updatedRows?.length) {
+      const { error: insertError } = await supabase
+        .from('personal_bests')
+        .insert(personalBestRow);
+      if (insertError) throw insertError;
+    }
+  }
+
   return data;
 };
 

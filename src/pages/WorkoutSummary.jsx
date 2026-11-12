@@ -15,7 +15,7 @@ const WorkoutSummary = () => {
   const workout = location.state?.workout;
   
   const { user } = useAuthentication(); 
-  const { setTemplates } = useWorkout();
+  const { personalBests, setTemplates } = useWorkout();
 
   const [showTemplateInput, setShowTemplateInput] = useState(false);
   const [templateName, setTemplateName] = useState("");
@@ -46,6 +46,12 @@ const WorkoutSummary = () => {
 
     return { volume: totalVolume, sets: totalSets, duration: durationMins };
   }, [workout, hydratedExercises]);
+  const workoutPersonalBests = useMemo(
+    () => Object.values(personalBests).filter(
+      (personalBest) => personalBest.achievedInWorkoutId === workout?.id,
+    ),
+    [personalBests, workout?.id],
+  );
 
   const handleSaveTemplate = async () => {
     if (!templateName.trim()) return;
@@ -127,11 +133,11 @@ const WorkoutSummary = () => {
         </div>
 
         {/* Personal Bests Section */}
-        {workout.personalBests && Object.keys(workout.personalBests).length > 0 && (
+        {workoutPersonalBests.length > 0 && (
           <div className="new-pbs">
             <h3>🏆 Personal Best</h3>
             <div className="pb-grid">
-              {Object.values(workout.personalBests).map(pb => (
+              {workoutPersonalBests.map(pb => (
                 <div key={pb.name} className="pb-card">
                   <span className="pb-exercise">{pb.name}</span>
                   <span className="pb-value">

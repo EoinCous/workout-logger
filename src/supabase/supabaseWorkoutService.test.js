@@ -13,6 +13,7 @@ import {
   deleteTemplate,
   deleteWorkout,
   fetchBodyWeights,
+  fetchPersonalBests,
   fetchCurrentPlan,
   fetchTemplates,
   fetchWeeklyGoal,
@@ -34,7 +35,7 @@ const createQueryBuilder = (table, result) => {
     return builder;
   };
 
-  for (const method of ["select", "insert", "delete", "upsert", "eq", "order"]) {
+  for (const method of ["select", "insert", "delete", "upsert", "update", "eq", "order"]) {
     builder[method] = record(method);
   }
   builder.maybeSingle = record("maybeSingle");
@@ -64,7 +65,6 @@ describe("supabaseWorkoutService", () => {
       date: "2026-10-31",
       type: "strength",
       exercises: [{ id: "bench-press", sets: [{ reps: "8", weight: "80" }] }],
-      personal_bests: { "bench-press": { weight: 80, reps: 8 } },
       completed_at: "2026-10-31T10:00:00.000Z",
       notes: "Good session",
     }];
@@ -75,14 +75,13 @@ describe("supabaseWorkoutService", () => {
       date: "2026-10-31",
       type: "strength",
       exercises: databaseWorkouts[0].exercises,
-      personalBests: databaseWorkouts[0].personal_bests,
       completedAt: "2026-10-31T10:00:00.000Z",
       notes: "Good session",
     }]);
 
     expect(supabase.from).toHaveBeenCalledWith("workouts");
     expect(calledWith("select", "workouts").args[0])
-      .toBe("id, date, type, exercises, personal_bests, completed_at, notes");
+      .toBe("id, date, type, exercises, completed_at, notes");
     expect(calledWith("eq", "workouts").args).toEqual(["user_id", "user-1"]);
     expect(calledWith("order", "workouts").args).toEqual(["date", { ascending: false }]);
   });
@@ -96,7 +95,7 @@ describe("supabaseWorkoutService", () => {
 
   it("inserts a workout with only exercise ids and sets", async () => {
     const inserted = { id: "workout-1" };
-    queryResults.push({ data: inserted, error: null });
+    queryResults.push({ data: inserted, error: null }, { data: [], error: null }, { error: null });
     const workout = {
       date: "2026-10-31",
       type: "strength",
@@ -105,7 +104,17 @@ describe("supabaseWorkoutService", () => {
         name: "Barbell Bench Press",
         sets: [{ reps: "8", weight: "80" }],
       }],
-      personalBests: { "bench-press": { weight: 80, reps: 8 } },
+      personalBests: {
+        "bench-press": {
+          exerciseId: "bench-press",
+          name: "Barbell Bench Press",
+          muscle: "chest",
+          weight: 80,
+          reps: 8,
+          date: "2026-10-31",
+          achievedInWorkoutId: "workout-1",
+        },
+      },
       completedAt: "2026-10-31T10:00:00.000Z",
       notes: "Good session",
     };
@@ -116,12 +125,52 @@ describe("supabaseWorkoutService", () => {
       date: workout.date,
       type: workout.type,
       exercises: [{ id: "bench-press", sets: workout.exercises[0].sets }],
-      personal_bests: workout.personalBests,
       completed_at: workout.completedAt,
       notes: workout.notes,
     });
     expect(queryCalls.filter((call) => call.table === "workouts").map((call) => call.method))
       .toEqual(["from", "insert", "select", "single"]);
+    expect(queryCalls.filter((call) => call.table === "personal_bests").map((call) => call.method))
+      .toEqual(["from", "update", "eq", "eq", "select", "from", "insert"]);
+    expect(calledWith("insert", "personal_bests").args[0]).toMatchObject({
+      user_id: "user-1",
+      exercise_id: "bench-press",
+      tracking_type: "reps",
+      achieved_in_workout_id: "workout-1",
+    });
+  });
+
+  it("fetches and maps current personal best records", async () => {
+    queryResults.push({
+      data: [{
+        id: "pb-1",
+        user_id: "user-1",
+        exercise_id: "bench-press",
+        tracking_type: "reps",
+        name: "Barbell Bench Press",
+        muscle: "chest",
+        weight: 80,
+        reps: 8,
+        seconds: null,
+        achieved_in_workout_id: "workout-1",
+        achieved_at: "2026-10-31T10:00:00.000Z",
+      }],
+      error: null,
+    });
+
+    await expect(fetchPersonalBests("user-1")).resolves.toEqual({
+      "bench-press": {
+        exerciseId: "bench-press",
+        name: "Barbell Bench Press",
+        muscle: "chest",
+        weight: 80,
+        reps: 8,
+        date: "2026-10-31T10:00:00.000Z",
+        achievedInWorkoutId: "workout-1",
+      },
+    });
+    expect(supabase.from).toHaveBeenCalledWith("personal_bests");
+    expect(calledWith("eq", "personal_bests").args).toEqual(["user_id", "user-1"]);
   });
 
   it("propagates workout insert errors", async () => {

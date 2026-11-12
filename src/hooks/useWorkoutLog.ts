@@ -4,10 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { useAuthentication } from "../context/AuthenticationContext";
 import { useWorkout } from "../context/WorkoutContext";
 import exerciseList from "../data/exercises.json";
-import { clearCurrentPlan, fetchWorkouts, insertWorkout } from "../supabase/supabaseWorkoutService";
-import type { Database } from "../supabase/supabaseClient";
+import {
+  clearCurrentPlan,
+  fetchPersonalBests,
+  fetchWorkouts,
+  insertWorkout,
+} from "../supabase/supabaseWorkoutService";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
 import { getCurrentPBs } from "../utils/pbUtils";
+import type { PersonalBestRecord } from "../utils/pbUtils";
 import { hydrateExercises } from "../utils/exerciseUtils";
 
 type ExerciseDefinition = (typeof exerciseList)[number];
@@ -55,7 +60,7 @@ type WorkoutRecord = {
   date: string;
   type: string;
   exercises: WorkoutExercise[];
-  personalBests?: Database["public"]["Tables"]["workouts"]["Row"]["personal_bests"];
+  personalBests?: PersonalBestRecord;
   completedAt?: string | null;
   notes?: string | null;
 };
@@ -66,8 +71,9 @@ type WorkoutState = {
   setCurrentPlan: Dispatch<SetStateAction<WorkoutPlan | null>>;
   currentLog: WorkoutLog | null;
   setCurrentLog: Dispatch<SetStateAction<WorkoutLog | null>>;
-  workouts: WorkoutRecord[];
   setWorkouts: Dispatch<SetStateAction<WorkoutRecord[]>>;
+  personalBests: PersonalBestRecord;
+  setPersonalBests: Dispatch<SetStateAction<PersonalBestRecord>>;
 };
 type AuthenticationState = {
   user: { id: string } | null;
@@ -76,28 +82,27 @@ type AuthenticationState = {
 type InputField = "newReps" | "newMinutes" | "newSeconds" | "newWeight";
 
 const calculateNewPersonalBests = (
-  previousWorkouts: WorkoutRecord[],
   completedWorkout: WorkoutRecord,
-): Record<string, PersonalBest> => {
-  const previousPBs = getCurrentPBs(previousWorkouts);
-  const updatedPBs = getCurrentPBs([...previousWorkouts, completedWorkout]);
+  savedPersonalBests: PersonalBestRecord,
+): PersonalBestRecord => {
+  const workoutPBs = getCurrentPBs([completedWorkout]);
 
-  const newPBs: Record<string, PersonalBest> = {};
-  for (const [id, updated] of Object.entries(updatedPBs)) {
-    const previous = previousPBs[id];
-    const isNewTimedPB = updated.trackingType === "time" &&
+  const newPBs: PersonalBestRecord = {};
+  for (const [id, candidate] of Object.entries(workoutPBs)) {
+    const previous = savedPersonalBests[id];
+    const isNewTimedPB = candidate.trackingType === "time" &&
       (
         !previous ||
-        (updated.seconds ?? 0) > (previous.seconds ?? 0) ||
-        (updated.seconds === previous.seconds && (updated.weight || 0) > (previous.weight || 0))
+        (candidate.seconds ?? 0) > (previous.seconds ?? 0) ||
+        (candidate.seconds === previous.seconds && (candidate.weight || 0) > (previous.weight || 0))
       );
-    const isNewRepPB = updated.trackingType !== "time" && (
+    const isNewRepPB = candidate.trackingType !== "time" && (
       !previous ||
-      (updated.weight ?? 0) > (previous.weight ?? 0) ||
-      (updated.weight === previous.weight && (updated.reps ?? 0) > (previous.reps ?? 0))
+      (candidate.weight ?? 0) > (previous.weight ?? 0) ||
+      (candidate.weight === previous.weight && (candidate.reps ?? 0) > (previous.reps ?? 0))
     );
     if (isNewTimedPB || isNewRepPB) {
-      newPBs[id] = updated;
+      newPBs[id] = candidate;
     }
   }
   return newPBs;
@@ -117,8 +122,9 @@ const useWorkoutLog = () => {
     setCurrentPlan,
     currentLog,
     setCurrentLog,
-    workouts,
     setWorkouts,
+    personalBests,
+    setPersonalBests,
   } = useWorkout() as WorkoutState;
   const { user, logout } = useAuthentication() as AuthenticationState;
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
@@ -274,15 +280,20 @@ const useWorkoutLog = () => {
       completedAt: new Date().toISOString(),
       notes: currentLog.notes,
     };
-    rawCompletedWorkout.personalBests = calculateNewPersonalBests(workouts, rawCompletedWorkout);
+    rawCompletedWorkout.personalBests = calculateNewPersonalBests(
+      rawCompletedWorkout,
+      personalBests ?? {},
+    );
 
     try {
       if (!user?.id) throw new Error("You must be signed in to save a workout.");
       const savedWorkout = await insertWorkout(user.id, rawCompletedWorkout);
       const fetchedWorkouts = await fetchWorkouts(user.id);
+      const fetchedPersonalBests = await fetchPersonalBests(user.id);
       await clearCurrentPlan(user.id);
 
       setWorkouts(fetchedWorkouts);
+      setPersonalBests(fetchedPersonalBests);
       setCurrentPlan(null);
       setStatus("complete");
       setCurrentLog(null);

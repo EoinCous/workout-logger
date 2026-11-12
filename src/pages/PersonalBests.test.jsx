@@ -2,11 +2,11 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
-  workouts: [],
+  personalBests: {},
 }));
 
 vi.mock('../context/WorkoutContext', () => ({
-  useWorkout: () => ({ workouts: mocks.workouts }),
+  useWorkout: () => ({ personalBests: mocks.personalBests }),
 }));
 
 import PersonalBests from './PersonalBests';
@@ -15,16 +15,34 @@ afterEach(cleanup);
 
 describe('PersonalBests', () => {
   it('shows the best timed duration while retaining weight and rep records', () => {
-    mocks.workouts = [
-      {
+    mocks.personalBests = {
+      plank: {
+        exerciseId: 'plank',
+        name: 'Plank',
+        muscle: 'core',
+        trackingType: 'time',
+        seconds: 90,
+        weight: 0,
         date: '2026-10-30',
-        exercises: [
-          { id: 'plank', sets: [{ seconds: 90, weight: '0' }] },
-          { id: 'farmer-carries', sets: [{ seconds: 30, weight: '20' }] },
-          { id: 'bench-press', sets: [{ reps: '8', weight: '80' }] },
-        ],
       },
-    ];
+      'farmer-carries': {
+        exerciseId: 'farmer-carries',
+        name: 'Farmer Carries',
+        muscle: 'forearms',
+        trackingType: 'time',
+        seconds: 30,
+        weight: 20,
+        date: '2026-10-30',
+      },
+      'bench-press': {
+        exerciseId: 'bench-press',
+        name: 'Barbell Bench Press',
+        muscle: 'chest',
+        weight: 80,
+        reps: 8,
+        date: '2026-10-30',
+      },
+    };
 
     render(<PersonalBests />);
 

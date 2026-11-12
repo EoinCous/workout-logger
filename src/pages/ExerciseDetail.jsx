@@ -10,7 +10,7 @@ const ExerciseDetail = () => {
   const { id } = useParams();
   const location = useLocation();
   const previousPage = location.state?.from || 'exercises';
-  const { workouts } = useWorkout();
+  const { workouts, personalBests } = useWorkout();
   const [chartView, setChartView] = useState('strength');
 
   const exercise = exercisesData.find((ex) => ex.id === id);
@@ -22,12 +22,10 @@ const ExerciseDetail = () => {
   };
 
   // Advanced Data Processing
-  const { chartData, personalRecord, totalSetsAllTime } = useMemo(() => {
-    if (!exercise) return { chartData: [], personalRecord: 0, totalSetsAllTime: 0 };
+  const { chartData, totalSetsAllTime } = useMemo(() => {
+    if (!exercise) return { chartData: [], totalSetsAllTime: 0 };
 
     const statsByDate = {};
-    let globalMaxWeight = 0;
-    let globalMaxDuration = 0;
     let globalTotalSets = 0;
 
     // Sort workouts chronologically first to ensure graph line flows correctly
@@ -53,7 +51,6 @@ const ExerciseDetail = () => {
           globalTotalSets++;
           sessionDuration += seconds;
           sessionMaxDuration = Math.max(sessionMaxDuration, seconds);
-          globalMaxDuration = Math.max(globalMaxDuration, seconds);
           return;
         }
 
@@ -70,8 +67,6 @@ const ExerciseDetail = () => {
           const e1rm = weight * (1 + reps / 30);
           if (e1rm > sessionMax1RM) sessionMax1RM = e1rm;
 
-          // Check for absolute heaviest weight lifted (PR)
-          if (weight > globalMaxWeight) globalMaxWeight = weight;
         }
       });
 
@@ -103,10 +98,12 @@ const ExerciseDetail = () => {
 
     return {
       chartData: Object.values(statsByDate),
-      personalRecord: exercise.trackingType === 'time' ? globalMaxDuration : globalMaxWeight,
       totalSetsAllTime: globalTotalSets
     };
   }, [workouts, id, exercise]);
+  const personalRecord = isTimedExercise
+    ? personalBests[id]?.seconds ?? 0
+    : personalBests[id]?.weight ?? 0;
 
   const recentHistory = useMemo(() => {
     return workouts

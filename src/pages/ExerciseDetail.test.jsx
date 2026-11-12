@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 const mocks = vi.hoisted(() => ({
   workouts: [],
+  personalBests: {},
 }));
 
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -16,7 +17,10 @@ vi.mock('react-router-dom', async (importOriginal) => {
 });
 
 vi.mock('../context/WorkoutContext', () => ({
-  useWorkout: () => ({ workouts: mocks.workouts }),
+  useWorkout: () => ({
+    workouts: mocks.workouts,
+    personalBests: mocks.personalBests,
+  }),
 }));
 
 vi.mock('recharts', () => {
@@ -48,6 +52,7 @@ const workout = (exerciseId, sets, date = '2026-10-30') => ({
 describe('ExerciseDetail', () => {
   beforeEach(() => {
     mocks.workouts = [];
+    mocks.personalBests = {};
   });
 
   it('shows best and total duration plus timed set history for time exercises', () => {
@@ -59,6 +64,15 @@ describe('ExerciseDetail', () => {
       ]),
       workout('plank', [{ weight: '0', seconds: 60 }], '2026-10-31'),
     ];
+    mocks.personalBests = {
+      plank: {
+        exerciseId: 'plank',
+        name: 'Plank',
+        trackingType: 'time',
+        seconds: 90,
+        date: '2026-10-30',
+      },
+    };
 
     render(
       <MemoryRouter>
@@ -87,6 +101,15 @@ describe('ExerciseDetail', () => {
     mocks.workouts = [
       workout('bench-press', [{ weight: '80', reps: '8' }]),
     ];
+    mocks.personalBests = {
+      'bench-press': {
+        exerciseId: 'bench-press',
+        name: 'Barbell Bench Press',
+        weight: 80,
+        reps: 8,
+        date: '2026-10-30',
+      },
+    };
 
     render(
       <MemoryRouter>
@@ -99,5 +122,27 @@ describe('ExerciseDetail', () => {
     expect(screen.getByRole('button', { name: 'Strength (1RM)' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Volume' })).toBeTruthy();
     expect(screen.getByText('80kg x 8')).toBeTruthy();
+  });
+
+  it('uses the saved personal best even when its workout is no longer in history', () => {
+    mocks.exerciseId = 'bench-press';
+    mocks.personalBests = {
+      'bench-press': {
+        exerciseId: 'bench-press',
+        name: 'Barbell Bench Press',
+        weight: 95,
+        reps: 3,
+        date: '2026-10-30',
+      },
+    };
+
+    render(
+      <MemoryRouter>
+        <ExerciseDetail />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('95', { selector: '.stat-value' })).toBeTruthy();
+    expect(screen.getByText('Total Sets').parentElement.textContent).toContain('0');
   });
 });

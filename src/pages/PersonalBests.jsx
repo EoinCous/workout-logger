@@ -1,14 +1,12 @@
 import { useWorkout } from "../context/WorkoutContext";
 import { useMemo, useState } from "react";
-import { getCurrentPBs } from "../utils/pbUtils";
 import "../css/PersonalBests.css";
 
 const formatDuration = (seconds) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
 const PersonalBests = () => {
-  const { workouts } = useWorkout();
-  const personalBests = useMemo(() => getCurrentPBs(workouts), [workouts]);
+  const { personalBests } = useWorkout();
 
   // Group PBs by muscle
   const groupedPBs = useMemo(() => {

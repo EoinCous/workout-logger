@@ -4,6 +4,7 @@ import { useAuthentication } from '../context/AuthenticationContext';
 import { useWorkout } from '../context/WorkoutContext';
 import {
   fetchCurrentPlan,
+  fetchPersonalBests,
   fetchTemplates,
   fetchWeeklyGoal,
   fetchWorkouts,
@@ -30,7 +31,7 @@ const getErrorMessage = (error, mode) => {
 
 const Authentication = () => {
   const { signUp, login, resetPassword } = useAuthentication();
-  const { setCurrentPlan, setWorkouts, setWeeklyGoal, setTemplates } = useWorkout();
+  const { setCurrentPlan, setWorkouts, setPersonalBests, setWeeklyGoal, setTemplates } = useWorkout();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('login');
@@ -63,14 +64,16 @@ const Authentication = () => {
         const userId = result?.user?.id;
         if (!userId) throw new Error('Unable to verify your account. Please try again.');
 
-        const [workouts, currentPlan, weeklyGoal, templates] = await Promise.all([
+        const [workouts, currentPlan, weeklyGoal, templates, personalBests] = await Promise.all([
           fetchWorkouts(userId),
           fetchCurrentPlan(userId),
           fetchWeeklyGoal(userId),
           fetchTemplates(userId),
+          fetchPersonalBests(userId),
         ]);
 
         setWorkouts(workouts || []);
+        setPersonalBests(personalBests);
         setCurrentPlan(currentPlan || null);
         setWeeklyGoal(weeklyGoal || null);
         setTemplates(templates || []);

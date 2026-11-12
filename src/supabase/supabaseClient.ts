@@ -99,6 +99,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      personal_bests: {
+        Row: {
+          id: string;
+          user_id: string;
+          exercise_id: string;
+          tracking_type: string;
+          name: string;
+          muscle: string;
+          weight: number | null;
+          reps: number | null;
+          seconds: number | null;
+          achieved_in_workout_id: string | null;
+          achieved_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string;
+          exercise_id: string;
+          tracking_type: string;
+          name: string;
+          muscle: string;
+          weight?: number | null;
+          reps?: number | null;
+          seconds?: number | null;
+          achieved_in_workout_id?: string | null;
+          achieved_at: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          exercise_id?: string;
+          tracking_type?: string;
+          name?: string;
+          muscle?: string;
+          weight?: number | null;
+          reps?: number | null;
+          seconds?: number | null;
+          achieved_in_workout_id?: string | null;
+          achieved_at?: string;
+        };
+        Relationships: [];
+      };
       workouts: {
         Row: {
           id: string;

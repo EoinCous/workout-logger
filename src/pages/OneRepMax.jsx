@@ -1,6 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useWorkout } from "../context/WorkoutContext";
-import { getCurrentPBs } from "../utils/pbUtils";
 import "../css/OneRepMax.css";
 
 const calculate1RM = (weight, reps) => {
@@ -9,8 +8,7 @@ const calculate1RM = (weight, reps) => {
 };
 
 const OneRepMax = () => {
-  const { workouts } = useWorkout();
-  const personalBests = useMemo(() => getCurrentPBs(workouts), [workouts]);
+  const { personalBests } = useWorkout();
   const sortedPersonalBests = Object.values(personalBests)
     .filter((personalBest) => personalBest.trackingType !== "time")
     .sort((a, b) => a.name.localeCompare(b.name));

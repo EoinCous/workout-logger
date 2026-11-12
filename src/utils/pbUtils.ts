@@ -19,6 +19,7 @@ type PersonalBestBase = {
   name: string;
   muscle: string | undefined;
   date: string;
+  achievedInWorkoutId?: string;
 };
 type RepPersonalBest = PersonalBestBase & {
   weight: number;
@@ -33,6 +34,7 @@ type TimedPersonalBest = PersonalBestBase & {
   reps?: never;
 };
 export type PersonalBest = RepPersonalBest | TimedPersonalBest;
+export type PersonalBestRecord = Record<string, PersonalBest>;
 
 const exerciseById = exercisesData.reduce<Record<string, ExerciseDefinition>>((acc, exercise) => {
   acc[exercise.id] = exercise;

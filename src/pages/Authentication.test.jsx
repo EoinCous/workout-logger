@@ -8,11 +8,13 @@ const mocks = vi.hoisted(() => ({
   resetPassword: vi.fn(),
   setCurrentPlan: vi.fn(),
   setWorkouts: vi.fn(),
+  setPersonalBests: vi.fn(),
   setWeeklyGoal: vi.fn(),
   setTemplates: vi.fn(),
   fetchCurrentPlan: vi.fn(),
   fetchWeeklyGoal: vi.fn(),
   fetchWorkouts: vi.fn(),
+  fetchPersonalBests: vi.fn(),
   fetchTemplates: vi.fn(),
 }));
 
@@ -32,6 +34,7 @@ vi.mock("../context/WorkoutContext", () => ({
   useWorkout: () => ({
     setCurrentPlan: mocks.setCurrentPlan,
     setWorkouts: mocks.setWorkouts,
+    setPersonalBests: mocks.setPersonalBests,
     setWeeklyGoal: mocks.setWeeklyGoal,
     setTemplates: mocks.setTemplates,
   }),
@@ -41,6 +44,7 @@ vi.mock("../supabase/supabaseWorkoutService", () => ({
   fetchCurrentPlan: mocks.fetchCurrentPlan,
   fetchWeeklyGoal: mocks.fetchWeeklyGoal,
   fetchWorkouts: mocks.fetchWorkouts,
+  fetchPersonalBests: mocks.fetchPersonalBests,
   fetchTemplates: mocks.fetchTemplates,
 }));
 
@@ -57,6 +61,7 @@ describe("Authentication page", () => {
     mocks.fetchCurrentPlan.mockResolvedValue(null);
     mocks.fetchWeeklyGoal.mockResolvedValue(null);
     mocks.fetchWorkouts.mockResolvedValue([]);
+    mocks.fetchPersonalBests.mockResolvedValue({});
     mocks.fetchTemplates.mockResolvedValue([]);
   });
 
@@ -76,10 +81,12 @@ describe("Authentication page", () => {
     });
     expect(mocks.login).toHaveBeenCalledWith("user@example.com", "password");
     expect(mocks.fetchWorkouts).toHaveBeenCalledWith("user-1");
+    expect(mocks.fetchPersonalBests).toHaveBeenCalledWith("user-1");
     expect(mocks.fetchCurrentPlan).toHaveBeenCalledWith("user-1");
     expect(mocks.fetchWeeklyGoal).toHaveBeenCalledWith("user-1");
     expect(mocks.fetchTemplates).toHaveBeenCalledWith("user-1");
     expect(mocks.setWorkouts).toHaveBeenCalledWith([]);
+    expect(mocks.setPersonalBests).toHaveBeenCalledWith({});
     expect(mocks.setCurrentPlan).toHaveBeenCalledWith(null);
     expect(mocks.setWeeklyGoal).toHaveBeenCalledWith(null);
     expect(mocks.setTemplates).toHaveBeenCalledWith([]);
