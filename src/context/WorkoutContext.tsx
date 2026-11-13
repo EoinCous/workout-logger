@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
 import { WORKOUT_STATUS } from "../constants/workoutStatus";
-import type { PersonalBestRecord } from "../utils/pbUtils";
+import type { PersonalBest } from "../utils/pbUtils";
 
 type WorkoutSet = {
   reps?: string | number;
@@ -51,8 +51,8 @@ type WorkoutContextValue = {
   setCurrentLog: Dispatch<SetStateAction<WorkoutLog | null>>;
   workouts: WorkoutRecord[];
   setWorkouts: Dispatch<SetStateAction<WorkoutRecord[]>>;
-  personalBests: PersonalBestRecord;
-  setPersonalBests: Dispatch<SetStateAction<PersonalBestRecord>>;
+  personalBests: PersonalBest[];
+  setPersonalBests: Dispatch<SetStateAction<PersonalBest[]>>;
   getLatestWorkout: () => WorkoutRecord | null;
   getLatestWorkouts: () => WorkoutRecord[];
   weeklyGoal: number | null;
@@ -84,9 +84,11 @@ export const WorkoutProvider = ({ children }: PropsWithChildren) => {
     return saved ? (JSON.parse(saved) as WorkoutRecord[]) : [];
   });
 
-  const [personalBests, setPersonalBests] = useState<PersonalBestRecord>(() => {
+  const [personalBests, setPersonalBests] = useState<PersonalBest[]>(() => {
     const saved = localStorage.getItem("personalBests");
-    return saved ? (JSON.parse(saved) as PersonalBestRecord) : {};
+    if (!saved) return [];
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed as PersonalBest[] : Object.values(parsed) as PersonalBest[];
   });
 
   const [weeklyGoal, setWeeklyGoal] = useState<number | null>(() => {
@@ -123,7 +125,7 @@ export const WorkoutProvider = ({ children }: PropsWithChildren) => {
     setCurrentLog(null);
     setWeeklyGoal(null);
     setWorkouts([]);
-    setPersonalBests({});
+    setPersonalBests([]);
     setTemplates([]);
   };
 

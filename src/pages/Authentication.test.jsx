@@ -55,13 +55,14 @@ afterEach(cleanup);
 describe("Authentication page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     mocks.login.mockResolvedValue({ user: { id: "user-1" } });
     mocks.signUp.mockResolvedValue(undefined);
     mocks.resetPassword.mockResolvedValue(undefined);
     mocks.fetchCurrentPlan.mockResolvedValue(null);
     mocks.fetchWeeklyGoal.mockResolvedValue(null);
     mocks.fetchWorkouts.mockResolvedValue([]);
-    mocks.fetchPersonalBests.mockResolvedValue({});
+    mocks.fetchPersonalBests.mockResolvedValue([]);
     mocks.fetchTemplates.mockResolvedValue([]);
   });
 
@@ -86,10 +87,32 @@ describe("Authentication page", () => {
     expect(mocks.fetchWeeklyGoal).toHaveBeenCalledWith("user-1");
     expect(mocks.fetchTemplates).toHaveBeenCalledWith("user-1");
     expect(mocks.setWorkouts).toHaveBeenCalledWith([]);
-    expect(mocks.setPersonalBests).toHaveBeenCalledWith({});
+    expect(mocks.setPersonalBests).toHaveBeenCalledWith([]);
     expect(mocks.setCurrentPlan).toHaveBeenCalledWith(null);
     expect(mocks.setWeeklyGoal).toHaveBeenCalledWith(null);
     expect(mocks.setTemplates).toHaveBeenCalledWith([]);
+  });
+
+  it("sets the complete personal best history after login", async () => {
+    const history = [
+      { exerciseId: "bench-press", weight: 80, reps: 8, date: "2026-10-31" },
+      { exerciseId: "bench-press", weight: 75, reps: 10, date: "2026-10-20" },
+    ];
+    mocks.fetchPersonalBests.mockResolvedValue(history);
+    render(<Authentication />);
+
+    fireEvent.change(screen.getByLabelText("Email address"), {
+      target: { value: "user@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Password"), {
+      target: { value: "password" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+
+    await waitFor(() => {
+      expect(mocks.navigate).toHaveBeenCalledWith("/");
+    });
+    expect(mocks.setPersonalBests).toHaveBeenCalledWith(history);
   });
 
   it("shows a useful login error and keeps the user on the page", async () => {

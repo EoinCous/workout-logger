@@ -19,7 +19,7 @@ describe("WorkoutContext", () => {
     expect(result.current.currentPlan).toBeNull();
     expect(result.current.currentLog).toBeNull();
     expect(result.current.workouts).toEqual([]);
-    expect(result.current.personalBests).toEqual({});
+    expect(result.current.personalBests).toEqual([]);
     expect(result.current.weeklyGoal).toBeNull();
     expect(result.current.templates).toEqual([]);
 
@@ -28,7 +28,7 @@ describe("WorkoutContext", () => {
       expect(localStorage.getItem("currentPlan")).toBe("null");
       expect(localStorage.getItem("currentLog")).toBe("null");
       expect(localStorage.getItem("workouts")).toBe("[]");
-      expect(localStorage.getItem("personalBests")).toBe("{}");
+      expect(localStorage.getItem("personalBests")).toBe("[]");
       expect(localStorage.getItem("weeklyGoal")).toBe("null");
       expect(localStorage.getItem("templates")).toBe("[]");
     });
@@ -40,7 +40,7 @@ describe("WorkoutContext", () => {
       currentPlan: { date: "2026-10-31", exercises: [{ id: "bench-press" }] },
       currentLog: { exercises: [{ id: "bench-press", sets: [] }], notes: "saved" },
       workouts: [{ id: "workout-1" }],
-      personalBests: { "bench-press": { exerciseId: "bench-press" } },
+      personalBests: [{ exerciseId: "bench-press" }],
       weeklyGoal: 4,
       templates: [{ id: "template-1" }],
     };
@@ -59,7 +59,7 @@ describe("WorkoutContext", () => {
     expect(result.current.currentPlan).toEqual(savedState.currentPlan);
     expect(result.current.currentLog).toEqual(savedState.currentLog);
     expect(result.current.workouts).toEqual(savedState.workouts);
-    expect(result.current.personalBests).toEqual(savedState.personalBests);
+    expect(result.current.personalBests).toEqual(Object.values(savedState.personalBests));
     expect(result.current.weeklyGoal).toBe(savedState.weeklyGoal);
     expect(result.current.templates).toEqual(savedState.templates);
   });
@@ -69,6 +69,10 @@ describe("WorkoutContext", () => {
     const currentPlan = { date: "2026-10-31", exercises: [{ id: "bench-press" }] };
     const currentLog = { exercises: [{ id: "bench-press", sets: [] }], notes: "training" };
     const workouts = [{ id: "workout-1" }, { id: "workout-2" }];
+    const personalBests = [
+      { exerciseId: "bench-press", weight: 80, reps: 8, date: "2026-10-31" },
+      { exerciseId: "bench-press", weight: 75, reps: 10, date: "2026-10-20" },
+    ];
     const templates = [{ id: "template-1" }];
 
     act(() => {
@@ -76,7 +80,7 @@ describe("WorkoutContext", () => {
       result.current.setCurrentPlan(currentPlan);
       result.current.setCurrentLog(currentLog);
       result.current.setWorkouts(workouts);
-      result.current.setPersonalBests({ "bench-press": { exerciseId: "bench-press" } });
+      result.current.setPersonalBests(personalBests);
       result.current.setWeeklyGoal(3);
       result.current.setTemplates(templates);
     });
@@ -86,9 +90,7 @@ describe("WorkoutContext", () => {
       expect(JSON.parse(localStorage.getItem("currentPlan"))).toEqual(currentPlan);
       expect(JSON.parse(localStorage.getItem("currentLog"))).toEqual(currentLog);
       expect(JSON.parse(localStorage.getItem("workouts"))).toEqual(workouts);
-      expect(JSON.parse(localStorage.getItem("personalBests"))).toEqual({
-        "bench-press": { exerciseId: "bench-press" },
-      });
+      expect(JSON.parse(localStorage.getItem("personalBests"))).toEqual(personalBests);
       expect(JSON.parse(localStorage.getItem("weeklyGoal"))).toBe(3);
       expect(JSON.parse(localStorage.getItem("templates"))).toEqual(templates);
     });
@@ -122,7 +124,7 @@ describe("WorkoutContext", () => {
     localStorage.setItem("currentPlan", JSON.stringify({ exercises: [{ id: "bench-press" }] }));
     localStorage.setItem("currentLog", JSON.stringify({ exercises: [{ id: "bench-press" }] }));
     localStorage.setItem("workouts", JSON.stringify([{ id: "workout-1" }]));
-    localStorage.setItem("personalBests", JSON.stringify({ "bench-press": { exerciseId: "bench-press" } }));
+    localStorage.setItem("personalBests", JSON.stringify([{ exerciseId: "bench-press" }]));
     localStorage.setItem("weeklyGoal", JSON.stringify(4));
     localStorage.setItem("templates", JSON.stringify([{ id: "template-1" }]));
 
@@ -136,7 +138,7 @@ describe("WorkoutContext", () => {
     expect(result.current.currentPlan).toBeNull();
     expect(result.current.currentLog).toBeNull();
     expect(result.current.workouts).toEqual([]);
-    expect(result.current.personalBests).toEqual({});
+    expect(result.current.personalBests).toEqual([]);
     expect(result.current.weeklyGoal).toBeNull();
     expect(result.current.templates).toEqual([]);
 
@@ -145,7 +147,7 @@ describe("WorkoutContext", () => {
       expect(localStorage.getItem("currentPlan")).toBe("null");
       expect(localStorage.getItem("currentLog")).toBe("null");
       expect(localStorage.getItem("workouts")).toBe("[]");
-      expect(localStorage.getItem("personalBests")).toBe("{}");
+      expect(localStorage.getItem("personalBests")).toBe("[]");
       expect(localStorage.getItem("weeklyGoal")).toBe("null");
       expect(localStorage.getItem("templates")).toBe("[]");
     });

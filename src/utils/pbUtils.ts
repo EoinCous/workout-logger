@@ -36,6 +36,16 @@ type TimedPersonalBest = PersonalBestBase & {
 export type PersonalBest = RepPersonalBest | TimedPersonalBest;
 export type PersonalBestRecord = Record<string, PersonalBest>;
 
+export function getLatestPersonalBests(personalBests: PersonalBest[]): PersonalBestRecord {
+  return personalBests.reduce<PersonalBestRecord>((latestPersonalBests, personalBest) => {
+    const existing = latestPersonalBests[personalBest.exerciseId];
+    if (!existing || new Date(personalBest.date) > new Date(existing.date)) {
+      latestPersonalBests[personalBest.exerciseId] = personalBest;
+    }
+    return latestPersonalBests;
+  }, {});
+}
+
 const exerciseById = exercisesData.reduce<Record<string, ExerciseDefinition>>((acc, exercise) => {
   acc[exercise.id] = exercise;
   return acc;

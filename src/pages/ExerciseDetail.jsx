@@ -5,12 +5,14 @@ import BackButton from '../components/BackButton';
 import { useWorkout } from '../context/WorkoutContext';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, CartesianGrid } from 'recharts';
 import { useMemo, useState } from 'react';
+import { getLatestPersonalBests } from '../utils/pbUtils';
 
 const ExerciseDetail = () => {
   const { id } = useParams();
   const location = useLocation();
   const previousPage = location.state?.from || 'exercises';
   const { workouts, personalBests } = useWorkout();
+  const latestPersonalBest = getLatestPersonalBests(personalBests)[id];
   const [chartView, setChartView] = useState('strength');
 
   const exercise = exercisesData.find((ex) => ex.id === id);
@@ -102,8 +104,8 @@ const ExerciseDetail = () => {
     };
   }, [workouts, id, exercise]);
   const personalRecord = isTimedExercise
-    ? personalBests[id]?.seconds ?? 0
-    : personalBests[id]?.weight ?? 0;
+    ? latestPersonalBest?.seconds ?? 0
+    : latestPersonalBest?.weight ?? 0;
 
   const recentHistory = useMemo(() => {
     return workouts

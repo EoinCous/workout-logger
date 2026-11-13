@@ -140,37 +140,46 @@ describe("supabaseWorkoutService", () => {
     });
   });
 
-  it("fetches and maps current personal best records", async () => {
+  it("fetches all personal best records, including multiple records for one exercise", async () => {
     queryResults.push({
-      data: [{
-        id: "pb-1",
-        user_id: "user-1",
-        exercise_id: "bench-press",
-        tracking_type: "reps",
-        name: "Barbell Bench Press",
-        muscle: "chest",
-        weight: 80,
-        reps: 8,
-        seconds: null,
-        achieved_in_workout_id: "workout-1",
-        achieved_at: "2026-10-31T10:00:00.000Z",
-      }],
+      data: [
+        {
+          id: "pb-new",
+          user_id: "user-1",
+          exercise_id: "bench-press",
+          tracking_type: "reps",
+          name: "Barbell Bench Press",
+          muscle: "chest",
+          weight: 80,
+          reps: 8,
+          seconds: null,
+          achieved_in_workout_id: "workout-new",
+          achieved_at: "2026-10-31T10:00:00.000Z",
+        },
+        {
+          id: "pb-old",
+          user_id: "user-1",
+          exercise_id: "bench-press",
+          tracking_type: "reps",
+          name: "Barbell Bench Press",
+          muscle: "chest",
+          weight: 75,
+          reps: 10,
+          seconds: null,
+          achieved_in_workout_id: "workout-old",
+          achieved_at: "2026-10-20T10:00:00.000Z",
+        },
+      ],
       error: null,
     });
 
-    await expect(fetchPersonalBests("user-1")).resolves.toEqual({
-      "bench-press": {
-        exerciseId: "bench-press",
-        name: "Barbell Bench Press",
-        muscle: "chest",
-        weight: 80,
-        reps: 8,
-        date: "2026-10-31T10:00:00.000Z",
-        achievedInWorkoutId: "workout-1",
-      },
-    });
+    await expect(fetchPersonalBests("user-1")).resolves.toMatchObject([
+      { exerciseId: "bench-press", weight: 80, achievedInWorkoutId: "workout-new" },
+      { exerciseId: "bench-press", weight: 75, achievedInWorkoutId: "workout-old" },
+    ]);
     expect(supabase.from).toHaveBeenCalledWith("personal_bests");
     expect(calledWith("eq", "personal_bests").args).toEqual(["user_id", "user-1"]);
+    expect(calledWith("order", "personal_bests").args).toEqual(["achieved_at", { ascending: false }]);
   });
 
   it("propagates workout insert errors", async () => {

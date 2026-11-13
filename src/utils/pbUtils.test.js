@@ -1,5 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { getCurrentPBs } from "./pbUtils";
+import { getCurrentPBs, getLatestPersonalBests } from "./pbUtils";
+
+describe("getLatestPersonalBests", () => {
+  it("keeps only the newest record for each exercise", () => {
+    const newest = {
+      exerciseId: "bench-press",
+      name: "Barbell Bench Press",
+      muscle: "chest",
+      weight: 80,
+      reps: 8,
+      date: "2026-10-31",
+    };
+
+    expect(getLatestPersonalBests([
+      { ...newest, weight: 75, reps: 10, date: "2026-10-20" },
+      newest,
+    ])).toEqual({ "bench-press": newest });
+  });
+});
 
 describe("getCurrentPBs", () => {
   it("returns no personal bests when there are no workouts", () => {

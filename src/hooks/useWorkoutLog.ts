@@ -11,8 +11,8 @@ import {
   insertWorkout,
 } from "../supabase/supabaseWorkoutService";
 import { handleSupabaseAuthError } from "../utils/authErrorHandler";
-import { getCurrentPBs } from "../utils/pbUtils";
-import type { PersonalBestRecord } from "../utils/pbUtils";
+import { getCurrentPBs, getLatestPersonalBests } from "../utils/pbUtils";
+import type { PersonalBest, PersonalBestRecord } from "../utils/pbUtils";
 import { hydrateExercises } from "../utils/exerciseUtils";
 
 type ExerciseDefinition = (typeof exerciseList)[number];
@@ -48,13 +48,6 @@ type WorkoutLog = {
   exercises: LoggedExercise[];
   notes: string;
 };
-type PersonalBest = {
-  [key: string]: string | number | undefined;
-  trackingType?: string;
-  seconds?: number;
-  weight?: number;
-  reps?: number;
-};
 type WorkoutRecord = {
   id?: string;
   date: string;
@@ -72,8 +65,8 @@ type WorkoutState = {
   currentLog: WorkoutLog | null;
   setCurrentLog: Dispatch<SetStateAction<WorkoutLog | null>>;
   setWorkouts: Dispatch<SetStateAction<WorkoutRecord[]>>;
-  personalBests: PersonalBestRecord;
-  setPersonalBests: Dispatch<SetStateAction<PersonalBestRecord>>;
+  personalBests: PersonalBest[];
+  setPersonalBests: Dispatch<SetStateAction<PersonalBest[]>>;
 };
 type AuthenticationState = {
   user: { id: string } | null;
@@ -83,13 +76,14 @@ type InputField = "newReps" | "newMinutes" | "newSeconds" | "newWeight";
 
 const calculateNewPersonalBests = (
   completedWorkout: WorkoutRecord,
-  savedPersonalBests: PersonalBestRecord,
+  savedPersonalBests: PersonalBest[],
 ): PersonalBestRecord => {
   const workoutPBs = getCurrentPBs([completedWorkout]);
+  const latestPersonalBests = getLatestPersonalBests(savedPersonalBests);
 
   const newPBs: PersonalBestRecord = {};
   for (const [id, candidate] of Object.entries(workoutPBs)) {
-    const previous = savedPersonalBests[id];
+    const previous = latestPersonalBests[id];
     const isNewTimedPB = candidate.trackingType === "time" &&
       (
         !previous ||

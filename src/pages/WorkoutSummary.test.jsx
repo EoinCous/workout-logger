@@ -3,14 +3,14 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 vi.mock('../context/AuthenticationContext', () => ({
-  useAuthentication: () => ({ user: null }),
+  useAuthentication: () => ({ user: { id: 'user-1' } }),
 }));
 
 vi.mock('../context/WorkoutContext', () => ({
   useWorkout: () => ({
     setTemplates: vi.fn(),
-    personalBests: {
-      'farmer-carries': {
+    personalBests: [
+      {
         exerciseId: 'farmer-carries',
         name: 'Farmer Carries',
         trackingType: 'time',
@@ -19,16 +19,16 @@ vi.mock('../context/WorkoutContext', () => ({
         date: '2026-10-31T10:00:00.000Z',
         achievedInWorkoutId: 'workout-1',
       },
-      'overhead-press': {
-        exerciseId: 'overhead-press',
-        name: 'Overhead Press',
-        muscle: 'shoulders',
-        weight: 50,
-        reps: 5,
-        date: '2026-10-30',
-        achievedInWorkoutId: 'another-workout',
+      {
+        exerciseId: 'farmer-carries',
+        name: 'Farmer Carries',
+        trackingType: 'time',
+        seconds: 120,
+        weight: 20,
+        date: '2026-11-01T10:00:00.000Z',
+        achievedInWorkoutId: 'workout-2',
       },
-    },
+    ],
   }),
 }));
 
@@ -50,7 +50,7 @@ const renderSummary = (workout) => render(
 );
 
 describe('WorkoutSummary', () => {
-  it('displays durations for time-tracked exercises and reps for other exercises', () => {
+  it('shows only personal bests achieved in the summarized workout', () => {
     renderSummary({
       date: '2026-10-31T10:00:00.000Z',
       completedAt: '2026-10-31T11:00:00.000Z',
@@ -67,6 +67,7 @@ describe('WorkoutSummary', () => {
     expect(screen.getAllByText('Reps')).toHaveLength(1);
     expect(screen.getByText('8')).toBeTruthy();
     expect(screen.getByText('1:30 best time · 20 kg')).toBeTruthy();
+    expect(screen.queryByText('2:00 best time · 20 kg')).toBeNull();
     expect(screen.queryByText('Overhead Press')).toBeNull();
   });
 });

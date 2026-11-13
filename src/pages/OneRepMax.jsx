@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useWorkout } from "../context/WorkoutContext";
+import { getLatestPersonalBests } from "../utils/pbUtils";
 import "../css/OneRepMax.css";
 
 const calculate1RM = (weight, reps) => {
@@ -9,7 +10,8 @@ const calculate1RM = (weight, reps) => {
 
 const OneRepMax = () => {
   const { personalBests } = useWorkout();
-  const sortedPersonalBests = Object.values(personalBests)
+  const latestPersonalBests = getLatestPersonalBests(personalBests);
+  const sortedPersonalBests = Object.values(latestPersonalBests)
     .filter((personalBest) => personalBest.trackingType !== "time")
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -21,7 +23,7 @@ const OneRepMax = () => {
     const id = e.target.value;
     setSelectedExercise(id);
     if (id) {
-      const pb = personalBests[id];
+      const pb = latestPersonalBests[id];
       setWeight(pb?.weight || "");
       setReps(pb?.reps || "");
     }

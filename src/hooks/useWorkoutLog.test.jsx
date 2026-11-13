@@ -76,7 +76,7 @@ describe("useWorkoutLog", () => {
       const [currentPlan, setCurrentPlan] = useState(initialWorkoutState.currentPlan);
       const [currentLog, setCurrentLog] = useState(initialWorkoutState.currentLog);
       const [workouts, setWorkouts] = useState(initialWorkoutState.workouts);
-      const [personalBests, setPersonalBests] = useState(initialWorkoutState.personalBests || {});
+      const [personalBests, setPersonalBests] = useState(initialWorkoutState.personalBests || []);
 
       return {
         status,
@@ -97,7 +97,7 @@ describe("useWorkoutLog", () => {
     });
     insertWorkout.mockResolvedValue({ id: "saved-workout" });
     fetchWorkouts.mockResolvedValue([]);
-    fetchPersonalBests.mockResolvedValue({});
+    fetchPersonalBests.mockResolvedValue([]);
     clearCurrentPlan.mockResolvedValue(undefined);
   });
 
@@ -409,16 +409,14 @@ describe("useWorkoutLog", () => {
   });
 
   it("does not record a completed set below the saved table personal best", async () => {
-    initialWorkoutState.personalBests = {
-      "bench-press": {
+    initialWorkoutState.personalBests = [{
         exerciseId: "bench-press",
         name: "Barbell Bench Press",
         muscle: "chest",
         weight: 85,
         reps: 5,
         date: "2026-10-30",
-      },
-    };
+      }];
     initialWorkoutState.currentLog = {
       exercises: [{ ...benchPress, sets: [{ reps: "10", weight: "80" }] }],
       notes: "",

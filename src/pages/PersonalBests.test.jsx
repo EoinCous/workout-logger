@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
-  personalBests: {},
+  personalBests: [],
 }));
 
 vi.mock('../context/WorkoutContext', () => ({
@@ -15,8 +15,17 @@ afterEach(cleanup);
 
 describe('PersonalBests', () => {
   it('shows the best timed duration while retaining weight and rep records', () => {
-    mocks.personalBests = {
-      plank: {
+    mocks.personalBests = [
+      {
+        exerciseId: 'plank',
+        name: 'Plank',
+        muscle: 'core',
+        trackingType: 'time',
+        seconds: 60,
+        weight: 0,
+        date: '2026-10-20',
+      },
+      {
         exerciseId: 'plank',
         name: 'Plank',
         muscle: 'core',
@@ -25,7 +34,7 @@ describe('PersonalBests', () => {
         weight: 0,
         date: '2026-10-30',
       },
-      'farmer-carries': {
+      {
         exerciseId: 'farmer-carries',
         name: 'Farmer Carries',
         muscle: 'forearms',
@@ -34,7 +43,7 @@ describe('PersonalBests', () => {
         weight: 20,
         date: '2026-10-30',
       },
-      'bench-press': {
+      {
         exerciseId: 'bench-press',
         name: 'Barbell Bench Press',
         muscle: 'chest',
@@ -42,12 +51,13 @@ describe('PersonalBests', () => {
         reps: 8,
         date: '2026-10-30',
       },
-    };
+    ];
 
     render(<PersonalBests />);
 
     expect(screen.getByText('Plank')).toBeTruthy();
     expect(screen.getByText('1:30')).toBeTruthy();
+    expect(screen.queryByText('1:00')).toBeNull();
     expect(screen.getByText('best time')).toBeTruthy();
     expect(screen.getByText('0:30')).toBeTruthy();
     expect(screen.getByText('best time + 20 kg')).toBeTruthy();

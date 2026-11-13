@@ -107,7 +107,7 @@ const toPersonalBestRow = (
   achieved_at: personalBest.date,
 });
 
-export const fetchPersonalBests = async (userId: string): Promise<PersonalBestRecord> => {
+export const fetchPersonalBests = async (userId: string): Promise<PersonalBest[]> => {
   const { data, error } = await supabase
     .from('personal_bests')
     .select('id, user_id, exercise_id, tracking_type, name, muscle, weight, reps, seconds, achieved_in_workout_id, achieved_at')
@@ -116,13 +116,7 @@ export const fetchPersonalBests = async (userId: string): Promise<PersonalBestRe
 
   if (error) throw error;
 
-  return data.reduce<PersonalBestRecord>((personalBests, row) => {
-    const formatted = formatPersonalBest(row);
-    if (!personalBests[formatted.exerciseId]) {
-      personalBests[formatted.exerciseId] = formatted;
-    }
-    return personalBests;
-  }, {});
+  return data.map(formatPersonalBest);
 };
 
 export const fetchWorkouts = async (userId: string): Promise<WorkoutResult[]> => {
@@ -166,21 +160,12 @@ export const insertWorkout = async (userId: string, workout: WorkoutInput) => {
 
   for (const personalBest of Object.values(workout.personalBests ?? {})) {
     const personalBestRow = toPersonalBestRow(userId, data.id, personalBest);
-    const { data: updatedRows, error: updateError } = await supabase
+    
+    const { error: insertError } = await supabase
       .from('personal_bests')
-      .update(personalBestRow)
-      .eq('user_id', userId)
-      .eq('exercise_id', personalBest.exerciseId)
-      .select('id');
+      .insert(personalBestRow);
 
-    if (updateError) throw updateError;
-
-    if (!updatedRows?.length) {
-      const { error: insertError } = await supabase
-        .from('personal_bests')
-        .insert(personalBestRow);
-      if (insertError) throw insertError;
-    }
+    if (insertError) throw insertError;
   }
 
   return data;

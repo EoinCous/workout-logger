@@ -1,16 +1,21 @@
 import { useWorkout } from "../context/WorkoutContext";
 import { useMemo, useState } from "react";
 import "../css/PersonalBests.css";
+import { getLatestPersonalBests } from "../utils/pbUtils";
 
 const formatDuration = (seconds) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
 const PersonalBests = () => {
   const { personalBests } = useWorkout();
+  const latestPersonalBests = useMemo(
+    () => Object.values(getLatestPersonalBests(personalBests)),
+    [personalBests]
+  );
 
   // Group PBs by muscle
   const groupedPBs = useMemo(() => {
-    return Object.values(personalBests).reduce((groups, pb) => {
+    return latestPersonalBests.reduce((groups, pb) => {
       const muscleGroup = pb.muscle || "Other";
       if (!groups[muscleGroup]) {
         groups[muscleGroup] = [];
@@ -18,7 +23,7 @@ const PersonalBests = () => {
       groups[muscleGroup].push(pb);
       return groups;
     }, {});
-  }, [personalBests]);
+  }, [latestPersonalBests]);
 
   // Track which muscle groups are open
   const [openGroups, setOpenGroups] = useState({});
@@ -33,7 +38,7 @@ const PersonalBests = () => {
   const sortedGroups = Object.entries(groupedPBs).sort(([first], [second]) =>
     first.localeCompare(second)
   );
-  const totalBests = Object.keys(personalBests).length;
+  const totalBests = latestPersonalBests.length;
 
   return (
     <div className="pb-container">

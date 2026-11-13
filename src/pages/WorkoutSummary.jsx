@@ -21,7 +21,6 @@ const WorkoutSummary = () => {
   const [templateName, setTemplateName] = useState("");
   const [isSavingTemplate, setIsSavingTemplate] = useState(false);
   const [templateFeedback, setTemplateFeedback] = useState({ type: '', message: '' });
-
   const hydratedExercises = useMemo(() => {
     return workout ? hydrateExercises(workout.exercises) : [];
   }, [workout]);
@@ -47,12 +46,11 @@ const WorkoutSummary = () => {
     return { volume: totalVolume, sets: totalSets, duration: durationMins };
   }, [workout, hydratedExercises]);
   const workoutPersonalBests = useMemo(
-    () => Object.values(personalBests).filter(
+    () => personalBests.filter(
       (personalBest) => personalBest.achievedInWorkoutId === workout?.id,
     ),
     [personalBests, workout?.id],
   );
-
   const handleSaveTemplate = async () => {
     if (!templateName.trim()) return;
     
@@ -138,7 +136,7 @@ const WorkoutSummary = () => {
             <h3>🏆 Personal Best</h3>
             <div className="pb-grid">
               {workoutPersonalBests.map(pb => (
-                <div key={pb.name} className="pb-card">
+                <div key={`${pb.exerciseId}-${pb.date}`} className="pb-card">
                   <span className="pb-exercise">{pb.name}</span>
                   <span className="pb-value">
                     {pb.trackingType === 'time'
