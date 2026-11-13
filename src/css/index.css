@@ -3,6 +3,9 @@
   --coloursecondary: #ffffff;
   --colouraccent: #1e88e5;
   --colourdelete: #dc3545;
+  --page-gutter: clamp(1rem, 4vw, 1.5rem);
+  --page-max-width: 960px;
+  --page-section-gap: 1.25rem;
 }
 
 /* Apply box-sizing reset */
@@ -38,10 +41,88 @@ body {
 /* Page content needs padding to avoid bottom nav overlap */
 .page-content {
   flex: 1;
-  padding-bottom: 80px;
-  padding-top: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: var(--page-gutter) var(--page-gutter) 5rem;
+}
+
+.page-content > :is(
+  .home,
+  .workout-page-container,
+  .exercises-page,
+  .history-page,
+  .exercise-detail,
+  .planner-container,
+  .workout-log,
+  .summary-page,
+  .pb-container,
+  .suggestions-container,
+  .weekly-progress-page,
+  .profile-page,
+  .orm-container,
+  .weight-tracker-page,
+  .not-found-page
+) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0;
+}
+
+.page-content > :is(
+  .home,
+  .workout-page-container,
+  .exercises-page,
+  .history-page,
+  .exercise-detail,
+  .planner-container,
+  .workout-log,
+  .summary-page,
+  .pb-container,
+  .weekly-progress-page,
+  .profile-page,
+  .orm-container,
+  .weight-tracker-page
+) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-section-gap);
+}
+
+.page-content > :is(
+  .home,
+  .workout-page-container,
+  .exercises-page,
+  .history-page,
+  .exercise-detail,
+  .planner-container,
+  .workout-log,
+  .summary-page,
+  .pb-container,
+  .weekly-progress-page,
+  .profile-page,
+  .orm-container,
+  .weight-tracker-page,
+  .not-found-page
+) > * {
+  margin-block: 0;
+}
+
+.page-content > .not-found-page {
+  row-gap: var(--page-section-gap);
+}
+
+.page-content > .summary-page > .summary-container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-section-gap);
+}
+
+.page-content > .summary-page > .summary-container > * {
+  margin-block: 0;
 }
 
 /* Typography */

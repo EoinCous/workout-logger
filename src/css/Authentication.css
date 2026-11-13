@@ -3,7 +3,7 @@
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: clamp(1rem, 5vw, 2.5rem);
+  padding: var(--page-gutter);
   color: #f5f7fa;
   background:
     radial-gradient(ellipse at 18% 18%, rgba(30, 136, 229, 0.18), transparent 36rem),

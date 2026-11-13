@@ -37,8 +37,10 @@ const WorkoutPlanner = () => {
   const lastHydratedWorkoutType = useRef(null);
 
   useEffect(() => {
-    if (!currentPlan) return;
-    setShowAddSection(false);
+    if (!currentPlan) {
+      setShowAddSection(true);
+      return;
+    }
     isHydrating.current = true;
     const planType = currentPlan.type ?? "push";
     setWorkoutType(planType);
@@ -47,7 +49,9 @@ const WorkoutPlanner = () => {
       setMuscle(ALL_MUSCLE_CATEGORY);
       lastHydratedWorkoutType.current = planType;
     }
-    setSelectedExercises(hydrateExercises(currentPlan.exercises) ?? []);
+    const hydratedExercises = hydrateExercises(currentPlan.exercises) ?? [];
+    setSelectedExercises(hydratedExercises);
+    setShowAddSection(hydratedExercises.length === 0);
   }, [currentPlan]);
 
   useEffect(() => {
