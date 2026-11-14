@@ -79,7 +79,7 @@ const Exercises = () => {
               aria-pressed={activeCategory === cat}
               onClick={() => setActiveCategory(cat)}
             >
-              {cat}
+              {cat === ALL_MUSCLE_CATEGORY ? 'All' : cat}
             </button>
           ))}
         </div>
@@ -90,7 +90,7 @@ const Exercises = () => {
           sortedMuscleGroups.map(muscle => (
             <section key={muscle} className="muscle-group-section">
               <div className="muscle-group-heading">
-                <h2 className="header-title">{muscle.replace('_', ' ')}</h2>
+                <h2 className="header-title">{muscle.replace('_', ' ').toUpperCase()}</h2>
                 <span className="header-count">
                   {groupedExercises[muscle].length} {groupedExercises[muscle].length === 1 ? 'exercise' : 'exercises'}
                 </span>

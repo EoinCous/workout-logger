@@ -6,7 +6,6 @@ const ExerciseCard = ({ exercise }) => {
     <Link to={`/exercise/${exercise.id}`} state={{ from: '/exercises' }} >
       <div className="exercise-card">
         <h3>{exercise.name}</h3>
-        <p>{exercise.muscle}</p>
       </div>
     </Link>
   )

@@ -95,7 +95,7 @@ describe("supabaseWorkoutService", () => {
 
   it("inserts a workout with only exercise ids and sets", async () => {
     const inserted = { id: "workout-1" };
-    queryResults.push({ data: inserted, error: null }, { data: [], error: null }, { error: null });
+    queryResults.push({ data: inserted, error: null }, { error: null });
     const workout = {
       date: "2026-10-31",
       type: "strength",
@@ -131,7 +131,7 @@ describe("supabaseWorkoutService", () => {
     expect(queryCalls.filter((call) => call.table === "workouts").map((call) => call.method))
       .toEqual(["from", "insert", "select", "single"]);
     expect(queryCalls.filter((call) => call.table === "personal_bests").map((call) => call.method))
-      .toEqual(["from", "update", "eq", "eq", "select", "from", "insert"]);
+      .toEqual(["from", "insert"]);
     expect(calledWith("insert", "personal_bests").args[0]).toMatchObject({
       user_id: "user-1",
       exercise_id: "bench-press",
